@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>标签列表 | 殷亚云的博客</title>
+<title>SolrCloud-tlog、recovery | 殷亚云的博客</title>
 <meta name="description" content="化身石桥，受五百年风吹雨打">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -13,6 +13,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
 
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -91,22 +97,46 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          <h2 class="tag-list-title">标签列表</h2>
-          <div class="tags-container">
+          <div class="post-detail">
+            <h2 class="post-title">SolrCloud-tlog、recovery</h2>
+            <div class="post-date">2018-09-08</div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/solr">Solr</a>
+            <div class="post-content">
+              <p>本文参考：<a href="https://lucidworks.com/2013/08/23/understanding-transaction-logs-softcommit-and-commit-in-sorlcloud/">Understanding Transaction Logs, Soft Commit and Commit in SolrCloud</a></p>
+<p>recovery过程中会存在很多坑，如果不知道原因，会很头疼，例如recovery了一会之后，从节点变为down了，是不是很懵逼，其实呢在recovery过程中，如果leader发现与从节点通信失败，则会主动将从节点的状态置为down，而且从节点在recovery进程中还无法直接将一个down状态转换为active，只能由leader发送leader initial recovery请求触发从节点再次recovery，直到状态OK。</p>
+<p>一上来就说这，貌似有点枯燥，当然啦，说这些呢也是为了督促我好好了解recovery。</p>
+<h2 id="recovery策略">Recovery策略</h2>
+<p>Solr中recovery有两种策略，这两中策略也象征了recovery的程度：</p>
+<ul>
+<li>peer sync</li>
+<li>snapshot replication(replicating)</li>
+</ul>
+<p>何时启用peer sync何时启用replicating，取决于从与主上版本的差异大小，如果从发现与主上的索引已经版本相差小于100，则使用peer sync，否则使用全量同步。</p>
+<hr>
+<p>未完待续</p>
+
+            </div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/python">Python</a>
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/solr" class="tag">
+                    Solr
+                  </a>
+                
+              </div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/nlp">NLP</a>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/lucene">Lucene</a>
+
             
-              <a class="tag" href="https://yinyayun.github.io//tag/git">GIT</a>
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
             
-              <a class="tag" href="https://yinyayun.github.io//tag/java">Java</a>
-            
+
           </div>
+
         </div>
       </div>
     </div>
@@ -127,6 +157,29 @@ var app = new Vue({
 })
 
 </script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
 
 
 

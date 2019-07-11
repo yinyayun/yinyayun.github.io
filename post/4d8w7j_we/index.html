@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>标签列表 | 殷亚云的博客</title>
+<title>记一次Python服务实例静默退出排查 | 殷亚云的博客</title>
 <meta name="description" content="化身石桥，受五百年风吹雨打">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -13,6 +13,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
 
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -91,22 +97,53 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          <h2 class="tag-list-title">标签列表</h2>
-          <div class="tags-container">
+          <div class="post-detail">
+            <h2 class="post-title">记一次Python服务实例静默退出排查</h2>
+            <div class="post-date">2018-11-26</div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/solr">Solr</a>
+            <div class="post-content">
+              <p>这段时间发现一个python的服务实例经常静默退出，从应用日志里未找到任何异常现场，一切都很正常。</p>
+<p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
+<p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
+<p>无奈，从linux系统日志排查，终于在/var/log/messages发现了问题：
+<img src="https://yinyayun.github.io//post-images/1562838175461.png" alt="1543223773953"></p>
+<p>从日志中发现，内核启用了OOM killer机制，该机器总共剩余空闲物理内存16G，此时rss（物理内存）占用14G。而且通常情况下，该应用不会消耗这么大的内存，肯定是那边有泄漏的情况。</p>
+<p>检查该服务实例上所有运行的业务，果然有一个业务代码存在问题。</p>
+<blockquote>
+<p>OOM killer是Linux内核提供的一种机制，防止某些进程消耗尽物理内存，在必要时根据oom_score（/proc/<pid>/oom_score）值对进程进行kill。</p>
+</blockquote>
+
+            </div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/python">Python</a>
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/python" class="tag">
+                    Python
+                  </a>
+                
+              </div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/nlp">NLP</a>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/lucene">Lucene</a>
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/j4lHefq7K">
+                  <h3 class="post-title">
+                    基于全文检索引擎的语义向量编码和相似度检索
+                  </h3>
+                </a>
+              </div>
             
-              <a class="tag" href="https://yinyayun.github.io//tag/git">GIT</a>
+
             
-              <a class="tag" href="https://yinyayun.github.io//tag/java">Java</a>
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
             
+
           </div>
+
         </div>
       </div>
     </div>
@@ -127,6 +164,29 @@ var app = new Vue({
 })
 
 </script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
 
 
 

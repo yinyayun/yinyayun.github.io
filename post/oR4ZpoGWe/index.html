@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>SolrCloud-分布式索引 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">SolrCloud-分布式索引</h2>
+            <div class="post-date">2018-09-05</div>
+            
+            <div class="post-content">
+              <blockquote>
+<p>2018.09.05，深夜，最近因为各种事情，心烦意乱，睡不着，索性翻身起来，写一些没有营养的的东西。</p>
+</blockquote>
+<p>个人认为，solr的分布式存在两种：</p>
+<ul>
+<li>伪分布式，即单shard但存在主从。</li>
+<li>真正的分布式</li>
+</ul>
+<p>因为我认为真正意义上的分布式，不光是分流量，同样需要做到计算的分布式。但是呢，无论是哪一种，但凡涉及到数据的一致性的系统，基本都会考虑只允许主写，solr也是一样，只允许shard leader进行索引的索引的写入，再由主向从写入。</p>
+<p>作为一个和数据打交道的分布式应用，solr还得考虑数据的分片，换个角度来说就是文档的路由。</p>
+<p>所以下面分别说说solr中的文档分片，以及文档索引的简单流程。</p>
+<h2 id="文档路由">文档路由</h2>
+<p>在分布式系统中应用的性能取决于那块短板，也就是如果各个分片上的数据严重不均匀的话，那搜索的性能将取决于数据最大的那个分片。为了保证性能最优，大部分情况下，我们希望各个分片上的数据是均匀的，当然在有些场景下，我们也会刻意让数据不均匀，比如我们就是希望热点数据在一个分片上，当时相对于全局的数据而言，正如二八法则所说，热点数据只是很少的那部分。</p>
+<p>那么下面我们就讨论一下solr的文档路由策略,一旦一个collection确定好分片数量之后，solr就会给每个分片分配一个32位的散列值。在文档提交时，默认情况下solr会使用文档中唯一字段的值计算散列值，然后计算该散列值落在那个分片的散列值区间。</p>
+<h2 id="文档的索引">文档的索引</h2>
+<p>一旦确定好文档给哪个分片，那么剩下的事情就交给该分片上的leader进行处理了。shard leader接受到文档会怎么处理呢？</p>
+<ol>
+<li>本地文档索引</li>
+</ol>
+<ul>
+<li>写tlog</li>
+<li>为每个文档分配新的版本号，并验证新老版本号。</li>
+</ul>
+<ol start="2">
+<li>主通过distribut update并行写从</li>
+</ol>
+<ul>
+<li>对于处于recovery状态的从节点而言，接受到更新请求，会暂时先将更新请求写入Transaction log</li>
+</ul>
+<ol start="3">
+<li>等待从节点返回</li>
+</ol>
+<h2 id="commit">commit</h2>
+<p>这里顺便提一下solr的commit，solr有两种commit:</p>
+<ul>
+<li>soft commit</li>
+<li>hard commit</li>
+</ul>
+<p>这两种提交策略，实际上在solrconfig.xml中也有提到：</p>
+<pre><code class="language-xml">&lt;updateHandler class=&quot;solr.DirectUpdateHandler2&quot;&gt;
+
+  &lt;updateLog&gt;
+    &lt;str name=&quot;dir&quot;&gt;${solr.ulog.dir:}&lt;/str&gt;
+  &lt;/updateLog&gt;
+  
+  &lt;autoCommit&gt;
+    &lt;maxTime&gt;30000&lt;/maxTime&gt;
+  &lt;/autoCommit&gt;
+
+  &lt;autoSoftCommit&gt;
+    &lt;maxTime&gt;10000&lt;/maxTime&gt;
+  &lt;/autoSoftCommit&gt;
+
+&lt;/updateHandler&gt;
+</code></pre>
+<blockquote>
+<p>Hard commits are about durability, soft commits are about visibility.</p>
+</blockquote>
+<p>上面这句话解释的非常好，即硬提交关心的持久化（写硬盘），而软提交则关心索引的可见性（写内存）。其实也不必担心只做了soft commit索引数据就会丢，其实不会因为还有tlog作保证。</p>
+<p>这里贴一篇很有趣的文章：<a href="https://opensourceconnections.com/blog/2013/04/25/understanding-solr-soft-commits-and-data-durability/">《Understanding Solr Soft Commits and Data Durability
+》</a></p>
+<h2 id="nrtdirectory">NRTDirectory</h2>
+<p>既然上面已经提到了soft commit，那么这里有必要再说一说近实时搜索，软提交相对于硬提交成本低的方面在于不要写硬盘，而是将索引写入NRTDirectory维护的内存中，但是不得不说的是，既然soft commit可以让文档可见，那么也必然会打开新的searcher，打开新的searcher同样会引入其它一些事情，缓存频繁失效，还需要缓存预热，查询预热等等。
+如果有频繁更新，并且soft commit时间设置过短的话，那么就会产生多个searcher。
+另外还需要注意，soft commit时间设置的过短，还会产生很多小的segment。</p>
+<p>写着写着发现有好多东西要写，后面一篇文章，我将详细说明tlog、recovery以及soft/hard commit。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/solr" class="tag">
+                    Solr
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/solrcloud">
+                  <h3 class="post-title">
+                    SolrCloud中的那些东西
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

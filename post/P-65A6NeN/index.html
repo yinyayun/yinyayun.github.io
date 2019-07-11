@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Skip List（跳跃表） | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Skip List（跳跃表）</h2>
+            <div class="post-date">2018-11-08</div>
+            
+            <div class="post-content">
+              <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。
+传统的链表很难快速跳转至某一个节点，所以查找也是很耗时的（即使这是一个有序的链表），skip list则解决这些问题，并且查找的时间复杂度是O(log n)，所以skip list在lucene中也是一大利器。</p>
+<p>下图就是一个skip list示例：</p>
+<p><img src="https://yinyayun.github.io//post-images/1562837849869.png" alt="skiplist"></p>
+<p>一个标准的跳跃表，至少要有HEAD、TAIL节点，即头节点和尾节点。如果这是一个节点递增的链表，那么HEAD节点元素小于skip list中任何一个节点元素、TAIL节点元素大于任何一个其它节点元素。</p>
+<p>每一个节点至少含有一个指向下一个节点的指针，节点的level大小决定了指针个数，也就决定了该节点的跳跃性，如果level=1，那么该节点只能直接访问下一个节点，如果level&gt;1，那么该节点可能快速的跳跃至其之后的某个节点。</p>
+<p>HEAD、TAIL的level=MaxLevel,即头节点和尾节点的level大小为skip list设置的最大level，这个性质实际上很有用，后面我们具体说。</p>
+<p><strong>创建</strong></p>
+<p>我们先来看一下skip list节点的定义：</p>
+<pre><code class="language-java">public class ListNode {
+	ListNode[] forwords;
+	int value;
+
+	public ListNode(int level, int value) {
+		this.forwords = new ListNode[level];
+		this.value = value;
+	}
+}
+</code></pre>
+<p>是不是贼简单，节点值、以及指向后续节点的多级指针。</p>
+<p>知道节点的数据结构，下面我们继续看怎么构建一个skip list，首先我们构建一个空的skip list，只含有HEAD、和TAIL节点。</p>
+<pre><code>public class SkipList {
+	private ListNode HEAD;
+	private ListNode TAIL;
+	private int maxLevel;
+	private int currentLevel = 1;
+
+	public SkipList(int maxLevel) {
+	    this.maxLevel = maxLevel;
+	    this.HEAD = new ListNode(maxLevel, Integer.MIN_VALUE);
+	    this.TAIL = new ListNode(maxLevel, Integer.MAX_VALUE);
+	    for (int i = 0; i &lt; maxLevel; i++) {
+	        this.HEAD.forwords[i] = TAIL;
+	    }
+	}
+}
+</code></pre>
+<p>大致逻辑就是分别创建HEAD、TAIL节点，这两个节点的level设置为maxLevel，即有maxLevel个指针，HEAD节点多级指针都是指向TAIL节点。
+这里涉及到一个问题，我们如何设置maxLevel，因为level决定了skip list的查找性能， 可能我们直观上会认为level越大，跳跃约灵活，但是这是相对的，如果skip list中只有8个元素，而level却设置成8，那反而是一种浪费，而如果level设置为1，那和普通的链表也没啥区别，那到底怎么设置maxLevel呢，等我们看完insert节点活说到。</p>
+<p>但是说insert之前，我们先说skip list如何查找元素，因为不管是插入和删除，都逃不了对skip list的查找。以上图的skip list为例，我们查找元素8。</p>
+<p><strong>查找</strong></p>
+<p>首先我们找到了HEAD节点，发现HEAD节点的level3指针指向节点9，而9大于我们想找的8，也就是8在9这个节点之前。
+我们将level降一级，找HEAD的level 2指针，该指针指向节点6,6是小于8的，继续看节点6的level 2指针，也是指向9，所以还得降level，继续看节点6的level 1指针。
+节点6的level 1指针的下一个节点是8，也就是我们要找的元素。
+如果我们要找的是7，在找到节点6的level 1指针后，发现下一个节点8大于7，level已经没法在降了，所以直接返回空节点。
+search节点的代码如下：</p>
+<pre><code class="language-java">public ListNode search(int key) {
+	ListNode x = HEAD;
+	for (int level = currentLevel - 1; level &gt;= 0; level--) {
+		while (x.forwords[level].value &lt; key) {
+			x = x.forwords[level];
+		}
+	}
+	return key == x.forwords[0].value ? x.forwords[0] : null;
+}
+</code></pre>
+<p><strong>插入</strong></p>
+<p>如果在skip list中插入一个节点，假如我们要在skip list插入7，我们首先找到了6这个节点，因为7即将插在6和8之间，我们需要注意一个事情，如果是一个普通链表，插入一个新节点我们需要将6和8之间的执指针断开，但是对于skip list而言，如果插入的节点level&gt;1的话，可能需要调整level2、level3上的指针。</p>
+<p><img src="https://yinyayun.github.io//post-images/1562837804107.png" alt="skiplist-insert"></p>
+<p>假如新插入的节点7的level=3（如上图），那么我们需要在search的时候，就将它的前继节点，也就遍历到7之前，需要在level 3上遍历的最后一个节点（HEAD节点）、level 2上最后一个节点（节点6）、level 1上最后一个节点（节点6）。分别断开HEAD节点到节点9的指针、节点6到节点9指针、节点6到节点8的指针，在之间插入节点7。</p>
+<p>插入节点的代码如下：</p>
+<pre><code class="language-java">public ListNode insert(int key) {
+    ListNode[] preNodes = new ListNode[maxLevel];
+    ListNode x = HEAD;
+    for (int level = currentLevel - 1; level &gt;= 0; level--) {
+        while (x.forwords[level].value &lt; key) {
+            x = x.forwords[level];
+        }
+        preNodes[level] = x;
+    }
+    if (x.forwords[0].value == key) {
+        return x.forwords[0];
+    }
+    int nodeLevel = randomLevel();
+    if (nodeLevel &gt; currentLevel) {
+        for (int i = currentLevel; i &lt; nodeLevel; i++) {
+            preNodes[i] = HEAD;
+        }
+        currentLevel = nodeLevel;
+    }
+    ListNode newNode = new ListNode(nodeLevel, key);
+    for (int i = 0; i &lt; nodeLevel; i++) {
+        try {
+            newNode.forwords[i] = preNodes[i].forwords[i];
+            preNodes[i].forwords[i] = newNode;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    return newNode;
+}
+</code></pre>
+<p><strong>level大小</strong></p>
+<p>那么我们怎么设置一个节点的level呢，因为level决定了跳跃表的跳跃性，显然根据数据分布的设置每个节点的level是最好的，但是这种代价太大了，可行性太低了。
+假如level为1，那么和普通的链表并没有什么区别。假如所有节点的level都是相等的，那么和普通链表也没什么区别，反而造成了空间浪费。
+既然这样，我们就想能不能一层节点和多层节点各占到一半。skip list是一个概率数据结构，这就体现在level的创建上，我们可以借助概率分布的思想决定每一个新节点的level大小，就像每次在创建一个新的节点时候，我抛一个硬币，正面的level=1，反面level&gt;1，好吧，这只是一个简单的例子，通常的skiplist的level不太可能只是2，我们更加希望看到的是有某个节点level=i，该节点还存在level=i+1的概率是50%，这样才能保证构建的skip list更加平衡高效，至少有一半节点的level&gt;1，但是level&gt;2的节点只是level=1节点的一半，以此类推。</p>
+<p>节点level大小代码如下：</p>
+<pre><code class="language-java">private int randomLevel() {
+	// 概率P，用于控制多层节点的分布概率
+	float p = 0.5f;
+	int level = 1;
+	Random random = new Random();
+	while (random.nextInt(10) / 10f &lt; p &amp;&amp; level &lt; maxLevel) {
+		level++;
+	}
+	return level;
+}
+</code></pre>
+<p>既然说到这了，顺便再提一下MaxLevel如何设置，因为level i+1是level i节点数的1/2,所MaxLevel接近log(n)，假如n=8，那么MaxLevel=3,第一级4个元素，第二级2个元素，第三级1个元素。</p>
+<p><strong>删除</strong>
+最后我们再说一下节点的删除，与插入一样，我们同样需要先找到要删除的节点，例如删除节点9，我们需要先找到遍历到节点9之前，level 3上的前一个节点(节点HEAD)、level 2上的前一个节点(节点6)、level 1上的前一个节点（节点8），然后断开这几个节点与节点9的指针，与节点9各个level上的后继节点连接。
+如图：
+<img src="https://yinyayun.github.io//post-images/1562837756775.png" alt="skiplist-delete"></p>
+<p>当然有一点我们要注意，在插入节点的时候，新节点的level高于其他节点level（除HEAD、TAIL），我们将当前skip list的level设置为该节点的level。而对于删除而言，我们同样需要更新当前skip list的level，当时这稍微比插入时的level更新要复杂点，但是如果知道了开头我提到的那个特性之后，其实也不难，也就是说HEAD和TAIL的level=MaxLevel,在skip list中不存在level为MaxLevel的节点情况下，HEAD节点再MaxLevel上的指针是直接可以指向TAIL节点的，如果当前skip list中的其它节点（除去HEAD和TAIL）最大的level为1，那HEAD的level 2指针直接就是指向TAIL节点。</p>
+<p>具体看一下代码：</p>
+<pre><code class="language-java">public ListNode delete(int key) {
+    ListNode[] preNodes = new ListNode[maxLevel];
+    ListNode x = HEAD;
+    for (int level = currentLevel - 1; level &gt;= 0; level--) {
+        while (x.forwords[level].value &lt; key) {
+            x = x.forwords[level];
+        }
+        preNodes[level] = x;
+    }
+    if (x.forwords[0].value != key) {
+        return null;
+    }
+    x = x.forwords[0];
+    int delLevel = x.forwords.length;
+    for (int i = 0; i &lt; delLevel; i++) {
+        preNodes[i].forwords[i] = x.forwords[i];
+    }
+    // 更新level
+    while (currentLevel &gt; 1 &amp;&amp; HEAD.forwords[currentLevel - 1] == TAIL)
+        currentLevel--;
+    return x;
+}
+</code></pre>
+<p>本文的所有代码可在我的GITHUB找到：<a href="https://github.com/yinyayun/toolbox/blob/master/toolbox-algorithm/src/main/java/org/yinyayun/skiplist/SkipList.java">SkipList.java</a></p>
+<hr>
+<p>参考文献：<a href="http://cglab.ca/~morin/teaching/5408/refs/p90b.pdf">《A Skip List Cookbook》</a></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/lucene" class="tag">
+                    Lucene
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/8FZ96sw5Q">
+                  <h3 class="post-title">
+                    Python多版本多module动态加载
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

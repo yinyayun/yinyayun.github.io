@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>GIT简要教程 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">GIT简要教程</h2>
+            <div class="post-date">2018-09-20</div>
+            
+            <div class="post-content">
+              <h2 id="github免密操作">Github免密操作</h2>
+<p><strong>客户端生成SSH Key</strong></p>
+<pre><code class="language-shell">$ ssh-keygen -t rsa -C &quot;youremail@example.com&quot;
+</code></pre>
+<p>根据要求输入密码，一路回车。</p>
+<p>之后会在用户目录（<code>~/</code>）下生成<code>.ssh</code>文件夹，打开id_rsa.pub，复制里面的key</p>
+<p>返回GitHub，进入 Account =&gt; Settings，选择<strong>SSH and GPG keys</strong>，点击 <strong>New SSH key</strong> 按钮，将之前复制的key粘贴至页面中，点击Add SSH key</p>
+<blockquote>
+<p>SSH中公钥认证流程：</p>
+<ol>
+<li>Client将自己的公钥存放在Server上，追加在文件authorized_keys中。</li>
+<li>Server端接收到Client的连接请求后，会在authorized_keys中匹配到Client的公钥pubKey，并生成随机数R，用Client的公钥对该随机数进行加密得到pubKey(R)
+，然后将加密后信息发送给Client。</li>
+<li>Client端通过私钥进行解密得到随机数R，然后对随机数R和本次会话的SessionKey利用MD5生成摘要Digest1，发送给Server端。</li>
+<li>Server端会也会对R和SessionKey利用同样摘要算法生成Digest2。Server端会最后比较Digest1和Digest2是否相同，完成认证过程。</li>
+</ol>
+</blockquote>
+<p><strong>验证是否成功</strong></p>
+<pre><code class="language-shell">$ ssh -T git@github.com
+</code></pre>
+<h2 id="git操作">GIT操作</h2>
+<h3 id="远程仓库">远程仓库</h3>
+<p><strong>添加远程库</strong></p>
+<pre><code class="language-shell">git remote add [shortname] [url]
+//例如：
+git remote add origin https://github.com/yinyayun/Gridea.git
+</code></pre>
+<p>通常都将远程库叫做<code>origin</code>，有了远程库，我们可以从远程库进行拉取代码到本地，也可以将本地代码推送至远程库。</p>
+<p><strong>推送至远程仓库</strong></p>
+<pre><code class="language-shell">git push [alias] [branch]
+</code></pre>
+<p>例如，将当前分支推送至远程：</p>
+<pre><code class="language-shell">git push origin master
+</code></pre>
+<p>如果本地<code>master</code>和远程<code>master</code>还未做关联，即远程master暂且为一个空库，那么第一次将本地内容push到远程时，需要加上参数<code>-u</code>，将本地<code>master</code>和远程<code>master</code>进行关联：</p>
+<pre><code class="language-shell">git push -u origin master
+</code></pre>
+<p><strong>从远程库克隆</strong></p>
+<p>从上面的介绍我们发现，我们将本地代码推送到远程，大致要做3件事</p>
+<ul>
+<li>本地添加远程库别名</li>
+<li>关联本地库和远程库</li>
+<li>推送</li>
+</ul>
+<p>然而，我们还有一种更简单的方式，即直接从远程<code>clone</code>到本地，这样不光添加了远程库，还然本地和远程做了关联。</p>
+<pre><code class="language-bash">$ git clone https://github.com/yinyayun/yinyayun.github.io.git
+</code></pre>
+<p>进入<code>yinyayun.github.io</code>目录，使用<code>git remote -v</code>查看，我们就可以发现远程库的信息:</p>
+<pre><code>$ git remote -v
+origin  https://github.com/yinyayun/yinyayun.github.io.git (fetch)
+origin  https://github.com/yinyayun/yinyayun.github.io.git (push)
+</code></pre>
+<p><strong>从远程更新</strong></p>
+<pre><code class="language-bash">$ git fetch  ## git fetch origin
+$ git merge  ## 从远程拉取完之后，需要将代码合并至本地的分支中
+</code></pre>
+<p>上面的命令等价于：</p>
+<pre><code class="language-bash">git pull &lt;远程库名&gt; &lt;远程分支名&gt;:&lt;本地分支名&gt;
+</code></pre>
+<p><strong>删除远程仓库</strong></p>
+<pre><code class="language-shell">git remote rm [别名]
+</code></pre>
+<h3 id="本地仓库">本地仓库</h3>
+<p><strong>添加暂存区</strong></p>
+<pre><code class="language-bash">$ git add &lt;file&gt;
+</code></pre>
+<p><strong>本地仓库提交</strong></p>
+<pre><code class="language-bash">$ git commit -m “message”
+</code></pre>
+<h2 id="分支管理">分支管理</h2>
+<p><strong>创建分支</strong></p>
+<pre><code class="language-bash">$ git branch &lt;name&gt; ## git branch dev
+</code></pre>
+<p><strong>切换分支</strong></p>
+<pre><code class="language-bash">$ git checkout &lt;name&gt; ## git checkout dev
+</code></pre>
+<p><strong>创建并切换分支</strong></p>
+<pre><code class="language-bash">git checkout -b &lt;name&gt; ## git checkout -b dev
+</code></pre>
+<p><strong>合并分支</strong></p>
+<p>将某个分支合并到当前分支</p>
+<pre><code class="language-bash">$ git merge &lt;name&gt;
+</code></pre>
+<p>例如上面我们从<code>master</code>创建并切换到<code>dev</code>分支，同时我们对<code>dev</code>分支做了修改，如果我们要将<code>dev</code>分支内容合并至<code>master</code>分支，那么需要作如下操作：</p>
+<pre><code class="language-bash">$ git checkout master
+$ git branch ## 查看当前分支
+* master
+  dev
+$ git merge dev
+</code></pre>
+<p><strong>删除分支</strong></p>
+<pre><code class="language-bash">$ git branch -d &lt;name&gt;
+</code></pre>
+<h2 id="其他">其他</h2>
+<p><strong>常用命令</strong></p>
+<pre><code class="language-shell">$ git diff HEAD -- &lt;file&gt; ##查看差异
+$ git status
+$ git log
+</code></pre>
+<p><strong>代理</strong></p>
+<pre><code class="language-shell">git config --global https.proxy http://yinyayun:yinyayun0802@192.168.25.210:8080
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/git" class="tag">
+                    GIT
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/hQsO7mt3b">
+                  <h3 class="post-title">
+                    Solr Hard/Soft commits和Transction logs
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

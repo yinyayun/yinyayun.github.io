@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>记一次python段错误排查经历 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">记一次python段错误排查经历</h2>
+            <div class="post-date">2018-12-07</div>
+            
+            <div class="post-content">
+              <p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
+<p>背景是这样的，在我的python服务（可以看做是机器学习模型运行的容器）中运行着不同的机器/深度学习模型，这天呢，一个小哥哥上传了个新的模型，我们暂且叫它为模型A。</p>
+<p>当服务容器尝试对该模型加载启动时，服务安静的闪人了，what，这是什么鬼，难道又是内存溢出，但是观测内存很正常啊，不，一定是意外，重启服务，哇，见鬼了，还是一声不吭的走人，留下来喝杯茶好不好。</p>
+<p><strong>一点点排查</strong></p>
+<p>有了之前排查服务静默退出的经验，直接从/var/log/message中找蛛丝马迹，果然发现了这样一行日志：</p>
+<pre><code class="language-shell">Dec  4 17:38:36 centos kernel: python[31139]: segfault at a38 ip 00007f2ffb31e52a sp 00007ffe8b09f6e0 error 6 in _C.cpython-36m-x86_64-linux-gnu.so[7f2ffaf68000+8ae7000]
+</code></pre>
+<p>segfault这是什么，赶紧google一下：存储器段错误，通常该错误是由于调用一个地址，而该地址为空（NULL）所造成的。</p>
+<p>好吧，大概知道了这个概念，那怎么去分析到底那边产生这个错误呢，从<a href="https://python3-cookbook.readthedocs.io/zh_CN/latest/c15/p21_diagnosing_segmentation_faults.html">python cookbook</a>中找到了打印段错误堆栈信息的方法，有两种方式：</p>
+<ol>
+<li>
+<p>程序代码中开启段错误捕获</p>
+<pre><code class="language-python">import faulthandler
+faulthandler.enable()
+</code></pre>
+</li>
+<li>
+<p>解释器执行时指定参数</p>
+<pre><code class="language-shell"># python3 -Xfaulthandler &lt;filename&gt;.py
+</code></pre>
+</li>
+</ol>
+<p>采用第二种方法启动实例，看到如下堆栈信息：</p>
+<pre><code class="language-python">[I 181204 17:47:34 DynamicLoadByHooks:56] import module:Multipose and module prefix is Multipose_detection/0_0_3/package
+Fatal Python error: Segmentation fault
+
+Current thread 0x00007f23ba8f2740 (most recent call first):
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 219 in _call_with_frames_removed
+  File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 922 in create_module
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 571 in module_from_spec
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 658 in _load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 955 in _find_and_load_unlocked
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 971 in _find_and_load
+  File &quot;/opt/anaconda3/lib/python3.6/site-packages/torch/__init__.py&quot;, line 78 in &lt;module&gt;
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 219 in _call_with_frames_removed
+  File &quot;&lt;frozen importlib._bootstrap_external&gt;&quot;, line 678 in exec_module
+  .......
+  File &quot;&lt;frozen importlib._bootstrap&gt;&quot;, line 971 in _find_and_load
+  File &quot;/home/admin/daemon/daemonspace/deployerPath/fms-python3-tf18-56.123_9260/base/home/Multipose_detection/0_0_3/package/utils/posenet.py&quot;, line 4 in &lt;module&gt;
+  ........
+  ........
+  File &quot;/home/admin/daemon/daemonspace/deployerPath/fms-python3-tf18-56.123_9260/app/src/com/focustech/fmodel/core/ModelRegister.py&quot;, line 125 in reload
+  File &quot;/home/admin/daemon/daemonspace/deployerPath/fms-python3-tf18-56.123_9260/app/src/com/focustech/fmodel/core/SystemRecovery.py&quot;, line 21 in recovery
+  File &quot;/home/admin/daemon/daemonspace/deployerPath/fms-python3-tf18-56.123_9260/app/src/com/focustech/fmodel/FmsServer.py&quot;, line 55 in start
+  File &quot;Main.py&quot;, line 44 in &lt;module&gt;
+</code></pre>
+<p>从堆栈发现，是<code>import torch</code>这行代码引起的，是不是因为torch版本与操作系统不兼容呢？ 在shell中打开python解释器，执行<code>import torch</code>，并没有什么问题啊，咋办呢，尝试安装gdb进行调试，无奈一堆环境问题，不多折腾了。</p>
+<p>突然脑子一哆嗦，好像发现了什么，既然直接解释器中<code>import torch</code>没有问题，那是不是模型代码的问题呢，想到这之后，直接模拟服务容器中对模型A的加载逻辑，然后执行，并没有问题呀！</p>
+<p>不对服务容器中除了模型A，还有其它几个模型，既然这样，就先将其它几个模型停用，不作加载，只加载模型A，再次启动，OK了。</p>
+<p>也就是说，其它几个模型的加载的依赖可能会对<code>import torch</code>产生冲突，把几个模型的import的依赖都列出来如下：</p>
+<pre><code class="language-python">from PIL import Image
+import cv2
+import math
+import dlib
+from keras.layers import Conv2D, Input, Flatten, Dense, TimeDistributed, Reshape, Lambda, Dropout, BatchNormalization
+from keras.models import Model
+from keras.layers import MaxPooling2D,concatenate,merge
+from keras import optimizers
+from keras.layers.recurrent import LSTM
+import keras.backend as K
+import numpy as np
+import tensorflow as tf
+</code></pre>
+<p>感觉剩下的事情很简单了，挨个和<code>import torch</code>组合，功夫不负有心人，终于找到了问题所在：</p>
+<pre><code class="language-shell">python&gt; import dlib
+python&gt; import torch
+</code></pre>
+<p>紧接着出了现段错误，甚是开心（其实神坑还在后面）。</p>
+<p>下面就是看怎么解决dlib对torch的影响，反正没找到官方的辟谣，只好去找了一下线下训练机器用的dlib版本和torch版本，发现线下训练机器：<code>dlib==19.6.0</code>，而服务器上<code>dlib==19.16.0</code></p>
+<p><strong>安装<code>dlib==19.16.0</code></strong></p>
+<pre><code class="language-shell">Installing apps.
+Getting distribution for 'dlib==19.6.0'.
+error: Setup script exited with error: cmake configuration failed!
+An error occurred when trying to install /tmp/tmp25hqhosfget_dist/dlib-19.6.0.tar.gz. Look above this message for any errors that were output by easy_install.
+While:
+  Installing apps.
+  Getting distribution for 'dlib==19.6.0'.
+</code></pre>
+<p>再次<code>import dlib</code></p>
+<pre><code class="language-shell">python&gt;&gt; import dlib
+	Traceback (most recent call last):
+	File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+	File &quot;/opt/anaconda3/lib/python3.6/site-packages/dlib/__init__.py&quot;, line1, in &lt;module&gt;
+	from .dlib import *
+	ImportError: /opt/anaconda3/lib/python3.6/site-packages/dlib/dlib.so:	undefined symbol: _ZN5boost6python6detail11init_moduleER11PyModuleDefPFvvE
+</code></pre>
+<p>是不是少缺少依赖？</p>
+<pre><code class="language-shell"># ldd /opt/anaconda3/lib/python3.6/site-packages/dlib/dlib.so
+    linux-vdso.so.1 =&gt;  (0x00007ffd2d384000)
+    libboost_python-mt.so.1.53.0 =&gt; /lib64/libboost_python-mt.so.1.53.0 (0x00007f7a572c4000)
+    libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x00007f7a570a8000)
+    libnsl.so.1 =&gt; /lib64/libnsl.so.1 (0x00007f7a56e8e000)
+    libpng16.so.16 =&gt; not found
+    libz.so.1 =&gt; /lib64/libz.so.1 (0x00007f7a56c78000)
+    libjpeg.so.9 =&gt; not found
+    libmkl_rt.so =&gt; not found
+    libsqlite3.so.0 =&gt; /lib64/libsqlite3.so.0 (0x00007f7a569c2000)
+    libstdc++.so.6 =&gt; /lib64/libstdc++.so.6 (0x00007f7a566b9000)	
+    libm.so.6 =&gt; /lib64/libm.so.6 (0x00007f7a563b7000)
+    libgcc_s.so.1 =&gt; /lib64/libgcc_s.so.1 (0x00007f7a561a1000)
+    libc.so.6 =&gt; /lib64/libc.so.6 (0x00007f7a55ddd000)
+    libutil.so.1 =&gt; /lib64/libutil.so.1 (0x00007f7a55bda000)
+    libpython2.7.so.1.0 =&gt; /lib64/libpython2.7.so.1.0 (0x00007f7a5580e000)
+    libdl.so.2 =&gt; /lib64/libdl.so.2 (0x00007f7a55609000)
+    librt.so.1 =&gt; /lib64/librt.so.1 (0x00007f7a55401000)
+    /lib64/ld-linux-x86-64.so.2 (0x000056363296c000)
+</code></pre>
+<p>看似缺少其实不少，anaconda都提供了，只需要在实例启动脚本中添加动态链接库指定就好：</p>
+<pre><code>export LD_LIBRARY_PATH=/opt/anaconda3/lib:$LD_LIBRARY_PATH
+</code></pre>
+<p>指定完后，再用ldd查看，并不少依赖了，那是什么问题呢，翻了一下google怎么说的，看到有个小哥哥说了这么一句：</p>
+<pre><code>Many users have this problem. It's because you have multiple versions of python and/or boost installed and are mixing them up. You need to compile both boost.python and dlib for the version of python you will be using. That fixes this problem.
+</code></pre>
+<p>那我们来确认一下是不是boost的鬼，看一下boost的依赖：</p>
+<pre><code class="language-shell">ldd /lib64/libboost_python-mt.so.1.53.0
+    linux-vdso.so.1 =&gt;  (0x00007ffe9a9b6000)
+    libutil.so.1 =&gt; /lib64/libutil.so.1 (0x00007fa8a8665000)
+    libpython2.7.so.1.0 =&gt; /lib64/libpython2.7.so.1.0 (0x00007fa8a8298000)
+    libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x00007fa8a807c000)
+    libdl.so.2 =&gt; /lib64/libdl.so.2 (0x00007fa8a7e78000)
+    librt.so.1 =&gt; /lib64/librt.so.1 (0x00007fa8a7c6f000)
+    libstdc++.so.6 =&gt; /lib64/libstdc++.so.6 (0x00007fa8a7967000)
+    libm.so.6 =&gt; /lib64/libm.so.6 (0x00007fa8a7665000)
+    libgcc_s.so.1 =&gt; /lib64/libgcc_s.so.1 (0x00007fa8a744e000)
+    libc.so.6 =&gt; /lib64/libc.so.6 (0x00007fa8a708b000)
+    /lib64/ld-linux-x86-64.so.2 (0x000055f79f8da000)
+</code></pre>
+<p>what？怎么又有python2.7的事了，看样子真的和boost有关系喽，下面就是折腾安装支持python3.6的boost，大致步骤如下：</p>
+<ol>
+<li>下载<a href="https://www.boost.org/users/history/version_1_65_0.html">boost 1.65源码包</a></li>
+<li>解压并进入安装目录</li>
+</ol>
+<pre><code class="language-shell"># tar -xzvf boost_1_65_0.tar.gz
+# cd boost_1_65_0
+</code></pre>
+<ol>
+<li>配置</li>
+</ol>
+<pre><code class="language-shell"># mkdir /opt/boost
+# ./bootstrap.sh --prefix=/opt/boost --with-python-root=/opt/anaconda3 --with-python=/opt/anaconda3/bin/python  --with-python-version=3.6
+</code></pre>
+<p>注意还需要额外修改<code>project-config.jam</code>文件中关于python的配置，修改成如下：</p>
+<pre><code class="language-shell"># Python configuration
+import python ;
+if ! [ python.configured ]
+{
+    using python : 3.6 : /opt/anaconda3 : /opt/anaconda3/include/python3.6m : /opt/anaconda3/lib ;
+}
+</code></pre>
+<ol>
+<li>编译以及安装</li>
+</ol>
+<p>切记要耐心等待！</p>
+<pre><code class="language-shell"># ./b2
+# ./b2 install
+</code></pre>
+<ol>
+<li>要让系统或者python能够发现boost，有很多方式，这边给出最暴力的，<code>/opt/boost</code>中的<code>lib</code>、<code>include</code>分别加入<code>/usr/local/lib64</code>、<code>/usr/local/include</code></li>
+</ol>
+<pre><code># cp -rf boost/lib64/* /usr/local/lib64
+# cp -r boost/include/boost include/ 
+</code></pre>
+<p>再次重新更换dlib的版本，哇，折腾了我两天，终于解决了，回家喝杯小酒！</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/python" class="tag">
+                    Python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/p1QEe9OVk">
+                  <h3 class="post-title">
+                    Linux下Eclipse以及常用插件安装
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

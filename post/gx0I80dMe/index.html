@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Solr Overseer | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Solr Overseer</h2>
+            <div class="post-date">2018-10-18</div>
+            
+            <div class="post-content">
+              <h2 id="overseer是什么">Overseer是什么？</h2>
+<p>Overseer也可以称为cluster leader，也就是集群的主，与shard leader有着很大的区别，shard leader主要是为了保证collection数据的一致性，而Overseer则是为了保证集群操作以及数据的安全性。</p>
+<h2 id="overseer的选举">Overseer的选举</h2>
+<p>在看Overseer如何工作之前，我们先看一下怎么才能成为Overseer？</p>
+<p>成为Overseer必须要经过选举，我们先大概说一下solr Overseer的选举过程，有一点要明确的是，solr集群中每个实例连接上来都会在<code>/overseer_elect/election</code>下创建临时顺序节点（ Ephemeral Sequential）,每个临时节点的名字组成有以下几部分：</p>
+<ul>
+<li>会话ID（Session ID）</li>
+<li>节点名（Node Name）</li>
+<li>序号(SEQ)
+当集群中没有Overseer的时候，就会基于<code>/overseer_elect/election</code>下的临时顺序节点进行主的选举（可以阅读LeaderElector.java）。
+关于Overseer的选举重点关注这两个方法：</li>
+<li>LeaderElector::joinElection（）</li>
+<li>ElectionWatcher::process()
+通过这两个方法，我们不难发现Overseer的选举，可能在两种情况出发，第一种就是有节点加入：</li>
+<li>将当前节点注册上去（后面可能参与选举）</li>
+<li>检测当前节点是不是主，即获取<code>/overseer_elect/election</code>下的所有节点并排序（seq从小到大），序号最小的就是主</li>
+<li>如果发现自己是主，则会进入主的处理流程，即OvereerElectionContext::runLeaderProcess()</li>
+<li>如果自己不是主，则会注册对主节点的Watcher，即ElectionWatcher</li>
+</ul>
+<p>再来看看ElectionWatcher::process(),也就是说当关注的主节点出现异常了，那么Zookeeper就会向所有节点推送Watcher事件，进入到process流程，其实process做的事情和上面有点重复：</p>
+<ul>
+<li>检测当前节点是不是主，即获取<code>/overseer_elect/election</code>下的所有节点并排序（seq从小到大），序号最小的就是主</li>
+<li>如果发现自己是主，则会进入主的处理流程，即OvereerElectionContext::runLeaderProcess()</li>
+<li>如果自己不是主，则会注册对主节点的Watcher，即ElectionWatcher</li>
+</ul>
+<p>梳理了Overseer的选举，下面就来看一下成为Overseer的节点在干嘛。</p>
+<h2 id="overseer在做什么">Overseer在做什么？</h2>
+<p>成为了Overseer做的第一节点事情就是把自己主的这个信息做个见证，也就是在<code>/overseer_elect/leader</code>中记录节点信息，内容大致如下：</p>
+<pre><code class="language-json">{&quot;id&quot;:&quot;${session_id}-${node_name}-n_${seq_id}&quot;}
+</code></pre>
+<p>下面就是Overseer做自己本分的事情了，Overseer节点会启动Overseer线程（进入到Overseer.java中），</p>
+<p>Overseer在行使自己权利之前，还是先要确认一下自己的身份，避免自己越权。其实从上面的逻辑看，该节点99.99%就是主了，但是在一个分布式环境下，我们永远是没办法相信网络是可靠的，所以还是慎重为好。
+一旦确认好自己是主了，那么进入循环，不断的从workQueue(DistributedQueue)中读取消息，然后处理消息。至于workQueue(DistributedQueue)的我们后面说，这边先略过。
+每一个消息都会对应一个<code>operation</code>，该<code>operation</code>主要分为两类：</p>
+<p><strong>CollectionAction</strong>
+这一类主要是对Collection的操作，具体有：</p>
+<ul>
+<li>CREATE,创建Collection</li>
+<li>DELETE,删除Collection</li>
+<li>CREATE_SHARD，为Collection创建shard</li>
+<li>DELETE_SHARD，删除shard</li>
+<li>ADD_REPLICA，新增replica</li>
+<li>ADD_REPLICA_PROP，为replica添加配置</li>
+<li>DELETE_REPLICA_PROP</li>
+<li>BLANCE_SHARD_UNIQUE</li>
+<li>MODIFY_COLLECTION</li>
+<li>MIGRATE_STATE_FORMAT</li>
+</ul>
+<p><strong>OverseerAction</strong></p>
+<ul>
+<li>STATE，集群状态变更</li>
+<li>LEADER，shard leader信息变更</li>
+<li>DELETE_CORE，删除replica</li>
+<li>ADD_ROUTING_RULE,添加文档路由规则</li>
+<li>REMOVE_ROUTING_RULE，删除文档路由规则</li>
+<li>UPDATE_SHARD_STATE,更新shard状态</li>
+<li>QUIT,让Overseer线程退出(目前不清楚具体目的)</li>
+<li>DOWN_NODE，某个节点状态置为down</li>
+</ul>
+<p>这上面就是Overseer主要做的事情，下面我们顺便再看一下workQueue(DistributedQueue)到底是个什么东西？Overseer中要处理的消息都是来自workQueue(DistributedQueue)，所以workQueue(DistributedQueue)还是比较关键的。
+我们不难发现，workQueue实际上就是对<code>/overseer/queue-word</code>子节点操作的封装，比如peek()就是读取第一个子节点,pool（）就是读取第一个节点并删除。</p>
+<p>这样好像就顺了，比如我们想创建一个collection，那么只要客户端向集群中的任意节点发起create collection操作，然后由该节点在<code>/overseer/queue-word</code>创建子节点，指明该节点的内容为创建</p>
+<ul>
+<li>客户端选择集群中任一个节点 node_x，提交cretae collection的动作</li>
+<li>node_x在<code>/overseer/queue-word</code>下创建子节点，内容为cretae collection</li>
+<li>Overseer不断监测是不是有新的operation，即<code>/overseer/queue-word</code>下是不是有新的节点进来，有则处理。</li>
+</ul>
+<p>注意：Overseer在循环的过程中，也得不断判断自己是不是主。</p>
+<blockquote>
+<p>转载请注明出处:<a href="http://yinyayun.github.io">殷亚云的博客</a></p>
+</blockquote>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/solr" class="tag">
+                    Solr
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/o8rU6E2yr">
+                  <h3 class="post-title">
+                    Solr中的段合并和文档删除
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

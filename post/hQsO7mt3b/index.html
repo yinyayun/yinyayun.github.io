@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Solr Hard/Soft commits和Transction logs | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Solr Hard/Soft commits和Transction logs</h2>
+            <div class="post-date">2018-09-10</div>
+            
+            <div class="post-content">
+              <h2 id="概述">概述</h2>
+<ul>
+<li>
+<p>Transaction log(tlog) 记录原始文档用于recovery，solrcloud中每个节点都自己的tlog。在更新时整个文档会被写入tlog，对于原子（atomic）更新，不光要更新整个文档需要写入tlog，该文档的历史版本也会被写入。总的来说tlog主要是保证文档的一致性，当JVM意外停止的时候，保证索引时最新的。</p>
+<ul>
+<li>注意：如果服务没有优雅的终止的话，在下次启动的时候将使用tlog进行重演。所以如果tlog很大的话，实例启动将会变得很慢。</li>
+</ul>
+</li>
+<li>
+<p>硬提交(Hard Commit) 硬提交可以通过客户端调用，同时在solrconfig.xml也有硬提交的选项<code>&lt;autoCommit&gt;</code>用于决定多长时间进行一次硬提交。</p>
+<ul>
+<li>openSearcher <code>&lt;autoCommit&gt;</code>下的子选项，这回决定新提交的数据能不能被后续的搜索可见。</li>
+<li>硬提交是截断tlog的，一旦执行完硬提交就意味着索引已经写硬盘了。</li>
+</ul>
+</li>
+<li>
+<p>软提交（Soft Commit） 相对于设置为openSearcher=true的硬提交而言，软提交成本比较低。另外软提交是不会截断日志的。</p>
+<ul>
+<li>注意：软提交并不是没有成本，所以要控制好软提交的时间。</li>
+</ul>
+</li>
+<li>
+<p>fsynch 底层的IO通信，一旦fsynch调用返回就意味着字节已经在磁盘上写成功，所以这和普通的java应用写数据不同，普通java程序的写数据只保证数据已经提交给操作系统了，至于什么时候落盘，操作系统会选择一个合适的时间。</p>
+</li>
+<li>
+<p>flush 仅仅将数据提交给操作系统</p>
+<ul>
+<li>在solrcloud中，每个shard上通常会有多个replica，丢失数据就意味着所有的节点同时都挂掉了，这似乎不太可能。</li>
+<li>通常在flush之后，操作系统会在10-50ms内写入硬盘。即使JVM crashes，操作系统仍然会将数据写入硬盘。</li>
+</ul>
+</li>
+</ul>
+<h2 id="tlog">tlog</h2>
+<p>tlog是在solr4后引入的，我们来看一下solrcloud下索引的流程：</p>
+<ul>
+<li>
+<p>客户端提交更新文档给shard leader</p>
+</li>
+<li>
+<p>shard leader再把所有数据发送给该shard上所有replica</p>
+</li>
+<li>
+<p>shard leader响应数据的提交者</p>
+</li>
+<li>
+<p>当客户端收到成功响应，这个时候所有文档已经被flush至集群中所有节点的tlog中。</p>
+</li>
+<li>
+<p>如果JVM crashes，文档仍然会被会安全的写到磁盘，除非是操作系统崩溃。</p>
+<ul>
+<li>JVM crashes也要分情况，如果普通的停止，solr会有硬提交触发。如果是类似于kill -9这样的退出，在服务重启后，tlog会被重演。</li>
+<li>我们也可以在solrconfig.xml中配置flush返回前进行fsynch，但是这基本上没什么必要，因为在同一个时刻所有节点硬件崩溃的可能性太小了。</li>
+</ul>
+</li>
+</ul>
+<p>硬提交将会触发tlog &quot;rolled over&quot;，即关闭老的，打开新的。
+tlog中会保存历史的100个文档，这是什么意思呢，比如你每次批量提交更新25个文档，每提交完做一次硬提交，那么磁盘上一直会存在5个tlog文件，每次提交完，生成一个新的tlog，删除最老的一个tlog，其它4个tlog保存历史上的100个文档。</p>
+<p>注意：tlog文件只有当硬提交发生时才会回滚，如果一直不提交，那么一个tlog文件将会很大。比如我们每秒钟更新100个文档，一小时做一次硬提交，那么单个tlog就会保存360000个文档。</p>
+<h2 id="soft-commit">soft commit</h2>
+<p>软提交关心可见性，硬提交关心持久性。</p>
+<p>软提交保证文档对后续的搜索可见，但是这也是存在代价的，新的searcher会被打开，searcher会进行预热，&quot;top level&quot; cache将会失效，如solfconfig.xml中配置的缓存（filterCache、queryResultCache）。另外FieldValueCache也会失效，所以facet查询将会一直等待，直到缓存刷新完。
+因为各种缓存的失效，所以soft commit的频率是值得商榷的，虽然频繁会保证文档即时可见，但是也会让缓存的可用性降低。</p>
+<p>soft commit不会使得用于function查询、sort上的&quot;segment level caches&quot;失效。</p>
+<p>这就意味着我们在设置soft commit时，需要考虑以下一些东西：</p>
+<ul>
+<li>tlog会继续增长</li>
+<li>文档会被检索到</li>
+<li>一些缓存必须要重新加载</li>
+<li>searcher的预热将会执行</li>
+</ul>
+<h2 id="hard-commit">hard commit</h2>
+<p>硬提交有一个可选项：openSearcher=true/false，但是无论对于那种设置硬提交都会触发下面事件：</p>
+<ul>
+<li>tlog截断，新的tlog会被打开，如果历史tlog中文档超过100个，最老的tlog会被删除。</li>
+<li>当前的索引段会被close和flush</li>
+<li>段合并会在后台启动</li>
+</ul>
+<p>对于openSearcher=true，还会触发soft commit中的一些事件，打开新searcher、所有缓存失效等等。</p>
+<h2 id="recovery">Recovery</h2>
+<p>当机器crashes，JVM退出，集群可能会有以下情况：</p>
+<ul>
+<li>
+<p>最新更新成功返回，集群中所有文档写入了tlog</p>
+</li>
+<li>
+<p>受到影响的机器重启后，它会联系shard leader以及一些其他事：</p>
+<ul>
+<li>如果主节点接受的新更新小于100个，则从自己的tlog进行重演。注意：如果重演过程中，又有更新进来，这些更新将会写入tlog的末尾。</li>
+<li>在该节点离线期间，如果主节点上已经做了100+次update，将会从主节点做一次全量同步。</li>
+</ul>
+</li>
+</ul>
+<h2 id="建议">建议</h2>
+<p><strong>优雅的关闭服务</strong>
+能不用kill -9就不要使用，优雅关闭可以使得服务在退出前进行硬提交。</p>
+<p><strong>索引更新量大</strong></p>
+<ul>
+<li>将soft commit设置的尽量长一些，比如说10分钟</li>
+<li>将硬提交时间设置的短一些，同时openSearcher=false，比如说15秒</li>
+</ul>
+<p><strong>索引更新量大，但是查询负载低</strong></p>
+<ul>
+<li>将soft commit设置的尽量长一些，接近你的最大接受界限。</li>
+<li>将硬提交设置为15秒，openSearcher=false</li>
+</ul>
+<p><strong>索引更新少</strong>
+除非也别需要近实时，否则的话不要设置soft commit，对于hard commit设置为5-10分钟，openSearcher=true</p>
+<p><strong>索引更新量大，query负载高</strong></p>
+<ul>
+<li>将soft commit尽量设置的长一点。
+<blockquote>
+<p>这句话我必须要原封不动的贴出来：Don’t listen to your product manager who says “we need no more than 1 second latency”</p>
+</blockquote>
+</li>
+<li>将硬提交设置为15秒，openSearcher=false</li>
+</ul>
+<hr>
+<blockquote>
+<p>本文翻译至：(Understanding Transaction Logs, Soft Commit and Commit in SolrCloud)[https://lucidworks.com/2013/08/23/understanding-transaction-logs-softcommit-and-commit-in-sorlcloud/]</p>
+</blockquote>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/solr" class="tag">
+                    Solr
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/oR4ZpoGWe">
+                  <h3 class="post-title">
+                    SolrCloud-分布式索引
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
