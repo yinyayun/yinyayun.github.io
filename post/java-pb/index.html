@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Java加载Tensorflow PB模型 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562831495485">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562831495485" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Java加载Tensorflow PB模型</h2>
+            <div class="post-date">2018-06-28</div>
+            
+            <div class="post-content">
+              <p>Tensorflow是一个用来解决数学计算的计算框架，其实不管是CNN、RNN或者是各种变种神经网络模型，本质上都是各种数学公式堆叠在一起的网络结构，Tensorflow的亮点就在于采用数据流图的方式将数学公式粘合在一起，数据流图中的node一般都是各种数学操作，而edge则表示操作结果的数据流向。</p>
+<h2 id="graph">Graph</h2>
+<p>先来看一下下面这段很简单的程序：</p>
+<pre><code>x = tf.placeholder(tf.float32, [1, 2], 'x')
+y = tf.placeholder(tf.float32, [1], 'y')
+w = tf.Variable([[1.], [1.]], dtype=tf.float32, name='w')
+bias = tf.constant(1., dtype=tf.float32)
+
+with tf.variable_scope(&quot;output&quot;):
+    out = tf.matmul(x, w) + bias
+    
+with tf.variable_scope(&quot;loss&quot;):
+    gap = tf.subtract(out, y)
+
+with tf.Session() as sess:
+    feed_input = np.array([[1., 1.]], dtype='float32')
+    expect = np.array([1], dtype='float32')
+    sess.run(tf.global_variables_initializer())
+    loss = sess.run([gap], feed_dict={
+            x:feed_input,
+            y:expect
+        })
+</code></pre>
+<p>这段程序的核心就是:<code>f(x)=x*w+bias</code>,然后再计算f(x)与给定y（期望）的差值。
+那么对于上面这段tensorflow程序而言，它的Graph是什么样子呢，请看下图：</p>
+<p><img src="https://yinyayun.github.io//post-images/1562824892098.png" alt=""></p>
+<blockquote>
+<p>其实这段程序能够简单说明tensorflow中一般神经网络模型的训练原理，只是这段简单程序中没有涉及激活函数和梯度。</p>
+</blockquote>
+<h3 id="op">OP</h3>
+<p>数据流图中node其实在tensorflow中叫作op，也就是一个操作（其实也很好理解），op可以是：</p>
+<ul>
+<li>占位符</li>
+<li>变量</li>
+<li>运算操作（加减乘除等等）</li>
+</ul>
+<p>无论是占位符、变量、运算操作，本质上都产生了Tensor在图中流动。
+对于上图中的椭圆框框，其实就是一个个op，旁边的英文就是该op的name，注意下图中add和sub,其实这两个op的名称准确来说分别为：</p>
+<ul>
+<li>output/add</li>
+<li>loss/sub
+为什么为这样，因为op不光有name，还可以通过score进行限定，output和loss分别就是我在程序中为其指定的scope。</li>
+</ul>
+<h2 id="什么是模型文件">什么是模型文件</h2>
+<p>对于Tensorflow，模型文件就是数据流图（Graph），实际上就是数学操作、之间的依赖关系，以及涉及的参数值,那么Tensorflow中有哪些模型格式呢？</p>
+<h3 id="ckpt">CKPT</h3>
+<p><code>ckpt（checkpoint）</code>就是tensorflow模型保存其中的一种格式，也是训练时最常用的，它的好处在于保存断点，可以基于断点再训练。</p>
+<p>怎么保存一个ckpt：</p>
+<pre><code class="language-python">saver = tf.train.Saver()
+....
+saver.save(sess, save_path, global_step)
+</code></pre>
+<p>通常，我们没有特殊指定，ckpt保存下来的的模型主要有三种文件：</p>
+<ul>
+<li><code>.meta</code> 保存图结构</li>
+<li><code>.index</code>和<code>.data</code>保存图中变量的值</li>
+</ul>
+<p>其实一旦开始训练，图的结构就固定了，唯一不确定的就是要学习的参数值，也就是Tensorflow中的<code>Variable</code>，我们不断迭代训练根据loss函数然后求梯度去更新<code>Variable</code>的值，所以采用<code>ckpt</code>保存的话，就会把当前图中各个变量的值保存至.index和.data中。</p>
+<h3 id="pb冻结图">PB（冻结图）</h3>
+<p>冻结图是什么呢，顾名思义，就是将Graph中涉及到的Variable参数进行固化，即转变成constant，也就是说一旦一个ckpt转成PB之后，就没法进行再进行参数的更新。所以PB模型可以看做是ckpt的release。
+另外PB文件的大小相较于ckpt会小很多，至于为什么会小，你会在下一章节找到答案。</p>
+<h2 id="生成pb">生成PB</h2>
+<p>下面是一段生成PB模型的代码:</p>
+<pre><code class="language-python">    '''CKPT转PB'''
+    def ckpt2pb(self, checkpoint_dir, output_names=None):
+        checkpoint = tf.train.get_checkpoint_state(checkpoint_dir)
+        saver = tf.train.import_meta_graph(checkpoint.model_checkpoint_path + '.meta')
+        with tf.Session() as sess:
+            saver.restore(sess, checkpoint.model_checkpoint_path)
+            if(self.collectGraph):
+                self.saveNodes(checkpoint_dir, sess.graph)
+            input_graph_def = sess.graph.as_graph_def()
+            frozen_graph = convert_variables_to_constants(sess, input_graph_def, output_names)
+        return frozen_graph
+    
+    '''保存节点'''
+    def saveNodes(self, checkpoint_dir, graph):
+        with open(os.path.join(checkpoint_dir, 'nodes.txt'), 'w') as f:
+            for node in graph.get_operations():
+                f.write(str(node.name) + &quot;\n&quot;)
+    '''保存PB'''
+    def save2pb(self, frozen_graph, saveDir, pbName):
+        graph_io.write_graph(frozen_graph, saveDir, pbName, as_text=False)
+</code></pre>
+<p>其实上面这段程序的核心是：</p>
+<pre><code>convert_variables_to_constants(sess, input_graph_def, output_names)
+</code></pre>
+<p>我们来看一下这个函数对应的几个参数，这里转述一下源码注释（还是怀念Java，算了Python就不吐槽了）：</p>
+<ul>
+<li>output_node_names  graph中result节点的名称，也就是你需要进行fetch的节点</li>
+<li>variable_names_whitelist  转换成constant的variable节点集合，默认所有variable节点都转换</li>
+<li>variable_names_blacklist  不转换为constant的variable节点集合</li>
+</ul>
+<p>这里主要关注一下output_node_names，这个入参取决你在实际场景下，你需要用到什么功能，同时选择哪些输出节点也决定了模型的冗余程度。
+在release之后，我们使用模型会关心loss值、会关心accuracy吗？显然不会，我们只会关心infer/predict的结果，更有甚者，比如我们想从一个分类模型中抽取文本向量，那么我们只需要输出层前一隐藏层各个神经元的激活值。</p>
+<blockquote>
+<p>因为Tensorflow中的Graph实际是有向图，所以一旦指定output节点，那么只会保存图中和指定的output节点关联的前向节点,output的后续节点都会在冻结图中丢弃。</p>
+</blockquote>
+<h2 id="java加载pb">Java加载PB</h2>
+<p>Maven依赖:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.tensorflow&lt;/groupId&gt;
+    &lt;artifactId&gt;tensorflow&lt;/artifactId&gt;
+    &lt;version&gt;1.4.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>这边还是通过使用本文最开始那段程序对应模型为例，然后给出部分相关代码:</p>
+<pre><code class="language-java">    /**
+	 * 加载模型
+	 * 
+	 * @param model
+	 */
+	public Session loadModel(File model) throws IOException {
+		try {
+			Graph graph = new Graph();
+			graph.importGraphDef(Files.readAllBytes(model.toPath()));
+			return new Session(graph);
+		} catch (Exception e) {
+			throw new IOException(&quot;模型转Graph失败!&quot;, e);
+		}
+	}
+    
+    
+	public float[] infer(Session sess, float[] value, long[] shape) {
+		if (sess == null) {
+			throw new RuntimeException(&quot;Graph还未加载!&quot;);
+		}
+		Tensor&lt;Float&gt; input = Tensor.create(shape, FloatBuffer.wrap(value));
+		Tensor&lt;?&gt; out = 
+            sess.runner().feed(&quot;x&quot;,input).fetch(&quot;output/add&quot;).run().get(0);	
+		FloatBuffer buffer = FloatBuffer.allocate((int) out.shape()[0]);
+		out.writeTo(buffer);
+		return buffer.array();
+	}
+
+</code></pre>
+<p>That's all!</p>
+<hr>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/java" class="tag">
+                    Java
+                  </a>
+                
+              </div>
+            
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

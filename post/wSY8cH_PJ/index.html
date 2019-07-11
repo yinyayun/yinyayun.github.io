@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>编辑距离 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562831495485">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562831495485" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">编辑距离</h2>
+            <div class="post-date">2018-09-02</div>
+            
+            <div class="post-content">
+              <p>当我们在电商网站上搜索一个关键词想买一个东西的，例如：“appe”这个词，但是这个词对于电商网站来说，并没有相应的商品，但是如果直接返回空的列表页的话，用户体验还是相当差的，所以通常电商网站上会给出：</p>
+<ul>
+<li>你是不是想搜索“apple”</li>
+<li>直接返回apple对应的结果</li>
+</ul>
+<p>这其实就是拼写纠错。
+那么怎么能从appe关联到apple呢，往简单点说，就是appe和apple两个词的相似度很高，那怎么去衡量两个词的相似度呢，这就是我们今天要讲的编辑距离。</p>
+<blockquote>
+<p>原谅我的孤陋寡闻，只能从脑海出检索出apple和appe相关了
+本文只考虑Levenshtein，因为常见的编辑距离还有汉明距离（对于两个相等长度字符串，所需要的替换次数），最长公共子串距离。</p>
+</blockquote>
+<h2 id="定义">定义</h2>
+<p>给定字符串S1和目标字符串S2,允许插入字符、删除字符、替换字符三种编辑操作，S1最少需要做多少次编辑可以变成S2。那么这最少的编辑次数就是编辑距离。</p>
+<p>编辑距离实际上是动态规划的一种，也就是说可以把问题的最优归为子问题的最优，下面我们就说说怎么把一个大问题变成若干个小问题，在这之前我们先给出如下符号定义：S1(i)为字符串S1的第i个字符，D(i,j)表示S1的前i个字符与S2的前j个字符的编辑距离。</p>
+<p>我们再分以下情况来讨论：</p>
+<ol>
+<li>假如字符串S1和S2有一个为空串，那么他们的编辑距离为非空字符串的长度，即D(0,j)=j、D（i,0）=i</li>
+<li>假如两个字符串都不为空，同样存在两种情况：
+2.1 如果S1(i)=S2(j),即存在D(i,j)=D(i-1,j-1),这点应该很好理解。
+2.2 如果S1(i)!=S2(j)，有一点可以肯定的D(i,j)=min(D(i-1,j-1),D(i-1,j),D(i,j-1))+1,即可能为S1(i)位置进行替换，S(i-1)之后插入，S(i)位置删除。例如：S1=“cat”和S2=“can”:</li>
+</ol>
+<ul>
+<li>D(2,1),即ca变换到c，需要删除S1(2)，即为D(1，1)+1</li>
+<li>D(2,3),即ca变换到can，需要在ca后面插入n，即D(i,j-1)+1</li>
+<li>D(3,3),即cat变换到can，需要将t替换为n，即D(i-1,j-1)+1</li>
+</ul>
+<p>好，这样我们的问题就变得简单的，求D(i,j)可以变换为求D(i-1,j)、D(i,j-1)、或者D(i-1,j-1),再递推就是d(0,1)、d(1,0)或者d(0,0)</p>
+<h2 id="实现">实现</h2>
+<p>那么我们则可以给出我们的程序：</p>
+<pre><code class="language-java">public int[][] distanceMatrix(String word1, String word2) {
+    int[][] distance = new int[word1.length() + 1][word2.length() + 1];
+    for (int i = 0; i &lt; word2.length() + 1; i++)
+        // word1的0位置变换到word2的前i个字符都要进行i次的插入，所以编辑距离为i
+        distance[0][i] = i;
+    for (int i = 1; i &lt; word1.length() + 1; i++) {
+        distance[i][0] = i;
+        for (int j = 1; j &lt; word2.length() + 1; j++) {
+            if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                distance[i][j] = distance[i - 1][j - 1];
+            else
+                distance[i][j] = min(distance, i, j) + 1;
+        }
+    }
+    return distance;
+}
+</code></pre>
+<p>其实上面的程序就是在构建两个字符串的转换矩阵，我们还是以apple和appe为例，函数返回的二维数组应该是这样的：</p>
+<p><img src="https://yinyayun.github.io//post-images/1562825153070.jpg" alt=""></p>
+<p>我们不难发现我们每次计算都要构建字符串的转换矩阵，这其实是一种浪费，因为D(i,j)最多只跟D(i-1,j-1)或者D(i-1,j)有关,所以我们没有必要S1的前i-2个串和S2的编辑距离，所以这个算法其实还是可以优化的，具体代码可以参考:<a href="https://github.com/yinyayun/toolbox/blob/master/toolbox-algorithm/src/main/java/org/yinyayun/other/EditDistance.java">EditDistance</a></p>
+<p>这篇文章中我只给出了编辑距离，它离拼写纠错还有一点距离，因为实际场景中我们不可能挨个计算和词典中每个词的编辑距离，从而给出最优的纠错词。在下一篇文章中我将给出拼写纠错的实现。</p>
+<p>That's all!</p>
+<hr>
+<blockquote>
+<p>参考《算法笔记-刁瑞/谢妍》</p>
+</blockquote>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/nlp" class="tag">
+                    NLP
+                  </a>
+                
+                  <a href="https://yinyayun.github.io//tag/java" class="tag">
+                    Java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/java-pb">
+                  <h3 class="post-title">
+                    Java加载Tensorflow PB模型
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

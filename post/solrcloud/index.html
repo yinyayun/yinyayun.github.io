@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>SolrCloud中的那些东西 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562831495485">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562831495485" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">SolrCloud中的那些东西</h2>
+            <div class="post-date">2018-09-05</div>
+            
+            <div class="post-content">
+              <p>因转到人机对话项目上已经有一段时间了，甚是想念solr，所以特地来回顾一下solrcloud中的一些概念，内容不是很全，而且也没有逻辑，就当是备忘吧。</p>
+<p>很多分布式系统都会选用zookeeper作为分布式的协调者，solr同样也不例外，在solr中zookeeper主要起到以下作用：</p>
+<ul>
+<li>依托于znode，实现集中配置存储</li>
+<li>依托于session以及watcher机制实现集群状态检测和提醒</li>
+<li>overseer和shard leader选举</li>
+</ul>
+<h2 id="solrxml">solr.xml</h2>
+<p>从我接触solr开始，solr中几个比较经典的配置文件:<code>solrconfig.xml</code>,<code>managed-schema</code>,<code>solr.xml</code>，虽然managed-schema名称变了，但是意义还是差不多，至于这里为什么不详说<code>solrconfig.xml</code>和<code>managed-schema</code>，主要是这两个文件实际上和solr core或者索引更加相关一点，和solrcloud并没有什么直接关系。</p>
+<p>在早些版本的时候solr.xml主要用于solr core的发现，但是随着solr的发展，现在的solr.xml已经成为solrcloud的属性配置文件，SolrCloud模式下，solr默认从Zookeeper查找solr.xml，若没有则会从solr_home中加载。</p>
+<pre><code class="language-xml">&lt;solr&gt;
+  &lt;solrcloud&gt;
+    &lt;str name=&quot;host&quot;&gt;${host:}&lt;/str&gt;
+    &lt;int name=&quot;hostPort&quot;&gt;${jetty.port:8983}&lt;/int&gt;
+    &lt;str name=&quot;hostContext&quot;&gt;${hostContext:solr}&lt;/str&gt;
+    &lt;int name=&quot;zkClientTimeout&quot;&gt;${zkClientTimeout:15000}&lt;/int&gt;
+    &lt;int name=&quot;leaderVoteWait&quot;&gt;${leaderVoteWait:180000}&lt;/int&gt;
+    &lt;bool name=&quot;genericCoreNodeNames&quot;&gt;${genericCoreNodeNames:true}&lt;/bool&gt;
+  &lt;/solrcloud&gt;
+
+  &lt;shardHandlerFactory name=&quot;shardHandlerFactory&quot;
+    class=&quot;HttpShardHandlerFactory&quot;&gt;
+    &lt;int name=&quot;socketTimeout&quot;&gt;${socketTimeout:0}&lt;/int&gt;
+    &lt;int name=&quot;connTimeout&quot;&gt;${connTimeout:0}&lt;/int&gt;
+  &lt;/shardHandlerFactory&gt;
+&lt;/solr&gt;
+</code></pre>
+<p>更多关于solr.xml中属性的讲解，可以参考<a href="https://lucene.apache.org/solr/guide/6_6/format-of-solr-xml.html">format-of-solr-xml</a></p>
+<p>其实solr.xml中我们特别要注意一个参数:<code>leaderVoteWait</code>，官网的解释如下：</p>
+<pre><code>When SolrCloud is starting up,
+how long each Solr node will wait for all known replicas for that shard to be found before assuming that any nodes that haven’t reported are down.
+</code></pre>
+<p>不是太好理解哈，其实就是一个节点等他其它节点投票成为shard_leader的时间，这个时间的设置，最根本就是为了保证数据的安全。</p>
+<ul>
+<li>防止脑裂的出现，很可能主节点只是网络震荡，其它副本节点立刻选举新的主，很可能导致多主</li>
+<li>防止引入旧数据，当只有两个节点时，node1为主，node2为从，node2宕机，但是node1正在处理写请求，在node2恢复前node1也宕机，如果不设置等待时间，那么node2直接成为主，那么node1将会recovery node2的数据，即老数据。</li>
+</ul>
+<h2 id="overseer">overseer</h2>
+<p>overseer为可以看做是solr集群的leader，负责对zookeeper中/clusterstate.json节点的维护，clusterstate.json中维护了整个集群中collection、分片、节点信息，同时非overseer也会注册监听clusterstate.json节点的变动。</p>
+<p>overseer节点选举采用基于节点seq号选举的方式，每个节点连接至zookeeper后，都会在/overseer_elect下生成对应的seq号，原本的overseer不在服务时，则seq号大小重新选择最小的seq作为新的overseer。</p>
+<h2 id="shard-leader">shard leader</h2>
+<p>shard leader为collection中每个分片的主，主要负责：</p>
+<ul>
+<li>接受写请求</li>
+<li>对文档的_version_进行增长，同时落盘写日志。</li>
+<li>进行distribut update，即将更新的内容并行转发给其它副本，直到成功响应。</li>
+</ul>
+<blockquote>
+<p>_version_增长其实是乐观锁的一种实现，在solr中的目的主要为了保证集群数据版本的一致性，如果将doc发送给副本时，副本发现该文档版本较低时，是不能允许进行更新的。</p>
+</blockquote>
+<p>shard leader的选举和overseer的选举非常类似，但是需要注意上面所说的脑裂问题。</p>
+<p>That's all!</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/solr" class="tag">
+                    Solr
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/wSY8cH_PJ">
+                  <h3 class="post-title">
+                    编辑距离
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
