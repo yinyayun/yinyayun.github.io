@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Python module加载机制剖析 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Python module加载机制剖析</h2>
+            <div class="post-date">2018-12-17</div>
+            
+            <div class="post-content">
+              <p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
+<!-- more --> 
+<p>python import的核心实现都在<code>_bootstrap.py</code>中，很郁闷的是明明python lib下有<code>_bootstrap.py</code>源码，但是<code>eclipse+pydev</code>就是Debug不进去，无奈只好再开个<code>eclipse</code>（还好有两个显示屏），导入python3.6.3的源码查看。</p>
+<p>虽然<code>Eclipse+pydev</code>无法跳入python底层的一些源码，但是debug调试栈还是可以看见的，所以通过单步调试加上下文变量查看窗口，再结合源码，也可以进行跟踪，虽然麻烦点。</p>
+<p>先看一下我们要跟踪代项目代码结构：</p>
+<pre><code>|- pth_nms.py
+|- _ext
+       |- __init__.py
+       |- nms
+             |- __init__.py
+             |- _nms.so
+</code></pre>
+<p>我们再大致看一下<code>pth_nms.py</code>和<code>_ext.nms.__init__.py</code>的部分代码，有个概念：</p>
+<pre><code class="language-python"># pth_nms.py
+from ._ext import nms
+def pth_nms(dets, thresh):
+    ...
+    
+# _ext.nms.__init__.py
+from torch.utils.ffi import _wrap_function
+from ._nms import lib as _lib, ffi as _ffi 
+
+__all__ = []
+def _import_symbols(locals):
+    for symbol in dir(_lib):
+        fn = getattr(_lib, symbol)
+        if callable(fn):
+            locals[symbol] = _wrap_function(fn, _ffi)
+        else:
+            locals[symbol] = fn
+        __all__.append(symbol)
+
+_import_symbols(locals())
+
+</code></pre>
+<p>这段代码还是挺有意思的，<code>__init__.py</code>中解析了<code>_nms.so</code>中的方法，然后放入<code>_ext.nms</code>的<code>__all__</code>属性中，这样后面想用<code>_nms.so</code>中的方法，可以通过<code>nms</code>这个module进行限定，例如：</p>
+<pre><code class="language-python">from ._ext import nms
+nms.cpu_nms(xx,xx,xx) #cpu_nms为_nms.so中的一个方法
+</code></pre>
+<p>在这个例子中我们的重点放在：</p>
+<pre><code>from ._ext import nms
+from ._nms import lib as _lib, ffi as _ffi 
+</code></pre>
+<p>这两行代码，我们先将断点放在<code>from ._ext import nms</code>上，然后debug一步一步看加载的流程！</p>
+<h2 id="python-import">Python Import</h2>
+<p>--------------------------------------  _ext 查找加载 --------------------------------------</p>
+<p><strong><code>_bootstrap._find_and_load（）</code></strong></p>
+<pre><code class="language-python">def _find_and_load(name, import_):
+    &quot;&quot;&quot;Find and load the module.&quot;&quot;&quot;
+    with _ModuleLockManager(name):
+        module = sys.modules.get(name, _NEEDS_LOADING)
+        if module is _NEEDS_LOADING:
+            return _find_and_load_unlocked(name, import_)
+
+    if module is None:
+        message = ('import of {} halted; '
+                   'None in sys.modules'.format(name))
+        raise ModuleNotFoundError(message, name=name)
+
+    _lock_unlock_module(name)
+    return module
+</code></pre>
+<p>这里有一个比较有意思的python特性，就是with语法，with语法块会将代码块的进入和退出通知被with的对象，如上面<code>with _ModuleLockManager(name)</code>，当进入代码块时，会通知<code>_ModuleLockManager</code>的<code>__enter__</code>方法，退出时通知<code>__exit__</code>方法。</p>
+<p><code>_ModuleLockManager</code>是module锁管理对象，使用with特性可以很好进行锁的申请、释放管理。贴一下<code>_ModuleLockManager</code>源码：</p>
+<pre><code class="language-python">class _ModuleLockManager:
+
+    def __init__(self, name):
+        self._name = name
+        self._lock = None
+
+    def __enter__(self):
+        self._lock = _get_module_lock(self._name)
+        self._lock.acquire()
+
+    def __exit__(self, *args, **kwargs):
+        self._lock.release()
+</code></pre>
+<p>回到正题，继续<code>_find_and_load</code>，该函数接受两个参数，进过跟踪变量值为：</p>
+<ul>
+<li><code>name='_ext'</code></li>
+<li><code>import_</code>为内置函数<code>__import__</code></li>
+</ul>
+<p><code>_find_and_load</code>主要逻辑为从<code>sys.modules</code>查找该名称是否已经存在加载过的module，如果存在则返回，不存在则进行查找和加载；存在且module为None的话。<code>sys.modules</code>缓存了所有已经被加载的module。</p>
+<p><strong><code>_bootstrap._find_and_load_unlocked（）</code></strong></p>
+<p>同样先贴出源码：</p>
+<pre><code class="language-python">def _find_and_load_unlocked(name, import_):
+    path = None
+    parent = name.rpartition('.')[0]
+    if parent:
+        if parent not in sys.modules:
+            _call_with_frames_removed(import_, parent)
+        # Crazy side-effects!
+        if name in sys.modules:
+            return sys.modules[name]
+        parent_module = sys.modules[parent]
+        try:
+            path = parent_module.__path__
+        except AttributeError:
+            msg = (_ERR_MSG + '; {!r} is not a package').format(name, parent)
+            raise ModuleNotFoundError(msg, name=name) from None
+    spec = _find_spec(name, path)
+    if spec is None:
+        raise ModuleNotFoundError(_ERR_MSG.format(name), name=name)
+    else:
+        module = _load_unlocked(spec)
+    if parent:
+        # Set the module as an attribute on its parent.
+        parent_module = sys.modules[parent]
+        setattr(parent_module, name.rpartition('.')[2], module)
+    return module
+</code></pre>
+<p>传入的变量值就是<code>_find_and_load</code>的两个变量，未做任何修改。该方法主要逻辑为：查找该name对应module的父module，然后得到父module的path路径，再根据父module的路径找我们要找的module。找到之后，我们则需要进行module的加载。</p>
+<p>也就是说，到这里之后，我们的事情就变成了两件事：</p>
+<ul>
+<li>查找</li>
+<li>加载</li>
+</ul>
+<p>在Python中，查找和加载主要对应Finder（查找器）、Loader（加载器），顺着例子继续看：</p>
+<h3 id="finder">Finder</h3>
+<p>开启查找的第一步：</p>
+<p><strong><code>_bootstrap._find_spec（）</code></strong></p>
+<pre><code class="language-python">def _find_spec(name, path, target=None):
+    &quot;&quot;&quot;Find a module's spec.&quot;&quot;&quot;
+    meta_path = sys.meta_path
+    if meta_path is None:
+        # PyImport_Cleanup() is running or has been called.
+        raise ImportError(&quot;sys.meta_path is None, Python is likely &quot;
+                          &quot;shutting down&quot;)
+
+    if not meta_path:
+        _warnings.warn('sys.meta_path is empty', ImportWarning)
+
+    # We check sys.modules here for the reload case.  While a passed-in
+    # target will usually indicate a reload there is no guarantee, whereas
+    # sys.modules provides one.
+    is_reload = name in sys.modules
+    for finder in meta_path:
+        with _ImportLockContext():
+            try:
+                find_spec = finder.find_spec
+            except AttributeError:
+                spec = _find_spec_legacy(finder, name, path)
+                if spec is None:
+                    continue
+            else:
+                spec = find_spec(name, path, target)
+        if spec is not None:
+            # The parent import may have already imported this module.
+            if not is_reload and name in sys.modules:
+                module = sys.modules[name]
+                try:
+                    __spec__ = module.__spec__
+                except AttributeError:
+                    # We use the found spec since that is the one that
+                    # we would have used if the parent module hadn't
+                    # beaten us to the punch.
+                    return spec
+                else:
+                    if __spec__ is None:
+                        return spec
+                    else:
+                        return __spec__
+            else:
+                return spec
+    else:
+        return None
+</code></pre>
+<p>该方法主要逻辑为遍历所有<code>sys.meta_path</code>,通过<code>sys.meta_path</code>中的定义的Importer/Finder进行moudle查找和加载实现规范，也就是说，如果我们想自己实现module加载可以实现Importer/Finder，然后放入<code>sys.meta_path</code>中.我们看一下<code>sys.meta_path</code>有哪些Importer/Finder：</p>
+<ul>
+<li><code>BuiltinImporter</code></li>
+<li><code>FrozenImporter</code></li>
+<li><code>PathFinder</code></li>
+<li><code>pkg_resources.extern.VendorImporter</code></li>
+<li><code>pkg_resources._vendor.six._SixMetaPathImporter</code></li>
+<li><code>six._SixMetaPathImporter</code></li>
+</ul>
+<p>因为<code>_ext</code> 存在OS路径中，所以这里势必使用的是PathFinder，开头我们说到<code>_bootstrap.py</code>是python import的核心实现，而<code>PathFinder</code>类对应的<code>_bootstrap_external.py</code>则是基于路径import的核心实现。</p>
+<p><code>_bootstrap._find_spec（）</code>中最关键的代码就是尝试使用不同的Importer/Finder查找module，这里我们直接定位调用<code>PathFinder</code>类的<code>find_spec</code>方法。</p>
+<p><strong><code>_bootstrap_external.PathFinder.find_spec()</code></strong></p>
+<pre><code class="language-python">@classmethod
+def find_spec(cls, fullname, path=None, target=None):
+	&quot;&quot;&quot;Try to find a spec for 'fullname' on sys.path or 'path'.
+	The search is based on sys.path_hooks and sys.path_importer_cache.
+	&quot;&quot;&quot;
+	if path is None:
+	    path = sys.path
+	spec = cls._get_spec(fullname, path, target)
+	if spec is None:
+	    return None
+	elif spec.loader is None:
+	    namespace_path = spec.submodule_search_locations
+	    if namespace_path:
+	        # We found at least one namespace path.  Return a
+	        #  spec which can create the namespace package.
+	        spec.origin = 'namespace'
+	        spec.submodule_search_locations = _NamespacePath(fullname, namespace_path, cls._get_spec)
+	        return spec
+	    else:
+	        return None
+	else:
+	    return spec
+</code></pre>
+<p>这里有几个入参：</p>
+<ul>
+<li><code>fullname='_ext'</code>,即module完整的名称。</li>
+<li><code>path</code>为<code>_ext</code>父module的系统路径。</li>
+<li>target为None</li>
+</ul>
+<p>该函数核心为调用<code>_get_spec()</code>,参数不变的调用。这里的path不为none，但是如果为None则使用<code>sys.path</code>定义的路径，举个例子，site-packages下的module能够被发现，就是因为site-packages路径默认是追加在<code>sys.path</code>中的。这也给我们一个启发，除了自定义Importer/Loader放入<code>sys.meta_path</code>，通过加要加载module基础路径放入<code>sys.path</code>中来快速实现module的查找和加载。</p>
+<p><strong><code>_bootstrap_external.PathFinder._get_spec()</code></strong></p>
+<pre><code class="language-python">@classmethod 
+def _get_spec(cls, fullname, path, target=None):
+        &quot;&quot;&quot;Find the loader or namespace_path for this module/package name.&quot;&quot;&quot;
+        # If this ends up being a namespace package, namespace_path is
+        #  the list of paths that will become its __path__
+        namespace_path = []
+        for entry in path:
+            if not isinstance(entry, (str, bytes)):
+                continue
+            finder = cls._path_importer_cache(entry)
+            if finder is not None:
+                if hasattr(finder, 'find_spec'):
+                    spec = finder.find_spec(fullname, target)
+                else:
+                    spec = cls._legacy_get_spec(fullname, finder)
+                if spec is None:
+                    continue
+                if spec.loader is not None:
+                    return spec
+                portions = spec.submodule_search_locations
+                if portions is None:
+                    raise ImportError('spec missing loader')
+                # This is possibly part of a namespace package.
+                #  Remember these path entries (if any) for when we
+                #  create a namespace package, and continue iterating
+                #  on path.
+                namespace_path.extend(portions)
+        else:
+            spec = _bootstrap.ModuleSpec(fullname, None)
+            spec.submodule_search_locations = namespace_path
+            return spec
+</code></pre>
+<p>该函数遍历给定的路径，然后根据不同路径会给出不同的Finder，我们可以看一下<code>_path_importer_cache</code>的实现：</p>
+<pre><code class="language-python">@classmethod
+def _path_importer_cache(cls, path):
+        &quot;&quot;&quot;Get the finder for the path entry from sys.path_importer_cache.
+        If the path entry is not in the cache, find the appropriate finder
+        and cache it. If no finder is available, store None.
+        &quot;&quot;&quot;
+        if path == '':
+            try:
+                path = _os.getcwd()
+            except FileNotFoundError:
+                # Don't cache the failure as the cwd can easily change to
+                # a valid directory later on.
+                return None
+        try:
+            finder = sys.path_importer_cache[path]
+        except KeyError:
+            finder = cls._path_hooks(path)
+            sys.path_importer_cache[path] = finder
+        return finder
+
+</code></pre>
+<p><code>_path_importer_cache</code>优先从cache看有没有对应处理该路径的Findler，没有则调用<code>_path_hooks</code>找可以处理该路径的Finder，再看看<code>_path_hooks()</code>:</p>
+<pre><code class="language-python">@classmethod
+def _path_hooks(cls, path):
+        &quot;&quot;&quot;Search sys.path_hooks for a finder for 'path'.&quot;&quot;&quot;
+        if sys.path_hooks is not None and not sys.path_hooks:
+            _warnings.warn('sys.path_hooks is empty', ImportWarning)
+        for hook in sys.path_hooks:
+            try:
+                return hook(path)
+            except ImportError:
+                continue
+        else:
+            return None
+</code></pre>
+<p><code>_path_hooks()</code>遍历<code>sys.path_hooks</code>中注册的路径钩子函数，如果有一个钩子函数能够处理给定的路径，并且返回Findler，则使用该Finder进行module的查找加载。看到这里我们发现，自定义module加载又多了一种方式，在我们的系统中实现module多版本动态加载，就是通过注册路径钩子函数进行实现的，如果想通过定义钩子函数实现动态加载的，可以参考我的另外一篇文章<a href="http://yinyayun.top/python-dynamic-load/">Python多版本多module动态加载</a></p>
+<p>回到<code>_bootstrap_external.PathFinder._get_spec()</code>的主逻辑，找到对应的Finder之后，调用Finder的<code>find_spec()</code>。</p>
+<blockquote>
+<p><code>sys.path_hooks</code>中注册的钩子函数返回的Finder和从<code>sys.meta_path</code>拿出来的Finder是有区别的，在这个例子中<code>sys.meta_path</code>给出的是PathFinder,<code>sys.path_hooks</code>给出的是FileFinder。</p>
+</blockquote>
+<p><strong><code>_bootstrap_external.FileFinder.find_spec()</code></strong></p>
+<p>这个里面代码比较多，就不在多贴了，大致说一下，该方法判断给定的名称是package还是正常的py,并给出用于该module加载使用的loader，最后返回ModuleSpec对象，该对象作为moudle加载的规范，用于后面module的加载。ModuleSpec是module的源信息，主要包含以下属性：</p>
+<ul>
+<li>name ，module的绝对名称，</li>
+<li>loader，用于module加载的加载器</li>
+<li>is_package，该name对应的module是否为一个包</li>
+<li>origin，module的路径，用于加载器从哪加载使用的位置</li>
+<li>submodule_search_locations，用于加载该module下的子module时的查找路径。</li>
+<li>parent ,module所在的包名</li>
+</ul>
+<p>该例子执行到这步，返回的ModuleSpec对象内容大致如下：</p>
+<ul>
+<li><code>name</code>: <code>'_ext'</code></li>
+<li><code>loader</code>:<code>SourceFileLoader: &lt;_frozen_importlib_external.SourceFileLoader object at 0x7f2df3838e80&gt;</code></li>
+<li><code>origin</code>: <code>'/home/.../_ext/__init__.py'</code></li>
+<li><code>submodule_search_locations</code>:<code>['/home/.../_ext']</code></li>
+<li><code>parent</code>:<code>_ext</code></li>
+</ul>
+<p>其实成功返回了ModuleSpec，就意味着已经完成了python finder的流程，也就是Finder所干的事情！</p>
+<p>对应这里我们找到了<code>_ext</code>这个module，实际上的是<code>_ext.__init__.py</code>，下面就是要对<code>_ext.__init__.py</code>进行加载。</p>
+<h3 id="loader">Loader</h3>
+<p>回到<code>_bootstrap._find_and_load_unlocked（）</code>，看对spec的加载，加载实际上就是ModuleSpec到module的过程。</p>
+<p><strong><code>_bootstrap._load_unlocked</code></strong></p>
+<pre><code class="language-python">def _load_unlocked(spec):
+    # A helper for direct use by the import system.
+    if spec.loader is not None:
+        # not a namespace package
+        if not hasattr(spec.loader, 'exec_module'):
+            return _load_backward_compatible(spec)
+
+    module = module_from_spec(spec)
+    with _installed_safely(module):
+        if spec.loader is None:
+            if spec.submodule_search_locations is None:
+                raise ImportError('missing loader', name=spec.name)
+            # A namespace package so do nothing.
+        else:
+            spec.loader.exec_module(module)
+
+    # We don't ensure that the import-related module attributes get
+    # set in the sys.modules replacement case.  Such modules are on
+    # their own.
+    return sys.modules[spec.name]
+</code></pre>
+<p>该函数通过调用<code>module_from_spec</code>将ModuleSpec转换为module，我们先看<code>module_from_spec</code>:</p>
+<p><strong><code>_bootstrap.module_from_spec()</code></strong></p>
+<pre><code class="language-python">def module_from_spec(spec):
+    &quot;&quot;&quot;Create a module based on the provided spec.&quot;&quot;&quot;
+    # Typically loaders will not implement create_module().
+    module = None
+    if hasattr(spec.loader, 'create_module'):
+        # If create_module() returns `None` then it means default
+        # module creation should be used.
+        module = spec.loader.create_module(spec)
+    elif hasattr(spec.loader, 'exec_module'):
+        raise ImportError('loaders that define exec_module() '
+                          'must also define create_module()')
+    if module is None:
+        module = _new_module(spec.name)
+    _init_module_attrs(spec, module)
+    return module
+</code></pre>
+<p>该函数创建空的module对象，然后对module进行初始化，初始化包含对module的如下属性进行赋值：</p>
+<ul>
+<li>name，module名称</li>
+<li>loader，加载器</li>
+<li>package，包名称，即ModuleSpec.parent</li>
+<li>spec，ModuleSpec对象</li>
+<li>path ， module所在的路径，使用ModuleSpec.submodule_search_locations即可</li>
+<li>file，module对应文件绝对路径。即ModuleSpec.origin</li>
+</ul>
+<p>完成对module参数初始化，我们再次回到<code>_bootstrap._load_unlocked</code>中，下面做的事情就是module的loader，看一下<code>spec.loader.exec_module(module)</code>实现：</p>
+<pre><code class="language-python">def exec_module(self, module):
+        &quot;&quot;&quot;Execute the module.&quot;&quot;&quot;
+        code = self.get_code(module.__name__)
+        if code is None:
+            raise ImportError('cannot load module {!r} when get_code() '
+                              'returns None'.format(module.__name__))
+        _bootstrap._call_with_frames_removed(exec, code, module.__dict__)
+</code></pre>
+<p>顺便贴出<code>_bootstrap._call_with_frames_removed</code>:</p>
+<pre><code class="language-python">def _call_with_frames_removed(f, *args, **kwds):
+    &quot;&quot;&quot;remove_importlib_frames in import.c will always remove sequences
+    of importlib frames that end with a call to this function
+
+    Use it instead of a normal call in places where including the importlib
+    frames introduces unwanted noise into the traceback (e.g. when executing
+    module code)
+    &quot;&quot;&quot;
+    return f(*args, **kwds)
+</code></pre>
+<p>其实事情比较简单，modul的所有信息都有了，就是读取source源码生成code对象，然后调用python的内置函数<code>exec</code>对code进行执行，到这里就完成了module的加载执行。</p>
+<p>其实到这里我们只完成了<code>from .ext import nms</code>中<code>_ext</code>的加载， 在加载执行完<code>_ext.__init__.py</code>之后，我们还是会返回到<code>from .ext import nms</code>断点。</p>
+<p>--------------------------------------  nms 查找加载 --------------------------------------</p>
+<p>还是要继续对<code>nms</code>进行加载，对于<code>nms</code>加载，从<code>_bootstrap._handle_fromlist()</code>方法进入：</p>
+<pre><code>def _handle_fromlist(module, fromlist, import_):
+    if hasattr(module, '__path__'):
+        if '*' in fromlist:
+            fromlist = list(fromlist)
+            fromlist.remove('*')
+            if hasattr(module, '__all__'):
+                fromlist.extend(module.__all__)
+        for x in fromlist:
+            if not hasattr(module, x):
+                from_name = '{}.{}'.format(module.__name__, x)
+                try:
+                    _call_with_frames_removed(import_, from_name)
+                except ModuleNotFoundError as exc:
+                    # Backwards-compatibility dictates we ignore failed
+                    # imports triggered by fromlist for modules that don't
+                    # exist.
+                    if exc.name == from_name:
+                        continue
+                    raise
+    return module
+</code></pre>
+<p>先给出在我们的例子中这几个参数的值：</p>
+<ul>
+<li>module，<code>module: &lt;module '_ext' from '/home/.../_ext/__init__.py'</code></li>
+<li>fromlist，<code>&lt;class 'tuple'&gt;: ('nms',)</code></li>
+<li>import_， <code>builtin_function_or_method: &lt;built-in function __import__&gt;</code></li>
+</ul>
+<p>对于<code>from _ext import nms</code>实际要加载的是<code>_ext.nms</code>。执行<code>_call_with_frames_removed()</code>实际上执行：</p>
+<pre><code>__import__(('utils.lib.nms._ext.nms',),{}) 
+</code></pre>
+<p>最后还是逃避不了我们之前梳理出来的那一套Finder、Loader流程。也是还会回到<code>_bootstrap._find_and_load（）</code>开始对<code>_ext.nms</code>查找和加载，通过前面的介绍，Finder返回ModuleSpec对象，Loader将ModuleSpec转为module对象，然后源码转为code进行执行，前面已经大篇幅给出了流程，后面不再赘述。因为<code>_ext.nms</code>实际也是包，所以加载的应该是<code>_ext.nms.__init__.py</code>。</p>
+<p>Finder阶段返回的ModuleSpec为：</p>
+<ul>
+<li>loader，<code>SourceFileLoader: &lt;_frozen_importlib_external.SourceFileLoader object at 0x7f2df38385f8&gt;</code></li>
+<li>name，<code>_ext.nms</code></li>
+<li>origin，<code>/home/.../_ext/nms/__init__.py</code></li>
+<li>parent，<code>_ext.nms</code></li>
+<li>submodule_search_locations，<code>['/home/.../_ext/nms']</code></li>
+</ul>
+<p>Loader阶段得到的Module对象为：</p>
+<pre><code>module: &lt;module '_ext.nms' from '/home/.../_ext/nms/__init__.py'&gt;
+</code></pre>
+<ul>
+<li>name，<code>_ext.nms</code></li>
+<li>package，<code>_ext.nms</code></li>
+<li>path ， <code>['/home/.../_ext/nms']</code></li>
+<li>file，<code>/home/.../_ext/nms/__init__.py</code></li>
+</ul>
+<p>--------------------------------------  nms 查找加载 --------------------------------------</p>
+<p>在exec <code>_ext.nms.__init__.py</code>时，遇到了要对.so加载的需求，也就是：</p>
+<pre><code class="language-python">from ._nms import lib as _lib, ffi as _ffi 
+</code></pre>
+<p>其实总的Finder、Loader流程都是一致的，最大不同在于FileFinder中，针对.so文件会创建和.py不同的Loader。</p>
+<p>其实FileFinder针对不同文件给不同Loader是在初始化就决定的，我们看一下代码:</p>
+<pre><code class="language-python">def __init__(self, path, *loader_details):
+        &quot;&quot;&quot;Initialize with the path to search on and a variable number of
+        2-tuples containing the loader and the file suffixes the loader
+        recognizes.&quot;&quot;&quot;
+        loaders = []
+        for loader, suffixes in loader_details:
+            loaders.extend((suffix, loader) for suffix in suffixes)
+        self._loaders = loaders
+</code></pre>
+<p><code>*loader_details</code>参数已经定义好不同后缀文件对应的Loader。之前介绍过FileFinder是由路径钩子函数创建的，刚好在FileFinder系统定义了FileFinder能够处理路径的钩子函数，顺着这个找，我们找到了<code>_bootstrap_external._get_supported_file_loaders()</code>：</p>
+<pre><code class="language-python">def _get_supported_file_loaders():
+    &quot;&quot;&quot;Returns a list of file-based module loaders.
+
+    Each item is a tuple (loader, suffixes).
+    &quot;&quot;&quot;
+    extensions = ExtensionFileLoader, _imp.extension_suffixes()
+    source = SourceFileLoader, SOURCE_SUFFIXES
+    bytecode = SourcelessFileLoader, BYTECODE_SUFFIXES
+    return [extensions, source, bytecode]
+</code></pre>
+<p><code>source</code>和<code>bytecode</code>对应的后缀分别为<code>.py</code>和<code>.pyc</code>，那么只有<code>extensions</code>是能够处理<code>.so</code>文件的，事实证明，确实是它。</p>
+<p>找到了<code>_nms.so</code>路径和加载它的ExtensionFileLoader，后面的事情就是回到<code>_bootstrap._find_and_load_unlocked（）</code>中对创建的ModuleSpec进行load，依旧是执行Loader类的<code>exec_module()</code>,对于<code>.py</code>文件底层最终会调用'exec'指令完成module的加载，而对于<code>.so</code>实际调用的是内置的<code>_imp.exec_dynamic</code>函数。</p>
+<h2 id="小结">小结</h2>
+<p>Python的module加载核心就两个：</p>
+<ul>
+<li>查找器（Finder）</li>
+<li>加载器（Loader）</li>
+</ul>
+<p>查找器目的在于找到要在家module的路径等信息，并为其绑定对应的加载器，最终封装成ModuleSpec返回，对于package找的是package下的__init__.py,而如果在查找过程中发现对应的父模块还未加载，那么会先去加载父module，这里面踩过一个坑，算了，不多说了，想知道的关注另外一篇文章：<a href="http://yinyayun.top/python-dynamic-load/">Python多版本多module动态加载</a>.</p>
+<p>查找器有两种，一种是通过<code>sys.meta_path</code>绑定，还有一种是通过路径构建函数进行绑定。如果需要自定义module的查找和加载，可以考虑这两点。</p>
+<p>加载器就是完成对module的读取，然后执行。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/python" class="tag">
+                    Python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/6wTmKR_f0">
+                  <h3 class="post-title">
+                    记一次python段错误排查经历
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -117,7 +117,8 @@
                   2018-10-18
                 </div>
                 <div class="post-abstract">
-                  
+                  <p>Overseer也可以称为cluster leader，也就是集群的主，与shard leader有着很大的区别，shard leader主要是为了保证collection数据的一致性，而Overseer则是为了保证集群操作以及数据的安全性。</p>
+
                 </div>
               </div>
               
@@ -148,7 +149,16 @@
                   2018-09-10
                 </div>
                 <div class="post-abstract">
-                  
+                  <h2 id="概述">概述</h2>
+<ul>
+<li>
+<p>Transaction log(tlog) 记录原始文档用于recovery，solrcloud中每个节点都自己的tlog。在更新时整个文档会被写入tlog，对于原子（atomic）更新，不光要更新整个文档需要写入tlog，该文档的历史版本也会被写入。总的来说tlog主要是保证文档的一致性，当JVM意外停止的时候，保证索引时最新的。</p>
+<ul>
+<li>注意：如果服务没有优雅的终止的话，在下次启动的时候将使用tlog进行重演。所以如果tlog很大的话，实例启动将会变得很慢。</li>
+</ul>
+</li>
+</ul>
+
                 </div>
               </div>
               
@@ -163,7 +173,16 @@
                   2018-09-05
                 </div>
                 <div class="post-abstract">
-                  
+                  <blockquote>
+<p>2018.09.05，深夜，最近因为各种事情，心烦意乱，睡不着，索性翻身起来，写一些没有营养的的东西。</p>
+</blockquote>
+<p>个人认为，solr的分布式存在两种：</p>
+<ul>
+<li>伪分布式，即单shard但存在主从。</li>
+<li>真正的分布式</li>
+</ul>
+<p>因为我认为真正意义上的分布式，不光是分流量，同样需要做到计算的分布式。但是呢，无论是哪一种，但凡涉及到数据的一致性的系统，基本都会考虑只允许主写，solr也是一样，只允许shard leader进行索引的索引的写入，再由主向从写入。</p>
+
                 </div>
               </div>
               
@@ -178,7 +197,14 @@
                   2018-09-05
                 </div>
                 <div class="post-abstract">
-                  
+                  <p>因转到人机对话项目上已经有一段时间了，甚是想念solr，所以特地来回顾一下solrcloud中的一些概念，内容不是很全，而且也没有逻辑，就当是备忘吧。</p>
+<p>很多分布式系统都会选用zookeeper作为分布式的协调者，solr同样也不例外，在solr中zookeeper主要起到以下作用：</p>
+<ul>
+<li>依托于znode，实现集中配置存储</li>
+<li>依托于session以及watcher机制实现集群状态检测和提醒</li>
+<li>overseer和shard leader选举</li>
+</ul>
+
                 </div>
               </div>
               

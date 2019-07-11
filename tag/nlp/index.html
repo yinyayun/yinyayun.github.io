@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -95,6 +95,24 @@
           
             <article class="post-item">
               <div class="left">
+                <a href="https://yinyayun.github.io//post/UjeaMrCsE">
+                  <h2 class="post-title">点积量化(Product Quantizer)</h2>
+                </a>
+                <div class="post-date">
+                  2018-12-19
+                </div>
+                <div class="post-abstract">
+                  <blockquote>
+<p>本文用例引用至 <a href="http://mccormickml.com/2017/10/13/product-quantizer-tutorial-part-1">product-quantizer-tutorial</a></p>
+</blockquote>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
                 <a href="https://yinyayun.github.io//post/j4lHefq7K">
                   <h2 class="post-title">基于全文检索引擎的语义向量编码和相似度检索</h2>
                 </a>
@@ -102,7 +120,8 @@
                   2018-11-16
                 </div>
                 <div class="post-abstract">
-                  
+                  <p>我们都知道Lucene只能解决文本层面的检索与相似度计算（TFIDF，BM25），无法解决语义层面的检索。尤其在当前机器学习如此火热的情况下，我们已经有很多方式对一个文本转为向量进行语义表征，所以在很多场景下我们会遇到向量检索的问题。</p>
+
                 </div>
               </div>
               
@@ -117,7 +136,13 @@
                   2018-09-02
                 </div>
                 <div class="post-abstract">
-                  
+                  <p>当我们在电商网站上搜索一个关键词想买一个东西的，例如：“appe”这个词，但是这个词对于电商网站来说，并没有相应的商品，但是如果直接返回空的列表页的话，用户体验还是相当差的，所以通常电商网站上会给出：</p>
+<ul>
+<li>你是不是想搜索“apple”</li>
+<li>直接返回apple对应的结果</li>
+</ul>
+<p>这其实就是拼写纠错。</p>
+
                 </div>
               </div>
               

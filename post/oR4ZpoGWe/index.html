@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -111,6 +111,7 @@
 <li>真正的分布式</li>
 </ul>
 <p>因为我认为真正意义上的分布式，不光是分流量，同样需要做到计算的分布式。但是呢，无论是哪一种，但凡涉及到数据的一致性的系统，基本都会考虑只允许主写，solr也是一样，只允许shard leader进行索引的索引的写入，再由主向从写入。</p>
+<!-- more -->
 <p>作为一个和数据打交道的分布式应用，solr还得考虑数据的分片，换个角度来说就是文档的路由。</p>
 <p>所以下面分别说说solr中的文档分片，以及文档索引的简单流程。</p>
 <h2 id="文档路由">文档路由</h2>

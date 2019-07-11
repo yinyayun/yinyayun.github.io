@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -109,6 +109,7 @@
 <li>依托于session以及watcher机制实现集群状态检测和提醒</li>
 <li>overseer和shard leader选举</li>
 </ul>
+<!-- more -->
 <h2 id="solrxml">solr.xml</h2>
 <p>从我接触solr开始，solr中几个比较经典的配置文件:<code>solrconfig.xml</code>,<code>managed-schema</code>,<code>solr.xml</code>，虽然managed-schema名称变了，但是意义还是差不多，至于这里为什么不详说<code>solrconfig.xml</code>和<code>managed-schema</code>，主要是这两个文件实际上和solr core或者索引更加相关一点，和solrcloud并没有什么直接关系。</p>
 <p>在早些版本的时候solr.xml主要用于solr core的发现，但是随着solr的发展，现在的solr.xml已经成为solrcloud的属性配置文件，SolrCloud模式下，solr默认从Zookeeper查找solr.xml，若没有则会从solr_home中加载。</p>

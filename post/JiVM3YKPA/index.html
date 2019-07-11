@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Faiss教程翻译 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Faiss教程翻译</h2>
+            <div class="post-date">2018-12-27</div>
+            
+            <div class="post-content">
+              <h2 id="教程">教程</h2>
+<h3 id="更快地搜索">更快地搜索</h3>
+<p>为了加快搜索，将数据集合拆分成多个段。我们在多维空间定义了<code>Voronoi单元</code>(cell),数据集的每个向量都会落入一个单元中。检索时找query落入的单元，query向量与单元中的向量比较，从而得到近邻向量。Faiss中<code>IndexIVFFlat</code>类就是使用了对应的实现。</p>
+<p><strong>IndexIVFFlat</strong></p>
+<p>需要进行训练的一种index。使用<code>IndexIVFFlat</code>还需要传入其它的index,即量化器（quantizer,通常使用IndexFlatL2），化器将向量映射到Voronoi单元，每个单元定义一个质心（centroids）。传入的index会根据质心（centroids）找出query向量落在的单元，再计算近邻的向量。</p>
+<p>search时需要指定用于执行近邻搜索的单元格数量（nprobe），搜索的耗时会随着nprobe增长而增长。但是随着nprobe增长，搜索结果也会越逼近穷尽搜索的结果。</p>
+<p>Python：</p>
+<pre><code class="language-python">nlist = 100
+k = 4
+quantizer = faiss.IndexFlatL2(d)  # the other index
+index = faiss.IndexIVFFlat(quantizer, d, nlist, faiss.METRIC_L2)
+       # here we specify METRIC_L2, by default it performs inner-product search
+assert not index.is_trained
+index.train(xb)
+assert index.is_trained
+
+index.add(xb)                  # add may be a bit slower as well
+D, I = index.search(xq, k)     # actual search
+print(I[-5:])                  # neighbors of the 5 last queries
+index.nprobe = 10              # default nprobe is 1, try a few more
+D, I = index.search(xq, k)
+print(I[-5:])                  # neighbors of the 5 last queries
+</code></pre>
+<p>C++:</p>
+<pre><code class="language-c++">int nlist = 100;
+    int k = 4;
+    faiss::IndexFlatL2 quantizer(d);       // the other index
+    faiss::IndexIVFFlat index(&amp;quantizer, d, nlist, faiss::METRIC_L2);
+    // here we specify METRIC_L2, by default it performs inner-product search
+    assert(!index.is_trained);
+    index.train(nb, xb);
+    assert(index.is_trained);
+    index.add(nb, xb);
+    {       // search xq
+        long *I = new long[k * nq];
+        float *D = new float[k * nq];
+        index.search(nq, xq, k, D, I);
+        printf(&quot;I=\n&quot;);                    // print neighbors of 5 last queries
+        ...
+        index.nprobe = 10;                 // default nprobe is 1, try a few more
+        index.search(nq, xq, k, D, I);
+        printf(&quot;I=\n&quot;);
+        ...
+    }
+</code></pre>
+<h3 id="低内存占用">低内存占用</h3>
+<p><code>IndexFlatL2</code> 和 <code>IndexIVFFlat</code>两个index都存储了完整的向量。而当向量规模非常大的时候，Faiss基于点积量化（product quantizers）进行有损压缩存储向量。</p>
+<p>这些向量依然存储在Voronoi单元中，但是他们的大小减少到了可配置的字节数。</p>
+<p>由于向量并没有精确的存储，所以search返回的距离也是近似值。</p>
+<p>Python:</p>
+<pre><code class="language-python">nlist = 100
+m = 8                             # number of bytes per vector
+k = 4
+quantizer = faiss.IndexFlatL2(d)  # this remains the same
+index = faiss.IndexIVFPQ(quantizer, d, nlist, m, 8)
+                                    # 8 specifies that each sub-vector is encoded as 8 bits
+index.train(xb)
+index.add(xb)
+D, I = index.search(xb[:5], k) # sanity check
+print(I)
+print(D)
+index.nprobe = 10              # make comparable with experiment above
+D, I = index.search(xq, k)     # search
+print(I[-5:])
+</code></pre>
+<p>C++</p>
+<pre><code class="language-c++">int nlist = 100;
+    int k = 4;
+    int m = 8;                             // bytes per vector
+    faiss::IndexFlatL2 quantizer(d);       // the other index
+    faiss::IndexIVFPQ index(&amp;quantizer, d, nlist, m, 8);
+
+    index.train(nb, xb);
+    index.add(nb, xb);
+    {       // sanity check
+        ...
+        index.search(5, xb, k, D, I);
+        printf(&quot;I=\n&quot;);
+        ...
+        printf(&quot;D=\n&quot;);
+        ...
+    }
+    {       // search xq
+        ...
+        index.nprobe = 10;
+        index.search(nq, xq, k, D, I);
+        printf(&quot;I=\n&quot;);
+        ...
+    }
+</code></pre>
+<p>结果：</p>
+<pre><code>[[   0  608  220  228]
+ [   1 1063  277  617]
+ [   2   46  114  304]
+ [   3  791  527  316]
+ [   4  159  288  393]]
+
+[[ 1.40704751  6.19361687  6.34912491  6.35771513]
+ [ 1.49901485  5.66632462  5.94188499  6.29570007]
+ [ 1.63260388  6.04126883  6.18447495  6.26815748]
+ [ 1.5356375   6.33165455  6.64519501  6.86594009]
+ [ 1.46203303  6.5022912   6.62621975  6.63154221]]
+</code></pre>
+<p>观察我们这好到的最近邻向量，但是检索向量与其自身的距离居然不是0，这是因为有损压缩造成的。</p>
+<h2 id="基础">基础</h2>
+<h3 id="faiss基石-聚类-pca-量化">Faiss基石: 聚类, PCA, 量化</h3>
+<p>Faiss基于一些基础算法进行了高效的实现，如： k-means、PCA、PQ</p>
+<h4 id="clustering">Clustering</h4>
+<p>Faiss提供的一种高效的k-means实现：</p>
+<pre><code class="language-python">ncentroids = 1024
+niter = 20
+verbose = True
+d = x.shape[1]
+kmeans = faiss.Kmeans(d, ncentroids, niter, verbose)
+kmeans.train(x)
+</code></pre>
+<p>聚类结果的质心（centroids）在<code>kmeans.centroids</code>中。</p>
+<p><strong>Assignment</strong></p>
+<p>当k-means完成训练后，给定一组向量，可以使用下面的函数计算其对应质心：</p>
+<pre><code class="language-python">D, I = kmeans.index.search(x, 1)
+</code></pre>
+<p>x中的每行对应的最近质心将存储在I中返回，D中是其对应的距离。</p>
+<p>相反的，如果想去找出给定质心，从x中找出最近的15个向量，则必须创建新的index:</p>
+<pre><code class="language-python">index = faiss.IndexFlatL2 (d)
+index.add (x)
+D, I = index.search (kmeans.centroids, 15)
+</code></pre>
+<h4 id="pca">PCA</h4>
+<p>将40维降为10维：</p>
+<pre><code class="language-python"># random training data 
+mt = np.random.rand(1000, 40).astype('float32')
+mat = faiss.PCAMatrix (40, 10)
+mat.train(mt)
+assert mat.is_trained
+tr = mat.apply_py(mt)
+# print this to show that the magnitude of tr's columns is decreasing
+print (tr ** 2).sum(0)
+</code></pre>
+<p><strong>PQ encoding / decoding</strong></p>
+<p><code>ProductQuantizer</code>对象可以用于对codes进行编码和解码。</p>
+<pre><code class="language-python">d = 32  # data dimension
+cs = 4  # code size (bytes)
+# train set 
+nt = 10000
+xt = np.random.rand(nt, d).astype('float32')
+# dataset to encode (could be same as train)
+n = 20000
+x = np.random.rand(n, d).astype('float32')
+
+pq = faiss.ProductQuantizer(d, cs, 8)
+pq.train(xt)
+
+# encode 
+codes = pq.compute_codes(x)
+
+# decode
+x2 = pq.decode(codes)
+
+# compute reconstruction error
+avg_relative_error = ((x - x2)**2).sum() / (x ** 2).sum()
+
+</code></pre>
+<p>经过encode之后，x就被映射到codes,codes的大小为20000*4。</p>
+<h3 id="如何选择一个index">如何选择一个Index</h3>
+<p><strong>是否需要精确的结果?</strong></p>
+<p>Faiss中只有<code>IndexFlatL2</code>和<code>IndexFlatIP</code>能够保证精确的结果，也就是这两个index可以为为其它index的提供一个baseline。这两个index也不会对向量进行压缩，也不支持添加时携带ID（add_with_ids），只能顺序添加。</p>
+<p>这两个都支持在GPU.</p>
+<p><strong>内存对你而言是否是一个问题？</strong></p>
+<p>切记在Faiss中，所有的Index都是存储在内存中的。在考虑内存开销的基础上，需要兼顾准确率和速度。</p>
+<p>如果内存足够或者数据量比较小，那么<code>HNSWx</code>是一个比较好的选择，<code>HNSWx</code>是一个既精准又快速的index，内存开销以及精确度与每个向量的连接数（number of links per vector）有关。<code>HNSWx</code>也只支持顺序添加（不支持add_with_ids）。</p>
+<p>使用<code>...,Flat</code>方式，先对数据集进行聚类，聚类完后，<code>Flat</code>只是对向量分桶（bucket），所以这种方式存储大小和原始数据一致，准确率和速度需要通过<code>nprobe</code> 参数权衡。</p>
+<p>如果存储所有向量代价非常高，可以进行两个操作：</p>
+<ul>
+<li>使用PCA降维至<code>x</code></li>
+<li>使用标准量化（scalar quantization）将每个向量的component 量化至1个字节。</li>
+</ul>
+<p>因此每个向量只需要x 字节进行存储。</p>
+<p>当然如果精准性对你来说非常非常重要，使用<code>&quot;OPQx_y,...,PQx&quot;</code>方式，<code>PQx</code>使用点积量化进行向量压缩，输出x字节的的codes，通常x设置为<code>&lt;=64</code>，对于较大的codes，标准量化（SQ）通常也是精准和快速的。<code>OPQ</code>是向量的线性变换，使得更容易进行压缩。<code>y</code>是维度。</p>
+<ul>
+<li><code>y</code>是<code>x</code>的倍数</li>
+<li><code>y&lt;=d</code></li>
+<li><code>y &lt;= 4*x</code></li>
+</ul>
+<p><strong>数据量有多大？</strong></p>
+<p>这个问题用于补充上面的聚类（即上面的<code>...</code>）选项，数据集聚类至不同的桶，在搜索时只遍历部分的桶（<code>nprobe</code> buckets）</p>
+<p>如果小于1M：<code>...,IVFx，...</code></p>
+<p>如果介于1M-10M：<code>...,IVF65536_HNSW32,...</code></p>
+<p>如果介于10M-100M：<code>IVF262144_HNSW32,...</code>
+如果结局100M-1B：<code>IVF1048576_HNSW32,...</code></p>
+<h2 id="faiss-indexes">Faiss indexes</h2>
+<h3 id="基础indexes">基础Indexes</h3>
+<h4 id="单元探测方法cell-probe-methods">单元探测方法（Cell-probe methods）</h4>
+<p>例如kmeans这些采用分区技术提升处理速度，但是不保证一定可以找出最近邻。相应的这些方法有时候会被称作单元探测。</p>
+<p>我们使用基于多元探测（Multi-probing）的分区方法（best-bin KD树的变种）.</p>
+<ul>
+<li>特征空间被分成ncells个单元</li>
+<li>数据集中的向量通过hash函数分配至这些单元中（如果kmeans，那就分配质离它最近的质心），并存储在由<code>ncells</code>个倒排链组成的倒排文件中。</li>
+<li>检索式，选择<code>nprobe</code>个倒排链，query向量与这些倒排链上的向量逐一计算。</li>
+</ul>
+<p>这样的话，只有一小部分数据集需要和query向量比较，这部分数据大概是<code>nprobe/ncells</code>，但是这实际预估少了，因为每个倒排链长度并不相等。如果query向量的最近邻向量所在单元没有被召回，那就意味着失败。</p>
+<p>在C++中，相关的index是<code>IndexIVFFlat</code>，该类的构造函数，需要传入一个index作为参数，这个index用于倒排链的分配。query也是用该index进行检索，最后返回倒排链上被访问向量的ID。</p>
+<h4 id="使用flat-index作为粗粒度量化器的单元探测方法">使用flat index作为粗粒度量化器的单元探测方法</h4>
+<p>使用Flat Index作粗量化器时，<code>IndexIVF</code>的训练方法，将质心赋给flat index。查询时需要指定<code>nprobe</code>（有助于在速度和准确率之间权衡）。</p>
+<blockquote>
+<p>根据经验，<code>n</code>表示要索引的数量，如何给定质心的数量，这得衡量分配到质心的代价，包括解析倒排链时执行精确距离计算的向量数量（kprobe / ncells * n * c），常数c用于协调倒排链数据分布不均匀的情况，那么可以使用<code>ncentroids = C * sqrt (n)</code>表示质心的数量，通常c=10</p>
+</blockquote>
+<p><strong>与LSH的关系</strong></p>
+<p>大部分流行的单元探测方法的可能都是以Locality Sensitive Hashing为原型（<a href="http://www.mit.edu/~andoni/LSH/">E2LSH</a>），然而该方法和它的衍生方法有两个缺点：</p>
+<ul>
+<li>需要很多hash函数（等于partitions数量）才能获得比较好的结果，这会导致额外的内存开销</li>
+<li>The hash function are not adapted to the input data. This is good for proofs but leads to suboptimal choice results in practice</li>
+</ul>
+<h4 id="binary-codes">Binary codes</h4>
+<p>在C++中，LSH index定义如下：</p>
+<pre><code class="language-c++">IndexLSH * index = new faiss::IndexLSH (d, nbits);
+</code></pre>
+<p><code>d</code>是输入向量的维度，<code>nbits</code>为每个向量存储用的字节数。</p>
+<p>在Python中，LSH index的创建和搜索如下：</p>
+<pre><code class="language-python">n_bits = 2 * d
+lsh = faiss.IndexLSH (d, n_bits)
+lsh.train (x_train)
+lsh.add (x_base)
+D, I = lsh.search (x_query, k)
+</code></pre>
+<p><strong>NOTE:</strong> The algorithm is <strong>not</strong> vanilla-LSH, but a better choice. Instead of set of orthogonal projectors is used if n_bits &lt;= d, or a tight frame if n_bits &gt; d.</p>
+<h4 id="基于量化的方式">基于量化的方式</h4>
+<p>在C++中，基于点积量化的index都有<code>PQ</code>关键词标识，例如，所有的基于点积量化的index都被描述成以下这样：</p>
+<pre><code class="language-c++">#include &lt;faiss/IndexPQ.h&gt;
+  #include &lt;faiss/IndexIVFPQ.h&gt;
+
+  // Define a product quantizer for vectors of dimensionality d=128,
+  // with 8 bits per subquantizer and M=16 distinct subquantizer
+  size_t d = 128;
+  int M = 16;
+  int nbits = 8;
+  faiss:IndexPQ * index_pq = new faiss::IndexPQ (d, M, nbits);
+
+  // Define an index using both PQ and an inverted file with nlists to avoid exhaustive search
+  // The index 'quantizer' must be already declared
+  faiss::IndexIVFPQ * ivfpq = new faiss::IndexIVFPQ (quantizer, d, nlists, M, nbits);
+
+  // Same but with another level of refinement
+  faiss::IndexIVFPQR * ivfpqr = new faiss::IndexIVFPQR (quantizer, d, nclust, M, nbits, M_refine, nbits);
+</code></pre>
+<p>在Python中定义如下：</p>
+<pre><code class="language-python">m = 16                                   # number of subquantizers
+n_bits = 8                               # bits allocated per subquantizer
+pq = faiss.IndexPQ (d, m, n_bits)        # Create the index
+pq.train (x_train)                       # Training
+pq.add (x_base)                          # Populate the index
+D, I = pq.search (x_query, k)            # Perform a search
+</code></pre>
+<p>在这个例子中，m为16（d必须为m的倍数），即16个子量化器，那向量将被分成16份，对应16个code book ,code size为16，每个code设定占用8 bits，也就对应2^8=256个质心。</p>
+<h4 id="使用pq策略的倒排文件">使用PQ策略的倒排文件</h4>
+<p><code>IndexIVFPQ</code>可能是大规模搜索最有用的索引结构：</p>
+<pre><code class="language-python">coarse_quantizer = faiss.IndexFlatL2 (d)
+index = faiss.IndexIVFPQ (coarse_quantizer, d,
+                          ncentroids, code_size, 8)
+index.nprobe = 5
+</code></pre>
+<p>有关质心数量（<code>ncentroids</code>）的设置可以参考<code>IndexIVFFlat</code> 小节，<code>code_size</code>通常设置为2的多次方，但是值介于4-64之间，和<code>IndexPQ</code>一样，d必须是<code>m</code>的倍数。</p>
+<h3 id="composite-indexes">Composite Indexes</h3>
+<h4 id="使用pq作为粗量化器的单元探测cell-probe方法">使用PQ作为粗量化器的单元探测（Cell probe）方法</h4>
+<p>Faiss中相应的粗量化器（coarse quantizer）是<code>MultiIndexQuantizer</code>，<code>MultiIndexQuantizer</code>相对于低精度高效率的index是比较有竞争力的，这个index特殊之处在于没有向量被添加到该index中。</p>
+<pre><code class="language-python">nbits_mi = 12  # c
+M_mi = 2       # m
+coarse_quantizer_mi = faiss.MultiIndexQuantizer(d, M_mi, nbits_mi)
+ncentroids_mi = 2 ** (M_mi * nbits_mi)
+
+index = faiss.IndexIVFFlat(coarse_quantizer_mi, d, ncentroids_mi)
+index.nprobe = 2048
+index.quantizer_trains_alone = True
+</code></pre>
+<p>关于<code>ncentroids_mi</code>说几点，不考虑段的情况，如果每个向量需要<code>nbits_mi</code>个bits进行保存，那<code>nbits_mi</code>位可以表示<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mrow><mi>n</mi><mi>b</mi><mi>i</mi><mi>t</mi><msub><mi>s</mi><mi>m</mi></msub><mi>i</mi></mrow></msup></mrow><annotation encoding="application/x-tex">2^{nbits_mi}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">b</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">t</span><span class="mord mtight"><span class="mord mathdefault mtight">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span>信息，也就是<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mrow><mi>n</mi><mi>b</mi><mi>i</mi><mi>t</mi><msub><mi>s</mi><mi>m</mi></msub><mi>i</mi></mrow></msup></mrow><annotation encoding="application/x-tex">2^{nbits_mi}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">b</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">t</span><span class="mord mtight"><span class="mord mathdefault mtight">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span>个质心，那向量再分为<code>M_mi</code>个段的话，每个段中的向量需要<code>nbits_mi</code>个bits，那么一个完整向量存储需要<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mi>m</mi></msub><mi>i</mi><mo>∗</mo><mi>n</mi><mi>b</mi><mi>i</mi><mi>t</mi><msub><mi>s</mi><mi>m</mi></msub><mi>i</mi></mrow><annotation encoding="application/x-tex">M_mi * nbits_mi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault">i</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord mathdefault">n</span><span class="mord mathdefault">b</span><span class="mord mathdefault">i</span><span class="mord mathdefault">t</span><span class="mord"><span class="mord mathdefault">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault">i</span></span></span></span>位，那么对应的质心数量为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mrow><msub><mi>M</mi><mi>m</mi></msub><mi>i</mi><mo>∗</mo><mi>n</mi><mi>b</mi><mi>i</mi><mi>t</mi><msub><mi>s</mi><mi>m</mi></msub><mi>i</mi></mrow></msup></mrow><annotation encoding="application/x-tex">2^{M_mi *nbits_mi}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.849108em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.849108em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:-0.10903em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mathdefault mtight">i</span><span class="mbin mtight">∗</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">b</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">t</span><span class="mord mtight"><span class="mord mathdefault mtight">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16454285714285719em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span></p>
+<h4 id="pre-filtering-pq-codes-with-polysemous-codes">Pre-filtering PQ codes with polysemous codes</h4>
+<p>使用汉明距离进行比较，比使用点积量化有6倍的速度提升。通过对汉明距离设置一个阈值，许多代价比较高的PQ code比较可以被阻止。</p>
+<p>在IndexPQ上启用：</p>
+<pre><code class="language-python">index = faiss.IndexPQ (d, 16, 8)
+# before training
+index.do_polysemous_training = true
+index.train (...)
+
+# before searching
+index.search_type = faiss.IndexPQ.ST_polysemous
+index.polysemous_ht = 54    # the Hamming threshold
+index.search (...)
+</code></pre>
+<p>在<code>IndexIVFPQ</code>上启用：</p>
+<pre><code class="language-python">index = faiss.IndexIVFPQ (coarse_quantizer, d, 16, 8)
+# before training
+index. do_polysemous_training = true
+index.train (...)
+
+# before searching
+index.polysemous_ht = 54 # the Hamming threshold
+index.search (...)
+</code></pre>
+<p>设置一个合理的阈值，需要注意：</p>
+<ul>
+<li>阈值必须介于0到每个code需要的bit数（该例子中为16*8）之间，并且code符合二项分布</li>
+<li>阈值设置每个code占用位数的1/2，也就是能够节省code的1/2计算，但通常这还不足够，还需要更小一点。</li>
+</ul>
+<h3 id="pre-and-post-processing">Pre and post processing</h3>
+<h4 id="id映射">ID映射</h4>
+<p>默认情况下，Faiss为添加的向量分配连续ID，下面会介绍如何改变这种ID分配规则。</p>
+<p>一些Index类实现了<code>add_with_ids</code>方法，在添加向量的同时还可以指定64位的ID。在搜索时，将返回存储的ID，而不是原始向量。</p>
+<p><strong>IndexIDMap</strong></p>
+<p>这个Index封装了另外一个Index，并在搜索和索引时提供ID的转换。</p>
+<pre><code class="language-python">index = faiss.IndexFlatL2(xb.shape[1]) 
+ids = np.arange(xb.shape[0])
+index.add_with_ids(xb, ids)  # this will crash, because IndexFlatL2 does not support add_with_ids
+index2 = faiss.IndexIDMap(index)
+index2.add_with_ids(xb, ids) # works, the vectors are stored in the underlying index
+</code></pre>
+<p><code>IndexFlatL2</code>是不支持<code>add_with_ids</code>的，也就是对于<code>IndexFlatL2</code>而言，使用的还是顺序的ID，所以必须借助<code>IndexIDMap</code>进行ID转换，<code>IndexIDMap</code>在索引时为其维护了一个ID映射表。</p>
+<p><strong>IndexIVF</strong></p>
+<p>因为倒排的原因，所以IndexIVF和它的子类，肯定是需要存储ID的，所以提供了<code>add_with_ids</code>方法，我们不需要借助<code>IndexIDMap</code>。</p>
+<h4 id="pre-transforming-the-data">Pre-transforming the data</h4>
+<p>在索引之前进行数据转换处理通常是很有用的，Transform类继承<code>VectorTransform</code>，支持将<code>d_in</code>维输入的向量转换为<code>d_out</code>维的输出向量。</p>
+<ul>
+<li>RandomRotationMatrix，IndexPQ或者IndexLSH中索引前，重新平衡向量的components</li>
+<li>RemapDimensionsTransform，减少或扩张向量大小</li>
+<li>PCAMatrix，减少维度</li>
+<li>OPQMatrix，对输入向量做旋转，使得更适合PQ编码。参考：<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2013/html/Ge_Optimized_Product_Quantization_2013_CVPR_paper.html">Optimized product quantization, Ge et al., CVPR'13</a></li>
+</ul>
+<p>Transformation可以从一组向量进行训练。Index也可以包装在<code>IndexPreTransform</code>中，这样映射更加透明，并且训练也可以与index训练集成。</p>
+<h5 id="示例">示例</h5>
+<p><strong>使用IndexPreTransform封装PCA和以个index进行降维</strong></p>
+<pre><code class="language-python"># the IndexIVFPQ will be in 256D not 2048
+  coarse_quantizer = faiss.IndexFlatL2 (256)
+  sub_index = faiss.IndexIVFPQ (coarse_quantizer, 256, ncoarse, 16, 8)
+  # PCA 2048-&gt;256
+  # also does a random rotation after the reduction (the 4th argument)
+  pca_matrix = faiss.PCAMatrix (2048, 256, 0, True) 
+
+  #- the wrapping index
+  index = faiss.IndexPreTransform (pca_matrix, sub_index)
+
+  # will also train the PCA
+  index.train(...)
+  # PCA will be applied prior to addition
+  index.add(...)
+</code></pre>
+<p>例子中输入向量维度为2048，我们想将其降维到256，因为transform是工作在index之前的，所以IndexFlatL2和IndexIVFPQ定义是的输入维度是256。</p>
+<p>因为PQ量化后，再一次对信息作了衰减，所以最终一个向量变成了16*8bit=16bytes</p>
+<p><strong>增加向量维度</strong></p>
+<p>有些时候我们会通过在向量中插入0值来扩充向量的维度，使之维度是给定数值的倍数。</p>
+<p>例如上面的例子中，原本的维度不能被PQ的子量化器数量整除，所以通过<code>RemapDimensionsTransform</code>将维度扩充到M的倍数。</p>
+<pre><code class="language-python">  # input is in dimension d, but we want a multiple of M
+  d2 = int((d + M - 1) / M) * M
+  remapper = faiss.RemapDimensionsTransform (d, d2, true)
+  # the index in d2 dimensions  
+  index_pq = faiss.IndexPQ(d2, M, 8)  
+  
+  # the index that will be used for add and search 
+  index = faiss.IndexPreTransform (remapper, index_pq)
+</code></pre>
+<h4 id="重新排序搜索结果精排">重新排序搜索结果（精排）</h4>
+<p>Faiss的IndexPQ，在search时计算是经过PQ code后的距离，而非与原向量的精确距离，而在某些场景中，我们还是需要精确计算与查询向量的距离，从而精排这些结果的。</p>
+<p>下面这个例子中我们通过IndexPQ获取4*10个近邻向量，然后对这40个向量精确计算距离，最后取top 10.</p>
+<pre><code class="language-python">q = faiss.IndexPQ (d, M, nbits_per_index)
+rq = faiss.IndexRefineFlat (q)
+rq.train (xt)
+rq.add (xb)
+rq.k_factor = 4
+D, I = rq:search (xq, 10)
+</code></pre>
+<p>注意：IndexRefineFlat能够计算与原向量的距离，是建立在其存储了原始向量的基础上的。</p>
+<h4 id="从多个index合并结果">从多个index合并结果</h4>
+<p>当向量集分散在多个index中时，可以通过<code>IndexShards</code>分发query，然后合并结果。</p>
+<h3 id="index-ioindex-factory-cloning以及超参数调整">Index IO，Index Factory, Cloning以及超参数调整</h3>
+<p>Faiss的index通常是复合index，对于单个index类型很难进行操作，同时因为有很多参数，所以给定场景下经常很难找出最优的组合。因此Faiss提供了高阶接口批量操纵index以及自动探测参数空间。</p>
+<h4 id="io">I/O</h4>
+<ul>
+<li><code>write_index(index, &quot;large.index&quot;)</code>: 将指定index写入文件</li>
+<li><code>Index * index = read_index(&quot;large.index&quot;)</code>: 从文件读入index</li>
+</ul>
+<h4 id="深度拷贝">深度拷贝</h4>
+<ul>
+<li>Index* index2 = clone_index(index) 返回index的深度拷贝</li>
+<li>Index *index_cpu_to_gpu = index_cpu_to_gpu(resource, dev_no, index)</li>
+<li>Index *index_gpu_to_cpu = index_gpu_to_cpu(index)</li>
+<li>index_cpu_to_gpu_multiple，使用IndexShards或者IndexProxy将索引拷贝至多个GPU</li>
+</ul>
+<h4 id="index-factory">Index Factory</h4>
+<p><code>index_factory</code>通过指定的字符串参数创建一个复合的Faiss Index，给定的字符串最多包含3个部分：</p>
+<ol>
+<li>预处理组件
+<ol>
+<li>PCA，例如<code>PCA64</code>指的是使用PCA将维度降为64（实现类为PCAMatrix）,<code>PCAR64</code>意味着先进性PCA降为，紧接着做随机旋转。</li>
+<li>OPQ，例如<code>OPQ16</code></li>
+</ol>
+</li>
+<li>倒排文件
+<ol>
+<li><code>IVF4096</code>意味着使用<code>IndexFlatL2</code>构建大小为4096的倒排文件</li>
+<li><code>IMI2x8</code>意味着每个向量占用2*8 bits，使用<code>MultiIndexQuantizer</code>量化器构建大小为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>2</mn><mrow><mn>2</mn><mi>x</mi><mn>8</mn></mrow></msup></mrow><annotation encoding="application/x-tex">2^{2x8}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathdefault mtight">x</span><span class="mord mtight">8</span></span></span></span></span></span></span></span></span></span></span></span>的倒排文件。</li>
+<li>如果不计划使用倒排文件，但是需要<code>add_with_ids</code>，我们可以设置<code>IDMap</code>创建<code>IndexIDMap</code></li>
+</ol>
+</li>
+<li>精细化组件
+<ol>
+<li><code>Flat</code>存储完整的向量，实现类有<code>IndexFlat</code> 和<code>IndexIVFFlat</code></li>
+<li><code>PQ16</code>使用16bytes的PQ编码，实现类有<code>IndexPQ</code> 或者<code>IndexIVFPQ</code></li>
+<li><code>PQ8+16</code>，实现类见<code>IndexIVFPQR</code></li>
+</ol>
+</li>
+</ol>
+<p>示例：</p>
+<pre><code class="language-python">index = index_factory(128, &quot;PCA80,Flat&quot;)# 创建一个128维索引，使用PCA将其降为80，之后在使用详尽搜索。
+index = index_factory(128, &quot;OPQ16_64,IMI2x8,PQ8+16&quot;)
+</code></pre>
+<h4 id="自学习运行时参数">自学习运行时参数</h4>
+<p>Index的参数分为两类：</p>
+<ul>
+<li>build-time，即构建index时的参数</li>
+<li>run-time，只能在search前调整的参数</li>
+</ul>
+<p>这一小节说的自主学习特指runtime时的参数，有哪些参数呢？</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>Index class</th>
+<th>runtime parameter</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IVF*, IMI2x*</td>
+<td>IndexIVF*</td>
+<td>nprobe</td>
+<td>衡量速度和精度的主要参数</td>
+</tr>
+<tr>
+<td>IMI2x*</td>
+<td>IndexIVF</td>
+<td>max_codes</td>
+<td>对IMI有用，通常拥有不平衡的倒排链</td>
+</tr>
+<tr>
+<td>PQ*</td>
+<td>IndexIVFPQ, IndexPQ</td>
+<td>ht</td>
+<td>汉明距离阈值</td>
+</tr>
+<tr>
+<td>PQ*+*</td>
+<td>IndexIVFPQR</td>
+<td>k_factor</td>
+<td>决定取多少结果进行精确验证</td>
+</tr>
+</tbody>
+</table>
+<p>自主学习目的就是为了找到速度和精度的最优点。</p>
+<p><strong>AutoTuneCriterion</strong></p>
+<p>AutoTuneCriterion对象包含搜索的真实结果和搜索结果的评估，它返回0-1之间的一个性能评估值，目前有基于1-recall和R-recall实现。</p>
+<p><strong>OperatingPoints</strong></p>
+<p>该对象将所有操作点（性能, 搜索时间, 参数集ID）存储为元祖，并且选择一个最优的操作点。</p>
+<p><strong>ParameterSpace</strong></p>
+<p>该对象扫描给定index的所有可调参数，并根据每个参数所有可能取值构建table。</p>
+<p>也就是说，参数空间会随参数数量呈现指数级增长。</p>
+<p>详细的自动学习参数的demo可参考：<a href="https://github.com/facebookresearch/faiss/blob/master/demos/demo_auto_tune.py">demo_auto_tune.py</a></p>
+<h3 id="index上的特殊操作">Index上的特殊操作</h3>
+<p><strong>从index中还原向量（<code>reconstruct</code>或者<code>reconstruct_n</code>）</strong></p>
+<pre><code class="language-python">d = 64
+nb = 1000
+nt = 1500
+np.random.seed(123)
+xb = np.random.random(size=(nb, d)).astype('float32')
+xt = np.random.random(size=(nt, d)).astype('float32')
+
+index = faiss.index_factory(d, &quot;IVF64,Flat&quot;)
+index.train(xt)
+index.add(xb)
+
+index.make_direct_map()
+recons_before = np.vstack([index.reconstruct(i) for i in range(nb)])
+</code></pre>
+<p>支持<code>IndexFlat</code>, <code>IndexIVFFlat</code> , <code>IndexIVFPQ</code> , <code>IndexPreTransform</code>，对于前三个需要先调用<code>make_direct_map</code></p>
+<p><strong>从index中删除元素</strong></p>
+<pre><code>index.remove_ids(faiss.IDSelectorRange(int(nb / 2), nb))
+</code></pre>
+<p>支持：<code>IndexFlat</code>, <code>IndexIVFFlat</code>, <code>IndexIVFPQ</code>, <code>IDMap</code></p>
+<p><strong>范围搜索</strong></p>
+<p>返回query向量和指定半径内的所有向量。</p>
+<p>支持：<code>IndexFlat</code>, <code>IndexIVFFlat</code></p>
+<p><strong>Spliting and merging indexes</strong></p>
+<ul>
+<li><code>merge_from</code>，拷贝另外一个index到当前，并且在运行中解决分配。</li>
+<li><code>copy_subset_to</code> 拷贝一部分code到另外一个index。</li>
+</ul>
+<p>这些方法主要用于大索引场景下，所以只有<code>IndexIVF</code>的子类实现了这些方法。</p>
+<h2 id="advanced-topics">Advanced topics</h2>
+<h3 id="faiss的代码结构">Faiss的代码结构</h3>
+<h4 id="编译">编译</h4>
+<p>Faiss通过Makefile编译接口，同时支持设置不同变量标志，如BLAS库，具体可以参考<a href="https://github.com/facebookresearch/INSTALL">INSTALL</a>中如何设置标志。</p>
+<h4 id="依赖">依赖</h4>
+<p>Faiss唯一的硬依赖就是BLAS/Lapack，它基于英特尔的MKL进行开发，但是所有带有fortran规范的接口实现都应该可以工作。因为所有实现都从32位想64位升级，所以所有的integer类型在编译时都应该指定<code>-DFINTEGER=int</code> 或者<code>-DFINTEGER=long</code>标志。</p>
+<h4 id="faiss-cpu的代码规范">Faiss CPU的代码规范</h4>
+<p><strong>没有public/private</strong></p>
+<p>Faiss中所有的C++对象结构，没有public/private概念，所有的字段都可以直接访问。</p>
+<p><strong>对象所有权</strong></p>
+<p>大部分情况下，Faiss对象都是可拷贝的。有一些例外的地方，对象A包含一个对象B的指针，在这种情况下，在A中有一个boolean类型的标志<code>own_fields</code>，这个标识用于指明当对象A被删除时对象B是否要被删除，构造时通常我们将该变量值设为false，即不是B的拥有者，当然如果在调用代码中失去了对B的引用，这可能会导致内存泄漏，所以如果我们想A在销毁时B跟着销毁，需要将其设为True，对于以下类的构造我们要注意：</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>field</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IndexIVF</td>
+<td>quantizer</td>
+</tr>
+<tr>
+<td>IndexPreTransform</td>
+<td>chain</td>
+</tr>
+<tr>
+<td>IndexIDMap</td>
+<td>index</td>
+</tr>
+<tr>
+<td>IndexRefineFlat</td>
+<td>base_index</td>
+</tr>
+</tbody>
+</table>
+<p>以IndexIVFPQ对象构造为例：</p>
+<pre><code class="language-c++">  faiss::Index *index; 
+  if (...) { // on output of this block, index is the only object that needs to be tracked
+     faiss::IndexFlatL2 * coarseQuantizer = new  faiss::IndexFlatL2(targetDim);
+     // you need to use a pointer here
+     faiss::IndexIVFPQ *index1 = new faiss::IndexIVFPQ(
+          coarseQuantizer, targetDim, numCentroids, numQuantizers, 8);
+     index1-&gt;own_fields = true; // coarse quantizer is deallocated by index destructor
+     index1-&gt;nprobe = 5; 
+     index = index1;
+  }  
+</code></pre>
+<p>上例子中<code>IndexIVFPQ</code>构造需要指定一个量化器，我们希望IndexIVFPQ销毁时，coarseQuantizer也被销毁。</p>
+<blockquote>
+<p>和GPU相关的，都不做翻译。</p>
+</blockquote>
+<h3 id="线程和异步调用">线程和异步调用</h3>
+<h4 id="线程安全">线程安全</h4>
+<p>Faiss CPU对于并发检索和其它不更改index的操作都是线程安全的，多线程改变index的函数需要实现互斥。</p>
+<h4 id="内部线程">内部线程</h4>
+<p>Faiss本身有多种不同的内部线程，对于CPU的Faiss，index上3中基本操作（train，add，search）都是多线程的。线程是通过OpenMP，以及多线程的BLAS实现。我们可以通过环境变量<code>OMP_NUM_THREADS</code>或者调用<code>omp_set_num_threads(10)</code>方法。</p>
+<p>如果查询或添加单个向量，Faiss是不会使用多线程的。</p>
+<h4 id="查询的性能">查询的性能</h4>
+<p>最好的提升查询QPS是进行批量提交。如果只是一个向量查询，那将只会在调用线程中执行。</p>
+<h4 id="内部线程的性能openml">内部线程的性能（OpenML）</h4>
+<p>调整OpenML线程数量对性能提升有时候并不是特别显著，在一些机器架构中，将线程数量设置的比内核数量稍微小点，有时候执行效率会更高。例如在Intel E5-2680 v2中，将线程数设置为20而不是默认的40，效果会更好。</p>
+<p>如果使用OpenBLAS、BLAS实现，将线程策略设置为PASSIVE会更好：</p>
+<pre><code>export OMP_WAIT_POLICY=PASSIVE
+</code></pre>
+<h4 id="异步搜索">异步搜索</h4>
+<p>对于包含以下一些计算的search操作，并行计算会更好：</p>
+<ul>
+<li>单线程计算</li>
+<li>等IO</li>
+<li>GPU计算</li>
+</ul>
+<p>对于Faiss CPU，和其他多线程计算（如其它searcher）并行化并没有什么帮助，因为这样反而会导致太多的线程从而降低正题性能。</p>
+<p><code>所以在Faiss中，可能多个用户的线程的search操作会被放入队列，然后聚合打包集中处理。</code></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/faiss" class="tag">
+                    Faiss
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/UjeaMrCsE">
+                  <h3 class="post-title">
+                    点积量化(Product Quantizer)
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

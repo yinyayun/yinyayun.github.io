@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -94,6 +94,126 @@
           
             <article class="post-item">
               <div class="left">
+                <a href="https://yinyayun.github.io//post/4d8w7j_we">
+                  <h2 class="post-title">记一次Python服务实例静默退出排查</h2>
+                </a>
+                <div class="post-date">
+                  2018-11-26
+                </div>
+                <div class="post-abstract">
+                  <p>这段时间发现一个python的服务实例经常静默退出，从应用日志里未找到任何异常现场，一切都很正常。</p>
+<p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
+<p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/j4lHefq7K">
+                  <h2 class="post-title">基于全文检索引擎的语义向量编码和相似度检索</h2>
+                </a>
+                <div class="post-date">
+                  2018-11-16
+                </div>
+                <div class="post-abstract">
+                  <p>我们都知道Lucene只能解决文本层面的检索与相似度计算（TFIDF，BM25），无法解决语义层面的检索。尤其在当前机器学习如此火热的情况下，我们已经有很多方式对一个文本转为向量进行语义表征，所以在很多场景下我们会遇到向量检索的问题。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/P-65A6NeN">
+                  <h2 class="post-title">Skip List（跳跃表）</h2>
+                </a>
+                <div class="post-date">
+                  2018-11-08
+                </div>
+                <div class="post-abstract">
+                  <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。
+传统的链表很难快速跳转至某一个节点，所以查找也是很耗时的（即使这是一个有序的链表），skip list则解决这些问题，并且查找的时间复杂度是O(log n)，所以skip list在lucene中也是一大利器。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/8FZ96sw5Q">
+                  <h2 class="post-title">Python多版本多module动态加载</h2>
+                </a>
+                <div class="post-date">
+                  2018-10-31
+                </div>
+                <div class="post-abstract">
+                  <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。
+无论是那种机器学习模型，要进行使用，肯定逃不了这两个套路：</p>
+<ul>
+<li>模型的加载（初始化）</li>
+<li>模型的调用（预测）
+也就是说我们可以在平台层面进行一定的约束，基于我们的规范实现，然后我们提供对应的服务。</li>
+</ul>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/gx0I80dMe">
+                  <h2 class="post-title">Solr Overseer</h2>
+                </a>
+                <div class="post-date">
+                  2018-10-18
+                </div>
+                <div class="post-abstract">
+                  <p>Overseer也可以称为cluster leader，也就是集群的主，与shard leader有着很大的区别，shard leader主要是为了保证collection数据的一致性，而Overseer则是为了保证集群操作以及数据的安全性。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/o8rU6E2yr">
+                  <h2 class="post-title">Solr中的段合并和文档删除</h2>
+                </a>
+                <div class="post-date">
+                  2018-10-11
+                </div>
+                <div class="post-abstract">
+                  <p>本文翻译至:<a href="https://lucidworks.com/2017/10/13/segment-merging-deleted-documents-optimize-may-bad/">Segment Merging, Deleted Documents and Why Optimize May Be Bad For You</a>,感兴趣的同学可以直接跳至原文阅读，体验会更好，因为下面有些内容会引起你的高度不适（胡编乱造）。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/git">
+                  <h2 class="post-title">GIT简要教程</h2>
+                </a>
+                <div class="post-date">
+                  2018-09-20
+                </div>
+                <div class="post-abstract">
+                  
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
                 <a href="https://yinyayun.github.io//post/hQsO7mt3b">
                   <h2 class="post-title">Solr Hard/Soft commits和Transction logs</h2>
                 </a>
@@ -101,7 +221,16 @@
                   2018-09-10
                 </div>
                 <div class="post-abstract">
-                  
+                  <h2 id="概述">概述</h2>
+<ul>
+<li>
+<p>Transaction log(tlog) 记录原始文档用于recovery，solrcloud中每个节点都自己的tlog。在更新时整个文档会被写入tlog，对于原子（atomic）更新，不光要更新整个文档需要写入tlog，该文档的历史版本也会被写入。总的来说tlog主要是保证文档的一致性，当JVM意外停止的时候，保证索引时最新的。</p>
+<ul>
+<li>注意：如果服务没有优雅的终止的话，在下次启动的时候将使用tlog进行重演。所以如果tlog很大的话，实例启动将会变得很慢。</li>
+</ul>
+</li>
+</ul>
+
                 </div>
               </div>
               
@@ -116,7 +245,16 @@
                   2018-09-05
                 </div>
                 <div class="post-abstract">
-                  
+                  <blockquote>
+<p>2018.09.05，深夜，最近因为各种事情，心烦意乱，睡不着，索性翻身起来，写一些没有营养的的东西。</p>
+</blockquote>
+<p>个人认为，solr的分布式存在两种：</p>
+<ul>
+<li>伪分布式，即单shard但存在主从。</li>
+<li>真正的分布式</li>
+</ul>
+<p>因为我认为真正意义上的分布式，不光是分流量，同样需要做到计算的分布式。但是呢，无论是哪一种，但凡涉及到数据的一致性的系统，基本都会考虑只允许主写，solr也是一样，只允许shard leader进行索引的索引的写入，再由主向从写入。</p>
+
                 </div>
               </div>
               
@@ -131,37 +269,14 @@
                   2018-09-05
                 </div>
                 <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/wSY8cH_PJ">
-                  <h2 class="post-title">编辑距离</h2>
-                </a>
-                <div class="post-date">
-                  2018-09-02
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/java-pb">
-                  <h2 class="post-title">Java加载Tensorflow PB模型</h2>
-                </a>
-                <div class="post-date">
-                  2018-06-28
-                </div>
-                <div class="post-abstract">
-                  
+                  <p>因转到人机对话项目上已经有一段时间了，甚是想念solr，所以特地来回顾一下solrcloud中的一些概念，内容不是很全，而且也没有逻辑，就当是备忘吧。</p>
+<p>很多分布式系统都会选用zookeeper作为分布式的协调者，solr同样也不例外，在solr中zookeeper主要起到以下作用：</p>
+<ul>
+<li>依托于znode，实现集中配置存储</li>
+<li>依托于session以及watcher机制实现集群状态检测和提醒</li>
+<li>overseer和shard leader选举</li>
+</ul>
+
                 </div>
               </div>
               
@@ -172,6 +287,8 @@
   
     <a href="https://yinyayun.github.io//" class="prev"><i class="icon-arrow-ios-back-outline"></i> 上一页</a>
   
+  
+    <a href="https://yinyayun.github.io//page/3/" class="next">下一页 <i class="icon-arrow-ios-forward-outline"></i></a>
   
 </div>
 

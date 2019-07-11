@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Docker入门整理 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Docker入门整理</h2>
+            <div class="post-date">2019-01-25</div>
+            
+            <div class="post-content">
+              <h2 id="docker介绍">Docker介绍</h2>
+<p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
+<ul>
+<li>
+<p>镜像 ，镜像是一个可执行的package，包含程序运行需要的一切，如代码、库（libraries）、环境变量、配置文件等等</p>
+</li>
+<li>
+<p>容器，容器是镜像的实例，可以通过<code>docker ps</code>查看当前运行的所有容器进程。</p>
+</li>
+<li>
+<p>Docker Registry，镜像的集中式存储管理服务，一个Docker Registry包含多个仓库（ Repository ） ， 每个仓库可以包含多个标签（ Tag ） ，每个标签对应一个镜像。</p>
+</li>
+</ul>
+<p>Docker架构图：</p>
+<p><img src="https://docs.docker.com/engine/images/architecture.svg" alt="架构"></p>
+<p><strong>镜像和虚拟机</strong></p>
+<p>容器直接运行在linux上，并且和其它容器共享主机的内核，所以他比其它执行方式实用更少的内存，从而使得它更加轻量级。</p>
+<p>而虚拟机运行了一个完整的用户操作系统，通过虚拟机虚拟访问主机资源，通常虚拟机提供环境需要的资源很多。</p>
+<p>Docker版本：</p>
+<ul>
+<li>CE</li>
+<li>EE</li>
+</ul>
+<h2 id="docker-ce安装">Docker CE安装</h2>
+<p><strong>清除历史版本</strong></p>
+<pre><code class="language-shell">$ sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+</code></pre>
+<p><strong>设置仓库</strong></p>
+<ol>
+<li>
+<p>安装需要的package</p>
+<pre><code class="language-shell">$ sudo yum install -y yum-utils \
+  device-mapper-persistent-data \
+  lvm2
+</code></pre>
+</li>
+<li>
+<p>设置稳定的仓库</p>
+<pre><code class="language-shell">$ sudo yum-config-manager \
+    --add-repo \
+    https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repos
+</code></pre>
+<p>或者</p>
+<pre><code class="language-shell">$ sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</code></pre>
+</li>
+</ol>
+<p>因为该系统中我将/bin/python指向了python3.x的版本，所以执行时遇到了错误：</p>
+<pre><code class="language-shell">File &quot;/usr/bin/yum-config-manager&quot;, line 135
+    except yum.Errors.RepoError, e:
+                                ^
+</code></pre>
+<p>解决版本就是修改<code>/usr/bin/yum-config-manager</code>，将第一行指定的python作修改如下：</p>
+<pre><code class="language-shell">#!/usr/bin/python2.7 -tt
+</code></pre>
+<blockquote>
+<p>启用nightly和test repositories（可选）</p>
+<pre><code>#启用
+$ sudo yum-config-manager --enable docker-ce-nightly
+$ sudo yum-config-manager --enable docker-ce-test
+# 禁用
+$ sudo yum-config-manager --disable docker-ce-nightly
+</code></pre>
+</blockquote>
+<p><strong>安装CE</strong></p>
+<pre><code class="language-shell">sudo yum install docker-ce
+</code></pre>
+<p>或者查看可选的版本进行安装：</p>
+<pre><code class="language-shell">$ yum list docker-ce --showduplicates | sort -r
+
+docker-ce.x86_64  3:18.09.1-3.el7                     docker-ce-stable
+docker-ce.x86_64  3:18.09.0-3.el7                     docker-ce-stable
+docker-ce.x86_64  18.06.1.ce-3.el7                    docker-ce-stable
+docker-ce.x86_64  18.06.0.ce-3.el7                    docker-ce-stable
+
+$ sudo yum install docker-ce-&lt;VERSION STRING&gt;
+</code></pre>
+<p>启动docker</p>
+<pre><code>$ sudo systemctl start docker
+</code></pre>
+<h2 id="镜像源的修改">镜像源的修改</h2>
+<pre><code class="language-shell"># vi /etc/docker/daemon.json
+{
+  &quot;registry-mirrors&quot;: [
+    &quot;https://*****.mirror.aliyuncs.com&quot;,
+    &quot;https://reg-mirror.qiniu.com/&quot;
+  ]
+}
+</code></pre>
+<h2 id="一些基础命令">一些基础命令</h2>
+<pre><code class="language-shell">## List Docker CLI commands
+docker
+docker container --help
+
+## Display Docker version and info
+docker --version
+docker version
+docker info
+
+## Execute Docker image
+docker run hello-world
+
+## List Docker images
+docker image ls
+
+## List Docker containers (running, all, all in quiet mode)
+docker container ls
+docker container ls --all
+docker container ls -aq
+
+## 批量删除已经停用的容器
+docker container rm `docker ps -a|grep Exited|awk '{print $1}'`
+</code></pre>
+<h2 id="容器containers">容器（Containers）</h2>
+<p>在以前，我们要写一个Python的应用，我们第一件事情就是在机器上安装Python的运行环境，但是这会导致一个问题，你的环境要和你应用预期的一直，而且生产环境也是这样的。</p>
+<p>但是如果有了Docker，你就可以将Python运行环境移植成一个镜像。然后，你的构建可以包含基础的python镜像和应用代码。</p>
+<p>我们可以通过<code>Dockerfile</code>去定义这样轻便的镜像。</p>
+<p><code>Dockerfile</code>定义了容器内的环境发生了什么，在这个环境里网络接口、磁盘驱动器等资源的访问都将会被虚拟化，所以需要将端口映射到容器外部，并指定要拷贝至容器内访问的文件。这样通过<code>Dockerfile</code>构建的应用无论在哪运行都会和预期是一致的。</p>
+<pre><code class="language-dockerfile"># Use an official Python runtime as a parent image
+FROM python:2.7-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run app.py when the container launches
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+
+</code></pre>
+<p>开发完Dockerfile之后，下面就是构建应用：</p>
+<pre><code class="language-shell">$ docker build --tag=friendlyhello&lt;:version&gt; .
+</code></pre>
+<p>这样之后我们构建的镜像就会存在与我们本地的Docker注册表中。</p>
+<p>运行容器：</p>
+<pre><code class="language-shell">// 终端运行
+$ docker run -p 4000:80 friendlyhello
+// 后台运行
+$ docker run -d -p 4000:80 friendlyhello
+</code></pre>
+<p>查看后台运行的容器：</p>
+<pre><code class="language-shell">$ docker container ls
+CONTAINER ID        IMAGE               COMMAND             CREATED
+1fa4ab2cf395        friendlyhello       &quot;python app.py&quot;     28 seconds ago
+</code></pre>
+<p>停止指定的容器：</p>
+<pre><code class="language-shell">$ docker container stop 1fa4ab2cf395
+</code></pre>
+<p>将本地的镜像和注册表中的仓库作关联：</p>
+<pre><code class="language-shell">$ docker tag image username/repository:tag
+// 示例：
+$ docker tag friendlyhello gordon/get-started:part2
+</code></pre>
+<p>发布镜像：</p>
+<pre><code class="language-shell">$ docker push username/repository:tag
+</code></pre>
+<p>从远程仓库拉取尽量并运行：</p>
+<pre><code class="language-shell">$ docker run -p 4000:80 username/repository:tag
+//例如：
+$ docker run -p 4000:80 gordon/get-started:part2
+</code></pre>
+<h2 id="服务services">服务（Services）</h2>
+<p>在分布式应用中，应用的不同部分称为服务，例如，有一个视频分享网站，它可能包含在数据库中储应用数据的服务、用户在后台上传视频的转码服务、前段的服务等等。</p>
+<p>服务就是生产中容器，一个服务只运行一个镜像，但是它定义了镜像的运行方式，如应该用什么端口、服务达到所需的生产能力要多少容器的副本等等。</p>
+<p>在Docker平台上，可以通过编写<code>docker-compose.yml</code>做到定义、运行、伸缩服务。</p>
+<pre><code class="language-yaml">version: &quot;3&quot;
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      resources:
+        limits:
+          cpus: &quot;0.1&quot;
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - &quot;4000:80&quot;
+    networks:
+      - webnet
+networks:
+  webnet:
+</code></pre>
+<p>该文件告诉Docker：</p>
+<ul>
+<li>从<code>username/repo:tag</code>拉取镜像</li>
+<li>运行5个该镜像的实例命名为web，并限制每个实例最多只占用所有CPU资源的10%，以及50MB内存。</li>
+<li>如果有一个失败，则立即重启容器。</li>
+<li>映射容器内的80端口到主机的4000端口</li>
+<li>通知所有容器通过一个叫<code>webnet</code>的网络负载均衡共享80端口</li>
+<li>使用默认配置定义<code>webnet</code></li>
+</ul>
+<p>在运行之前，我们需要安装Compose：</p>
+<pre><code class="language-shell">$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+</code></pre>
+<p>运行新定义的的应用</p>
+<pre><code class="language-shell">$ docker swarm init
+// 启动并设置应用名为getstartedlab
+$ docker stack deploy -c docker-compose.yml getstartedlab
+// 下线应用
+$ docker stack rm getstartedlab
+$ docker swarm leave --force
+</code></pre>
+<p>和服务相关的命令：</p>
+<pre><code class="language-shell">docker stack ls                                            # List stacks or apps
+docker stack deploy -c &lt;composefile&gt; &lt;appname&gt;  # Run the specified Compose file
+docker service ls                 # List running services associated with an app
+docker service ps &lt;service&gt;                  # List tasks associated with an app
+docker inspect &lt;task or container&gt;                   # Inspect task or container
+docker container ls -q                                      # List container IDs
+docker stack rm &lt;appname&gt;                             # Tear down an application
+docker swarm leave --force      # Take down a single node swarm from the manager
+</code></pre>
+<h2 id="集群swarm">集群（Swarm）</h2>
+<p>Swarm就是一组运行Docker并加入集群的机器。集群化之后，继续运行Docker命令将会通过<code>swarm manager</code>在集群上执行。swarm上机器可以是物理机也可是虚拟机，这些都是集群的一个节点。</p>
+<p>我们可以在<code>Compose</code>文件中命令Swarm集群的<code>manager</code>使用不同的策略运行容器，例如：最空的节点，即将容器填充至最少使用的机器上、在每台机器上启动一个容器实例。</p>
+<p><strong>创建swarm</strong></p>
+<p>swarm由多个节点构成，但是总的只有两种角色：manager和worker</p>
+<p>启用swarm模式并让当前机器成为swarm manger：</p>
+<pre><code class="language-shell">$ docker swarm init --advertise-addr &lt;myvm1 ip&gt;
+Swarm initialized: current node (rtocnzus280j43ijh0vit7k39) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-2hlvapcqiuxghfkg6vnz3z81b3fvzu2lrn9l3ektylocnc5yvs-95cs5503f3mqnunhj7f89eboi 192.168.56.101:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+</code></pre>
+<p>登陆其他机器，将其加入swarm集群作为worker：</p>
+<pre><code class="language-shell">docker swarm join --token &lt;token&gt; &lt;ip&gt;:&lt;port&gt;
+</code></pre>
+<p>其它一些命令：</p>
+<pre><code class="language-shell">// 查看集群节点
+docker node ls
+// 从集群中删除该机器节点，如果是manger需要加--force
+docker swarm leave &lt;--force&gt;
+//在集群上发布服务
+docker stack deploy -c docker-compose.yml getstartedlab
+</code></pre>
+<blockquote>
+<p>如果还没有集群资源，可以在本机创建虚拟机进行模拟，docker支持使用Hyper-V或者VirtualBox为驱动创建虚拟机，具体可以参考：<a href="https://docs.docker.com/get-started/part4/">VMS ON YOUR LOCAL MACHINE (MAC, LINUX, WINDOWS 7 AND 8)</a></p>
+</blockquote>
+<h2 id="stack">Stack</h2>
+<p>Stack就是一组可以共享依赖、相互关联的服务，一个单独的stack可以定义并协调整个应用的功能，其实在Service小节，我们创建Compose文件，并使用<code>docker stack deploy</code>部署服务时我们就开始接触了stack，在那一节中我们定义一个单独的服务stack，然后让它运行在一台主机上，但是在生产中我们通产不会这么做，通常我们都会有多个服务相互关联，并在多台机器上运行。</p>
+<p><strong>创建一个新的服务并发布</strong></p>
+<p>定义服务：</p>
+<pre><code class="language-yaml"># docker-compose.yml
+version: &quot;3&quot;
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: username/repo:tag
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: &quot;0.1&quot;
+          memory: 50M
+    ports:
+      - &quot;80:80&quot;
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - &quot;8080:8080&quot;
+    volumes:
+      - &quot;/var/run/docker.sock:/var/run/docker.sock&quot;
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
+</code></pre>
+<p>对于第三节我们定义的<code>docker-compose.yml</code>，我们发现这里多个一个对等服务<code>visualizer</code>。</p>
+<p>发布服务：</p>
+<pre><code class="language-shell">$ docker stack deploy -c docker-compose.yml getstartedlab
+Updating service getstartedlab_web (id: angi1bf5e4to03qu9f93trnxm)
+Creating service getstartedlab_visualizer (id: l9mnwkeq2jiononb5ihz9u7a4)
+</code></pre>
+<hr>
+<p>更详细的可以参考：<a href="https://docs.docker.com/get-started/">Get started with Docker</a></p>
+<h2 id="上传镜像至http协议的私服">上传镜像至HTTP协议的私服</h2>
+<p><strong>登陆私服</strong></p>
+<pre><code class="language-shell"># docker login http://docker.xxxx.com 
+</code></pre>
+<p>登陆完之后，对应的授权信息会以加密的方式存储在<code>/root/.docker/config.json</code>中。</p>
+<p>因为Docker默认是不支持HTTP协议的私服操作，需要编辑<code>/etc/docker/daemon.json</code>设置<code>insecure-registries</code>使其支持HTTP方式:</p>
+<pre><code class="language-json">{
+  &quot;insecure-registries&quot;:[&quot;docker.xxxx.com&quot;]
+}
+</code></pre>
+<p><strong>标记本地镜像</strong></p>
+<p>标记的母的就是将其归类到指定的仓库。</p>
+<pre><code class="language-shell"># docker tag [OPTIONS] IMAGE[:TAG] [REGISTRYHOST/][namespace/]NAME[:TAG]
+例如：
+# docker tag ananconda3-5.2.0:v1 docker.xxxx.com/rdc-base/ananconda3-5.2.0:v1
+</code></pre>
+<p>也可以删除标记：</p>
+<pre><code class="language-shell"># docker rmi [REGISTRYHOST/][nameSpace/]NAME[:TAG]
+</code></pre>
+<p><strong>上传至私服</strong></p>
+<pre><code class="language-shell">docker push docker.xxxx.com/rdc-base/ananconda3-5.2.0:v1
+</code></pre>
+<p><strong>可能出现的问题</strong></p>
+<pre><code>denied: requested access to the resource is denied
+</code></pre>
+<p>该问题一目了然是一个权限问题，通常来说问题出现在了namespace上，对应上面的就是<code>rdc-base</code>，说实话刚接触Docker的人会对repository name这个东西比较懵逼，和我们传统的认知有点区别，我们传统的认为仓库就是不同软件不同版本的集合，但在Docker中仓库是同一类型的镜像，只是TAG（版本）不同。</p>
+<p>那么我们这里的<code>rdc-base</code>是什么呢，很多地方使用username解释的，所实话很误导，其实<code>rdc-base</code>就是一个仓库的命名空间（namespace），对该repository名称做了一个限定，之所以很多地方可以直接用Docker hub或者私服的账号代替，那是因为Docker hub或者私服可能默认给你创建了一个同名的namespace，而很多账号创建后不一定会有默认同名的namespace，所以可能需要网页登录并手动创建。</p>
+<p>待我们push完我们镜像到私服上，仓库实际上的完整名称应该为：<code>rdc-base/ananconda3-5.2.0</code></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/docker" class="tag">
+                    Docker
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/g0S9hEebM">
+                  <h3 class="post-title">
+                    使用JNI封装Faiss
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

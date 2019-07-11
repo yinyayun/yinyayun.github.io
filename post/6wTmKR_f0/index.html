@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -103,6 +103,7 @@
             
             <div class="post-content">
               <p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
+<!-- more -->
 <p>背景是这样的，在我的python服务（可以看做是机器学习模型运行的容器）中运行着不同的机器/深度学习模型，这天呢，一个小哥哥上传了个新的模型，我们暂且叫它为模型A。</p>
 <p>当服务容器尝试对该模型加载启动时，服务安静的闪人了，what，这是什么鬼，难道又是内存溢出，但是观测内存很正常啊，不，一定是意外，重启服务，哇，见鬼了，还是一声不吭的走人，留下来喝杯茶好不好。</p>
 <p><strong>一点点排查</strong></p>

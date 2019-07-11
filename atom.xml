@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-07-11T09:46:46.915Z</updated>
+    <updated>2019-07-11T11:12:20.454Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -18,11 +18,80 @@
         <updated>2019-06-26T11:32:14.000Z</updated>
     </entry>
     <entry>
+        <title type="html"><![CDATA[VirtualBox Centos磁盘扩容笔记]]></title>
+        <id>https://yinyayun.github.io//post/6_fDKITDK</id>
+        <link href="https://yinyayun.github.io//post/6_fDKITDK">
+        </link>
+        <updated>2019-01-30T11:10:21.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Docker入门整理]]></title>
+        <id>https://yinyayun.github.io//post/HjfEYHyRj</id>
+        <link href="https://yinyayun.github.io//post/HjfEYHyRj">
+        </link>
+        <updated>2019-01-25T11:08:28.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[使用JNI封装Faiss]]></title>
+        <id>https://yinyayun.github.io//post/g0S9hEebM</id>
+        <link href="https://yinyayun.github.io//post/g0S9hEebM">
+        </link>
+        <updated>2019-01-18T11:03:06.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[JNI开发整理]]></title>
+        <id>https://yinyayun.github.io//post/mpuD1E0R5</id>
+        <link href="https://yinyayun.github.io//post/mpuD1E0R5">
+        </link>
+        <updated>2019-01-08T11:00:49.000Z</updated>
+        <summary type="html"><![CDATA[<p>在进行JNI开发之前，我们必须要了解下面一些东西，首先JNI开发的流程，再然后我们需要了解一下Native和Java中类型映射关系，以及JVM中已经为我们提供的一些常用JNI函数，最后再了解一下C/C++开发的一些注意事项。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>在进行JNI开发之前，我们必须要了解下面一些东西，首先JNI开发的流程，再然后我们需要了解一下Native和Java中类型映射关系，以及JVM中已经为我们提供的一些常用JNI函数，最后再了解一下C/C++开发的一些注意事项。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Faiss教程翻译]]></title>
+        <id>https://yinyayun.github.io//post/JiVM3YKPA</id>
+        <link href="https://yinyayun.github.io//post/JiVM3YKPA">
+        </link>
+        <updated>2018-12-27T10:41:18.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[点积量化(Product Quantizer)]]></title>
+        <id>https://yinyayun.github.io//post/UjeaMrCsE</id>
+        <link href="https://yinyayun.github.io//post/UjeaMrCsE">
+        </link>
+        <updated>2018-12-19T10:03:17.000Z</updated>
+        <summary type="html"><![CDATA[<blockquote>
+<p>本文用例引用至 <a href="http://mccormickml.com/2017/10/13/product-quantizer-tutorial-part-1">product-quantizer-tutorial</a></p>
+</blockquote>
+]]></summary>
+        <content type="html"><![CDATA[<blockquote>
+<p>本文用例引用至 <a href="http://mccormickml.com/2017/10/13/product-quantizer-tutorial-part-1">product-quantizer-tutorial</a></p>
+</blockquote>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Python module加载机制剖析]]></title>
+        <id>https://yinyayun.github.io//post/jH_HzuYXb</id>
+        <link href="https://yinyayun.github.io//post/jH_HzuYXb">
+        </link>
+        <updated>2018-12-17T10:01:50.000Z</updated>
+        <summary type="html"><![CDATA[<p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[记一次python段错误排查经历]]></title>
         <id>https://yinyayun.github.io//post/6wTmKR_f0</id>
         <link href="https://yinyayun.github.io//post/6wTmKR_f0">
         </link>
         <updated>2018-12-07T09:45:36.000Z</updated>
+        <summary type="html"><![CDATA[<p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Linux下Eclipse以及常用插件安装]]></title>
@@ -30,58 +99,9 @@
         <link href="https://yinyayun.github.io//post/p1QEe9OVk">
         </link>
         <updated>2018-11-30T09:44:39.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[记一次Python服务实例静默退出排查]]></title>
-        <id>https://yinyayun.github.io//post/4d8w7j_we</id>
-        <link href="https://yinyayun.github.io//post/4d8w7j_we">
-        </link>
-        <updated>2018-11-26T09:42:23.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[基于全文检索引擎的语义向量编码和相似度检索]]></title>
-        <id>https://yinyayun.github.io//post/j4lHefq7K</id>
-        <link href="https://yinyayun.github.io//post/j4lHefq7K">
-        </link>
-        <updated>2018-11-16T09:40:09.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Skip List（跳跃表）]]></title>
-        <id>https://yinyayun.github.io//post/P-65A6NeN</id>
-        <link href="https://yinyayun.github.io//post/P-65A6NeN">
-        </link>
-        <updated>2018-11-08T09:35:09.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Python多版本多module动态加载]]></title>
-        <id>https://yinyayun.github.io//post/8FZ96sw5Q</id>
-        <link href="https://yinyayun.github.io//post/8FZ96sw5Q">
-        </link>
-        <updated>2018-10-31T09:33:51.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Solr Overseer]]></title>
-        <id>https://yinyayun.github.io//post/gx0I80dMe</id>
-        <link href="https://yinyayun.github.io//post/gx0I80dMe">
-        </link>
-        <updated>2018-10-18T09:29:55.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Solr中的段合并和文档删除]]></title>
-        <id>https://yinyayun.github.io//post/o8rU6E2yr</id>
-        <link href="https://yinyayun.github.io//post/o8rU6E2yr">
-        </link>
-        <updated>2018-10-11T09:25:08.000Z</updated>
-        <summary type="html"><![CDATA[<p>本文翻译至:<a href="https://lucidworks.com/2017/10/13/segment-merging-deleted-documents-optimize-may-bad/">Segment Merging, Deleted Documents and Why Optimize May Be Bad For You</a>,感兴趣的同学可以直接跳至原文阅读，体验会更好，因为下面有些内容会引起你的高度不适（胡编乱造）。</p>
+        <summary type="html"><![CDATA[<p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
 ]]></summary>
-        <content type="html"><![CDATA[<p>本文翻译至:<a href="https://lucidworks.com/2017/10/13/segment-merging-deleted-documents-optimize-may-bad/">Segment Merging, Deleted Documents and Why Optimize May Be Bad For You</a>,感兴趣的同学可以直接跳至原文阅读，体验会更好，因为下面有些内容会引起你的高度不适（胡编乱造）。</p>
+        <content type="html"><![CDATA[<p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
 ]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[GIT简要教程]]></title>
-        <id>https://yinyayun.github.io//post/git</id>
-        <link href="https://yinyayun.github.io//post/git">
-        </link>
-        <updated>2018-09-20T08:47:45.000Z</updated>
     </entry>
 </feed>

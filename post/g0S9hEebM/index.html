@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>使用JNI封装Faiss | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">使用JNI封装Faiss</h2>
+            <div class="post-date">2019-01-18</div>
+            
+            <div class="post-content">
+              <h2 id="编译faiss">编译Faiss</h2>
+<h3 id="安装openblas">安装OpenBlas</h3>
+<p>OpenBlas是科学计算库，是基于BLAS 和 Lapack的接口规范进行了实现，实现了BLAS 全部功能，以及Lapack的部分功能。</p>
+<ol>
+<li>
+<p>下载 <a href="https://github.com/xianyi/OpenBLAS/releases/tag/v0.3.4">OpenBLAS-0.3.4</a></p>
+</li>
+<li>
+<p>解压进入目录</p>
+</li>
+<li>
+<p>执行make或者gmake</p>
+<pre><code class="language-shell"># gmake
+</code></pre>
+</li>
+<li>
+<p>install</p>
+<pre><code># mkdir /opt/openblas-0.3.4
+# make PREFIX=/opt/openblas-0.3.4 install
+# ln -s /opt/openblas-0.3.4/lib/libopenblas.so /usr/lib64/libopenblas.so
+</code></pre>
+</li>
+</ol>
+<h3 id="安装lapack">安装Lapack</h3>
+<p>LAPACK 是用fortran语言编写的线性代数库，它的底层也是BLAS，所以我们在安装LAPACK 前需要先安装BLAS。</p>
+<p><strong>安装<code>gfortran</code></strong></p>
+<pre><code># yum install gcc-gfortran
+</code></pre>
+<p><strong>安装BLAS</strong></p>
+<ol>
+<li>
+<p>下载 <a href="http://www.netlib.org/blas/blas-3.8.0.tgz">BLAS-3.8.0</a></p>
+</li>
+<li>
+<p>解压进入安装目录</p>
+</li>
+<li>
+<p>执行make命令，生成.a的静态文件，之后设置BLAS环境变量</p>
+<pre><code class="language-shell"># make 
+# mv blas_LINUX.a libblas.a
+# cp libblas.a /usr/local/lib/
+</code></pre>
+</li>
+</ol>
+<p><strong>安装LAPACK</strong></p>
+<ol>
+<li>
+<p>下载 <a href="http://www.netlib.org/blas/blas-3.8.0.tgz">blas-3.8.0.tgz</a></p>
+</li>
+<li>
+<p>解压压缩包</p>
+</li>
+<li>
+<p>创建lapack-build目录，目录结构如下：</p>
+<pre><code class="language-shell">|- lapack-3.8.0
+|- lapack-build
+</code></pre>
+</li>
+<li>
+<p>make &amp; install</p>
+<pre><code class="language-shell"># cd lapack-build
+# cmake -DCMAKE_INSTALL_PREFIX=/usr/local/lapack-3.8.0 -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=ON ../lapack-3.8.0
+# make &amp;&amp; make install
+</code></pre>
+</li>
+<li>
+<p>在/usr/local/lib下创建软链</p>
+<pre><code class="language-shell"># ln -s /usr/local/lapack-3.8.0/lib64/liblapack.so /usr/local/lib/liblapack.so
+</code></pre>
+</li>
+</ol>
+<p><strong>安装libgfortran4</strong></p>
+<pre><code class="language-shell">yum install libgfortran4
+</code></pre>
+<h3 id="编译faiss-2">编译Faiss</h3>
+<ol>
+<li>
+<p>下载Faiss-1.4.0</p>
+</li>
+<li>
+<p>解压压缩包，并进入解压目录</p>
+</li>
+<li>
+<p>configure</p>
+<pre><code class="language-shell"># ./configure --prefix=/opt/faiss-1.4.0 --with-blas=/usr/lib64/libopenblas.so --with-lapack=/usr/local/lib/liblapack.so
+</code></pre>
+<p>这里主要指定目标地址，以及openblas、lapack库地址。</p>
+</li>
+<li>
+<p>make &amp;&amp; make install</p>
+<pre><code class="language-shell"># make &amp;&amp; make install
+</code></pre>
+<p>到这里我们就可以在<code>/opt/faiss-1.4.0</code>中找到我们想要的.so文件了。</p>
+</li>
+</ol>
+<h2 id="jni开发">JNI开发</h2>
+<p>这里不给出具体的细节，关于JNI开发的一些内容可参考我的另外一篇博客<a href="http://yinyayun.top/jni-tutorial/">JNI开发整理</a>，下面拎出来两个在开发过程中遇到的问题：</p>
+<p><strong>uint8_t到Java类型的转换</strong></p>
+<p>先看一下Faiss中<code>OnDiskInvertedLists</code>结构体的一个方法：</p>
+<pre><code class="language-c++">const uint8_t * get_codes (size_t list_no) const override;
+</code></pre>
+<p>该方法返回了一个<code>uint8_t</code>类型的数组对象，这可咋整？在<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/types.html">JNI Types and Data Structures</a>一文中我们发现：</p>
+<table>
+<thead>
+<tr>
+<th>Java Type</th>
+<th>Native Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>jboolean</td>
+<td>unsigned 8 bits</td>
+</tr>
+</tbody>
+</table>
+<p>一开始很惊喜，但是仔细一想不对啊，这只能说明java中的boolean映射到Native中是用<code>uint8_t</code>存储的，不能说明<code>boolean</code>就是无符号8位实现，翻阅<a href="https://docs.oracle.com/javase/specs/jvms/se11/html/jvms-2.html#jvms-2.2">The Java Virtual Machine Specification</a>，也提到了对于boolean array，每个boolean元素使用8bits，看到这这，我差点在定义native方法时就用boolean[]作为返回值了：</p>
+<pre><code class="language-java">public native boolean[]get_codes(int list_no);
+</code></pre>
+<p>但是看上去总感觉有那么点怪怪的，脑子中一直有一个byte在盘旋，但是java中byte是有符号8bit的实现，不敢用啊，纠结了一会之后发现，好像陷入了一个误区啊，OnDiskInvertedLists中codes也就是<code>uint8_t *</code>并不是用来参与数值运算的啊，有符号无符号有啥关系呢，作为编码存储的话有效位还是8位啊，是果断改为byte[]实现：</p>
+<pre><code class="language-java">//java class OnDiskInvertedLists
+public native byte[] get_codes(int list_no);
+</code></pre>
+<pre><code class="language-c++">//JNIOnDiskInvertedLists.cpp
+JNIEXPORT jbyteArray JNICALL Java_xxx_xxx_OnDiskInvertedLists_get_1codes(
+		JNIEnv *env, jobject obj, jint list_no) {
+	OnDiskInvertedLists* ilist = currentIList(env, obj);
+	const uint8_t* codes = ilist-&gt;get_codes(list_no);
+	int len = ilist-&gt;list_size(list_no) * ilist-&gt;code_size;
+	return newArray(env, len, codes);
+}
+</code></pre>
+<p>最后再贴一段无符号转到有符号之后，到底有损还是无损的测试代码？</p>
+<pre><code class="language-c++">uint8_t uint_15 = 15;
+signed char int_15 = (signed char) uint_15;
+cout &lt;&lt; &quot;1111转有符号后的高位:&quot; &lt;&lt; (short) (int_15 &gt;&gt; 3) &lt;&lt; endl;
+uint8_t uint_7 = 7;
+signed char int_7 = (signed char) uint_7;
+cout &lt;&lt; &quot;0111转有符号后的高位:&quot; &lt;&lt; (short) (int_7 &gt;&gt; 3) &lt;&lt; endl;
+</code></pre>
+<p>输出：</p>
+<pre><code class="language-shell">1111转有符号后的高位:1
+0111转有符号后的高位:0
+</code></pre>
+<p><strong>多例的实现</strong></p>
+<p>这可能是在JNI开发中遇到的最多的问题，因为JNI开发实际上是面向函数的，看下面一段代码：</p>
+<pre><code class="language-java">//Java class A
+public class A{
+    public A(int v){
+        init(int v);
+    }
+    public native init(int v);
+    public native int invokeCMethod();
+    public static void main(String[]args){
+        A a1 = new A(1);
+        System.out.println(a1.invokeCMethod());
+        A a2 = new A(2);
+        System.out.println(a2.invokeCMethod());
+    }
+}
+</code></pre>
+<pre><code class="language-c++">//A.cpp
+class A{
+    private int value;
+    public A(int v){value=v;}
+    public int invokeCMethod(){ return value;}
+}
+//JNI_A.cpp
+static A* a = NULL;
+JNIEXPORT void JNICALL Java_A_init(JNIEnv *env, jobject obj, jint v){
+    a = new A(v);
+}
+JNIEXPORT jint JNICALL Java_A_invokeCMethod(JNIEnv *env, jobject obj){
+   return a-&gt;invokeCMethod();
+}
+</code></pre>
+<p>当只有单个线程的时候，我们确实可以做到了多例的访问，但是如果有多个线程，或者在new完a2之后，我们再想使用a1时，这就不太可能了，那么怎么办呢？这里有两种解决思路:</p>
+<p>第一种，在JNI_A.cpp定义一个全局的map对象，同时在new Java对象时，生成一个key值，每次调用native函数时都传递该key值，在JNI_A.cpp中根据key值从map中添加/获取对象进行调用：</p>
+<pre><code class="language-Java">//Java class A
+public class A{
+    private String key;
+	public A(int v){
+        key = UUID.randomUUID().toString();
+        init(key,v);
+    }
+    public native init(String key, int v);
+    public native int invokeCMethod(String key);
+}
+</code></pre>
+<pre><code class="language-c++">//JNI_A.cpp
+static map&lt;string, A&gt; *aMap = new map&lt;string, A&gt;();
+	
+JNIEXPORT void JNICALL Java_A_init(JNIEnv *env, jobject obj,jstring key, jint v){
+    const char *c_str = env-&gt;GetStringUTFChars(key, 0);
+	A* a = new A(v);
+	(*aMap)[c_str]=*a;
+	env-&gt;ReleaseStringUTFChars(key, c_str);
+}
+JNIEXPORT jint JNICALL Java_A_invokeCMethod(JNIEnv *env,jstring key, jobject obj){
+    const char *c_str = env-&gt;GetStringUTFChars(key, 0);
+	map&lt;string, A&gt;::iterator iter = aMap-&gt;find(c_str);
+	env-&gt;ReleaseStringUTFChars(key, c_str);
+	if (iter == aMap-&gt;end()) {
+		jclass exClass = env-&gt;FindClass(&quot;java/lang/NullPointerException&quot;);
+		env-&gt;ThrowNew(exClass, &quot;can not find instnce A for key!&quot;);
+	}
+    return &amp;(iter-&gt;second)-&gt;invokeCMethod();
+}
+</code></pre>
+<p>第二种实现比较粗暴，但是代码比较精简，主要借助c/c++中的<code>reinterpret_cast</code>进行实现，它可以将将对应的long类型地址转为实际的对象类型，我们直接看代码：</p>
+<pre><code class="language-java">//Java class A
+public class A{
+    private long point;//保存c++中A对象的地址空间
+	public A(int v){init(v);}
+    public native init(int v);
+    public native int invokeCMethod(long point,String key);
+}
+</code></pre>
+<pre><code class="language-c++">JNIEXPORT void JNICALL Java_A_init(JNIEnv *env, jobject obj, jint v){
+	A* a = new A(v);
+	jclass jcls = env-&gt;FindClass(&quot;com/focustech/fsp/faiss/jni/CBase&quot;);
+	jfieldID pointField = env-&gt;GetFieldID(jcls, &quot;point&quot;, &quot;J&quot;);
+	env-&gt;SetLongField(obj, pointField, point);
+}
+JNIEXPORT jint JNICALL Java_A_invokeCMethod(JNIEnv *env,jobject obj,jlong point){
+	A* a = reinterpret_cast&lt;A*&gt;(point);
+    return a-&gt;invokeCMethod();
+}
+</code></pre>
+<p>创建C++中的A对象，然后将地址反写回Java对象中，这样下回调用时直接通过地址映射到对应的C++对象，其实上面两种方法在调用invokeCMethod()时都可以不显示的传递key值或地址参数，因为JNI查找并调用函数时，已经将对应的Java对象作为参数传递到Native函数中，但是这样每次通过该对象取属性效率到底高还是不高，最终还是得通过测试来确认（目前在我的项目中，主要通过该方式进行实现）。</p>
+<p>对Faiss的Java调用实现，在我的github上已经创建项目(<a href="https://github.com/yinyayun/faiss-java">faiss-java</a>)，目前只实现了IndexFlat接口，后续还会持续添加。</p>
+<p>最后的最后，贴出我项目中编译JNI实现用的<code>CMakeLists.txt</code>:</p>
+<pre><code class="language-cmake"># https://cmake.org/cmake/help/v3.0/index.html
+# CMake 最低版本号要求
+cmake_minimum_required (VERSION 2.6)
+add_definitions(-std=c++11)
+
+# 变量设置
+set (FAISS_HOME &quot;/opt/faiss-1.4.0&quot;)
+set (OPENBLAS &quot;/opt/openblas-0.3.3&quot;)
+set (JAVA_HOME &quot;/opt/jdk1.8.0_40&quot;)
+
+MESSAGE(STATUS &quot;JAVA_HOME = ${JAVA_HOME}&quot;)
+MESSAGE(STATUS &quot;CMAKE_HOME_DIRECTORY = ${CMAKE_HOME_DIRECTORY}&quot;)
+MESSAGE(STATUS &quot;FAISS_HOME = ${FAISS_HOME}.&quot;)
+
+# 项目信息
+project (&quot;faiss4j&quot;)
+
+#头文件查找路径，相当于GCC的-I参数
+include_directories(&quot;${JAVA_HOME}/include&quot;)
+include_directories(&quot;${JAVA_HOME}/include/linux&quot;)
+include_directories(&quot;${CMAKE_HOME_DIRECTORY}/src/main/resources/fass-jni&quot;)
+include_directories(&quot;${FAISS_HOME}/include/faiss&quot;)
+# 查找当前目录下的所有源文件
+# 并将名称保存到 DIR_SRCS 变量
+aux_source_directory(&quot;${CMAKE_HOME_DIRECTORY}/src/main/resources/fass-jni&quot; DIR_SRCS)
+MESSAGE(STATUS &quot;DIR_SRCS = ${DIR_SRCS}.&quot;)
+
+link_libraries(&quot;${FAISS_HOME}/lib/libfaiss.so&quot;)
+add_library(${PROJECT_NAME} SHARED ${DIR_SRCS} &quot;${FAISS_HOME}/lib/libfaiss.so&quot;)
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/faiss" class="tag">
+                    Faiss
+                  </a>
+                
+                  <a href="https://yinyayun.github.io//tag/java" class="tag">
+                    Java
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/mpuD1E0R5">
+                  <h3 class="post-title">
+                    JNI开发整理
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

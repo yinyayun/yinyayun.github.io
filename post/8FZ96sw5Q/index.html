@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -102,14 +102,14 @@
             <div class="post-date">2018-10-31</div>
             
             <div class="post-content">
-              <h2 id="背景">背景</h2>
-<p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。
+              <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。
 无论是那种机器学习模型，要进行使用，肯定逃不了这两个套路：</p>
 <ul>
 <li>模型的加载（初始化）</li>
 <li>模型的调用（预测）
 也就是说我们可以在平台层面进行一定的约束，基于我们的规范实现，然后我们提供对应的服务。</li>
 </ul>
+<!-- more -->
 <p>规范制定好了之后，首先面临的问题就是，如何对用户上传的py文件进行动态加载，再者模型在迭代的过程中会存在多个版本同时在线的场景，也就是说还得支持同名module的动态加载。</p>
 <p>这里其实还隐藏一个问题，我们制定的规范就是一个python类，也就是说，我们只需要对用户上传的实现该规范的类进行加载，但是呢用户可能会为该类添加其它一些依赖module，也就是说会上传多个py文件，也正是因为该场景的存在，对module的多版本动态加载带来了一点点困难，后面我们具体分析。</p>
 <h2 id="你可能需要知道的">你可能需要知道的</h2>

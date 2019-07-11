@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562838388346">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562843453987">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562838388346" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562843453987" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -103,7 +103,7 @@
             
             <div class="post-content">
               <p>本文翻译至:<a href="https://lucidworks.com/2017/10/13/segment-merging-deleted-documents-optimize-may-bad/">Segment Merging, Deleted Documents and Why Optimize May Be Bad For You</a>,感兴趣的同学可以直接跳至原文阅读，体验会更好，因为下面有些内容会引起你的高度不适（胡编乱造）。</p>
-<!-- more --> 
+<!-- more -->
 <p>在详说之前，我们先明确一下，lucene/solr中的已删除文档由两种情况产生，一种就是直接的delete操作，还有就是update操作，因为lucene的索引采用append的方式写，所以在update既需要把之前的文档删除，也需要将新文档写进索引。</p>
 <h2 id="段合并和文档删除">段合并和文档删除</h2>
 <p>lucene/solr的indexing，无论是更新还是删除，都不会立即从索引中移除文档，它是采用一种在原段中“标记为已删除”的方式，使得在search结果中不显示。当然另外一方面，这就导致一定程度的浪费，因为你的索引中可能包含了15%-20%已经删除的文档（实际上已经不需要存在硬盘上）。</p>
