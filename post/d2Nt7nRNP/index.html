@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562892772478">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562892918365">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562892772478" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562892918365" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -105,6 +105,7 @@
               <p>本文参考：<a href="https://lucidworks.com/2013/08/23/understanding-transaction-logs-softcommit-and-commit-in-sorlcloud/">Understanding Transaction Logs, Soft Commit and Commit in SolrCloud</a></p>
 <p>recovery过程中会存在很多坑，如果不知道原因，会很头疼，例如recovery了一会之后，从节点变为down了，是不是很懵逼，其实呢在recovery过程中，如果leader发现与从节点通信失败，则会主动将从节点的状态置为down，而且从节点在recovery进程中还无法直接将一个down状态转换为active，只能由leader发送leader initial recovery请求触发从节点再次recovery，直到状态OK。</p>
 <p>一上来就说这，貌似有点枯燥，当然啦，说这些呢也是为了督促我好好了解recovery。</p>
+<!-- more -->
 <h2 id="recovery策略">Recovery策略</h2>
 <p>Solr中recovery有两种策略，这两中策略也象征了recovery的程度：</p>
 <ul>

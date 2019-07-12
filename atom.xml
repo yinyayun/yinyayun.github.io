@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-07-12T00:53:20.337Z</updated>
+    <updated>2019-07-12T00:55:35.412Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -74,6 +74,14 @@ VBoxManage clonehd &quot;new-virtualdisk.vdi&quot; &quot;virtualdisk.vmdk&quot; 
         <link href="https://yinyayun.github.io//post/g0S9hEebM">
         </link>
         <updated>2019-01-18T11:03:06.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="编译faiss">编译Faiss</h2>
+<h3 id="安装openblas">安装OpenBlas</h3>
+<p>OpenBlas是科学计算库，是基于BLAS 和 Lapack的接口规范进行了实现，实现了BLAS 全部功能，以及Lapack的部分功能。</p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="编译faiss">编译Faiss</h2>
+<h3 id="安装openblas">安装OpenBlas</h3>
+<p>OpenBlas是科学计算库，是基于BLAS 和 Lapack的接口规范进行了实现，实现了BLAS 全部功能，以及Lapack的部分功能。</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[JNI开发整理]]></title>
@@ -92,6 +100,14 @@ VBoxManage clonehd &quot;new-virtualdisk.vdi&quot; &quot;virtualdisk.vmdk&quot; 
         <link href="https://yinyayun.github.io//post/JiVM3YKPA">
         </link>
         <updated>2018-12-27T10:41:18.000Z</updated>
+        <summary type="html"><![CDATA[<h2 id="教程">教程</h2>
+<h3 id="更快地搜索">更快地搜索</h3>
+<p>为了加快搜索，将数据集合拆分成多个段。我们在多维空间定义了<code>Voronoi单元</code>(cell),数据集的每个向量都会落入一个单元中。检索时找query落入的单元，query向量与单元中的向量比较，从而得到近邻向量。Faiss中<code>IndexIVFFlat</code>类就是使用了对应的实现。</p>
+]]></summary>
+        <content type="html"><![CDATA[<h2 id="教程">教程</h2>
+<h3 id="更快地搜索">更快地搜索</h3>
+<p>为了加快搜索，将数据集合拆分成多个段。我们在多维空间定义了<code>Voronoi单元</code>(cell),数据集的每个向量都会落入一个单元中。检索时找query落入的单元，query向量与单元中的向量比较，从而得到近邻向量。Faiss中<code>IndexIVFFlat</code>类就是使用了对应的实现。</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[点积量化(Product Quantizer)]]></title>
