@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562893128499">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562893350880">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562893128499" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562893350880" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -101,14 +101,7 @@
                   2019-01-30
                 </div>
                 <div class="post-abstract">
-                  <h2 id="vmdk格式扩容">VMDK格式扩容</h2>
-<p>估计是因为<code>vmdk</code>是VMWare的格式，所以VirtualBox并不直接支持对<code>vmdk</code>扩容，所以需要先转为<code>vdi</code>格式进行扩容。</p>
-<pre><code class="language-shell">VBoxManage clonehd &quot;virtualdisk.vmdk&quot; &quot;new-virtualdisk.vdi&quot; --format vdi
-VBoxManage modifyhd &quot;new-virtualdisk.vdi&quot; --resize 51200
-//如果需要还可以转回去
-VBoxManage clonehd &quot;new-virtualdisk.vdi&quot; &quot;virtualdisk.vmdk&quot; --format vmdk
-</code></pre>
-
+                  
                 </div>
               </div>
               
@@ -123,8 +116,7 @@ VBoxManage clonehd &quot;new-virtualdisk.vdi&quot; &quot;virtualdisk.vmdk&quot; 
                   2019-01-25
                 </div>
                 <div class="post-abstract">
-                  <h2 id="docker介绍">Docker介绍</h2>
-<p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
+                  <p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
 <ul>
 <li>
 <p>镜像 ，镜像是一个可执行的package，包含程序运行需要的一切，如代码、库（libraries）、环境变量、配置文件等等</p>
@@ -151,10 +143,7 @@ VBoxManage clonehd &quot;new-virtualdisk.vdi&quot; &quot;virtualdisk.vmdk&quot; 
                   2019-01-18
                 </div>
                 <div class="post-abstract">
-                  <h2 id="编译faiss">编译Faiss</h2>
-<h3 id="安装openblas">安装OpenBlas</h3>
-<p>OpenBlas是科学计算库，是基于BLAS 和 Lapack的接口规范进行了实现，实现了BLAS 全部功能，以及Lapack的部分功能。</p>
-
+                  
                 </div>
               </div>
               
@@ -185,10 +174,7 @@ VBoxManage clonehd &quot;new-virtualdisk.vdi&quot; &quot;virtualdisk.vmdk&quot; 
                   2018-12-27
                 </div>
                 <div class="post-abstract">
-                  <h2 id="教程">教程</h2>
-<h3 id="更快地搜索">更快地搜索</h3>
-<p>为了加快搜索，将数据集合拆分成多个段。我们在多维空间定义了<code>Voronoi单元</code>(cell),数据集的每个向量都会落入一个单元中。检索时找query落入的单元，query向量与单元中的向量比较，从而得到近邻向量。Faiss中<code>IndexIVFFlat</code>类就是使用了对应的实现。</p>
-
+                  
                 </div>
               </div>
               
