@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562893350880">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562900191685">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562893350880" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562900191685" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -94,6 +94,21 @@
           
             <article class="post-item">
               <div class="left">
+                <a href="https://yinyayun.github.io//post/qmx0wDoyT">
+                  <h2 class="post-title">初识ZeroMQ</h2>
+                </a>
+                <div class="post-date">
+                  2019-07-11
+                </div>
+                <div class="post-abstract">
+                  
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
                 <a href="https://yinyayun.github.io//post/6_fDKITDK">
                   <h2 class="post-title">VirtualBox Centos磁盘扩容笔记</h2>
                 </a>
@@ -117,17 +132,6 @@
                 </div>
                 <div class="post-abstract">
                   <p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
-<ul>
-<li>
-<p>镜像 ，镜像是一个可执行的package，包含程序运行需要的一切，如代码、库（libraries）、环境变量、配置文件等等</p>
-</li>
-<li>
-<p>容器，容器是镜像的实例，可以通过<code>docker ps</code>查看当前运行的所有容器进程。</p>
-</li>
-<li>
-<p>Docker Registry，镜像的集中式存储管理服务，一个Docker Registry包含多个仓库（ Repository ） ， 每个仓库可以包含多个标签（ Tag ） ，每个标签对应一个镜像。</p>
-</li>
-</ul>
 
                 </div>
               </div>
@@ -240,24 +244,6 @@
                 </div>
                 <div class="post-abstract">
                   <p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
-
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/4d8w7j_we">
-                  <h2 class="post-title">记一次Python服务实例静默退出排查</h2>
-                </a>
-                <div class="post-date">
-                  2018-11-26
-                </div>
-                <div class="post-abstract">
-                  <p>这段时间发现一个python的服务实例经常静默退出，从应用日志里未找到任何异常现场，一切都很正常。</p>
-<p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
-<p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
 
                 </div>
               </div>

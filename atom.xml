@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-07-12T01:02:40.590Z</updated>
+    <updated>2019-07-12T02:56:33.913Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://yinyayun.github.io//images/avatar.png</logo>
     <icon>https://yinyayun.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, 殷亚云的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[初识ZeroMQ]]></title>
+        <id>https://yinyayun.github.io//post/qmx0wDoyT</id>
+        <link href="https://yinyayun.github.io//post/qmx0wDoyT">
+        </link>
+        <updated>2019-07-11T01:50:57.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[VirtualBox Centos磁盘扩容笔记]]></title>
         <id>https://yinyayun.github.io//post/6_fDKITDK</id>
@@ -24,30 +31,8 @@
         </link>
         <updated>2019-01-25T11:08:28.000Z</updated>
         <summary type="html"><![CDATA[<p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
-<ul>
-<li>
-<p>镜像 ，镜像是一个可执行的package，包含程序运行需要的一切，如代码、库（libraries）、环境变量、配置文件等等</p>
-</li>
-<li>
-<p>容器，容器是镜像的实例，可以通过<code>docker ps</code>查看当前运行的所有容器进程。</p>
-</li>
-<li>
-<p>Docker Registry，镜像的集中式存储管理服务，一个Docker Registry包含多个仓库（ Repository ） ， 每个仓库可以包含多个标签（ Tag ） ，每个标签对应一个镜像。</p>
-</li>
-</ul>
 ]]></summary>
         <content type="html"><![CDATA[<p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
-<ul>
-<li>
-<p>镜像 ，镜像是一个可执行的package，包含程序运行需要的一切，如代码、库（libraries）、环境变量、配置文件等等</p>
-</li>
-<li>
-<p>容器，容器是镜像的实例，可以通过<code>docker ps</code>查看当前运行的所有容器进程。</p>
-</li>
-<li>
-<p>Docker Registry，镜像的集中式存储管理服务，一个Docker Registry包含多个仓库（ Repository ） ， 每个仓库可以包含多个标签（ Tag ） ，每个标签对应一个镜像。</p>
-</li>
-</ul>
 ]]></content>
     </entry>
     <entry>
@@ -121,21 +106,6 @@
         <summary type="html"><![CDATA[<p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
 ]]></summary>
         <content type="html"><![CDATA[<p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[记一次Python服务实例静默退出排查]]></title>
-        <id>https://yinyayun.github.io//post/4d8w7j_we</id>
-        <link href="https://yinyayun.github.io//post/4d8w7j_we">
-        </link>
-        <updated>2018-11-26T09:42:23.000Z</updated>
-        <summary type="html"><![CDATA[<p>这段时间发现一个python的服务实例经常静默退出，从应用日志里未找到任何异常现场，一切都很正常。</p>
-<p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
-<p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>这段时间发现一个python的服务实例经常静默退出，从应用日志里未找到任何异常现场，一切都很正常。</p>
-<p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
-<p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
 ]]></content>
     </entry>
 </feed>

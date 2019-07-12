@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>初识ZeroMQ | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562900191685">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562900191685" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">初识ZeroMQ</h2>
+            <div class="post-date">2019-07-11</div>
+            
+            <div class="post-content">
+              <p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
+<p><strong>ZMQ连接协议</strong>
+ZMQ提供多种传输协议用于不同场景下的通信，主要有三个单播传输协议和两个广播协议。</p>
+<ul>
+<li>单播传输
+<ul>
+<li>inproc，用于进程内不同线程之间的消息传输</li>
+<li>ipc，适用于进程间的通信</li>
+<li>tcp</li>
+</ul>
+</li>
+<li>广播协议
+<ul>
+<li>pgm</li>
+<li>epgm</li>
+</ul>
+</li>
+</ul>
+<p>同时服务端也可以使用一个套接字，就可以绑定多个协议，也就是说可以使用不同协议建立连接：</p>
+<pre><code class="language-c">zmq_bind (socket, &quot;tcp://*:5555&quot;);
+zmq_bind (socket, &quot;tcp://*:9999&quot;);
+zmq_bind (socket, &quot;ipc://myserver.ipc&quot;);
+</code></pre>
+<p><strong>套接字操作</strong></p>
+<ul>
+<li>创建销毁套接字</li>
+</ul>
+<pre><code class="language-c++">zmq_socket();
+zmq_close();
+</code></pre>
+<ul>
+<li>配置套接字</li>
+</ul>
+<pre><code class="language-c++">zmq_setsockopt();
+zmq_getsockopt();
+</code></pre>
+<ul>
+<li>建立连接</li>
+</ul>
+<pre><code class="language-c++"># 该方式创建的套接字，对应着服务端
+zmq_bind(); 
+# 该方式创建的套接字，对应着客户端
+zmq_connect(); 
+</code></pre>
+<p>当客户端使用zmq_connect()进行连接时，并不要求服务端已经进行了端口绑定.</p>
+<ul>
+<li>发送和接受消息</li>
+</ul>
+<pre><code class="language-c++">	zmq_send();
+	zmq_recv();
+</code></pre>
+<p><strong>TCP套接字和ZMQ套接字的区别</strong></p>
+<ul>
+<li>ZMQ套接字传输的是指定长度的二进制数据块，而TCP是字节。</li>
+<li>ZMQ发送消息，先传输到本地的缓冲队列</li>
+<li>ZMQ套接字支持和多个套接字连接，而TCP只能点对点</li>
+</ul>
+<p><strong>套接字类型</strong>
+套接字类型决定了套接字的行为，即在发送或接受消息时的规则。</p>
+<ul>
+<li>ZMQ_REP</li>
+<li>ZMQ_PUB</li>
+<li>ZMQ_SUB</li>
+<li>ZMQ_PUSH</li>
+<li>ZMQ_PULL</li>
+</ul>
+<p><strong>消息模式</strong></p>
+<ul>
+<li>请求应答模式，将一组服务端和一组客户端连接，</li>
+<li>发布订阅，将一组发布者和一组订阅者相连接</li>
+<li>管道模式，使用扇入或者扇出组装多个节点</li>
+<li>排他对接模式，将两个套接字一对一连接起来</li>
+</ul>
+<p>常用的套接字连接对:</p>
+<ul>
+<li>PUB - SUB</li>
+<li>REQ - REP</li>
+<li>REQ - ROUTER</li>
+<li>DEALER - REP</li>
+<li>DEALER - ROUTER</li>
+<li>DEALER - DEALER</li>
+<li>ROUTER - ROUTER</li>
+<li>PUSH - PULL</li>
+<li>PAIR - PAIR</li>
+</ul>
+<h2 id="demo">Demo</h2>
+<p><strong>PUB - SUB（发布订阅）</strong>
+下面的天气信息发布订阅服务，Server绑定PUB套接字在5556端口，Client端创建SUB套接字并连接至服务端的5556端口。
+<img src="https://yinyayun.github.io//post-images/1562897403739.png" alt="PUB-SUB">
+服务端代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void)
+{
+    //  准备上下文和PUB套接字
+    void *context = zmq_init (1);
+    void *publisher = zmq_socket (context, ZMQ_PUB);
+    zmq_bind (publisher, &quot;tcp://*:5556&quot;);
+    zmq_bind (publisher, &quot;ipc://weather.ipc&quot;);
+ 
+    //  初始化随机数生成器
+    srandom ((unsigned) time (NULL));
+    while (1) {
+        //  生成数据
+        int zipcode, temperature, relhumidity;
+        zipcode     = randof (100000);
+        temperature = randof (215) - 80;
+        relhumidity = randof (50) + 10;
+ 
+        //  向所有订阅者发送消息
+        char update [20];
+        sprintf (update, &quot;%05d %d %d&quot;, zipcode, temperature, relhumidity);
+        s_send (publisher, update);
+    }
+    zmq_close (publisher);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p>客户端代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (int argc, char *argv [])
+{
+    void *context = zmq_init (1);
+ 
+    //  创建连接至服务端的套接字
+    printf (&quot;正在收集气象信息...\n&quot;);
+    void *subscriber = zmq_socket (context, ZMQ_SUB);
+    zmq_connect (subscriber, &quot;tcp://localhost:5556&quot;);
+ 
+    //  设置订阅信息，默认为纽约，邮编10001
+    char *filter = (argc &gt; 1)? argv [1]: &quot;10001 &quot;;
+    zmq_setsockopt (subscriber, ZMQ_SUBSCRIBE, filter, strlen (filter));
+ 
+    //  处理100条更新信息
+    int update_nbr;
+    long total_temp = 0;
+    for (update_nbr = 0; update_nbr &lt; 100; update_nbr++) {
+        char *string = s_recv (subscriber);
+        int zipcode, temperature, relhumidity;
+        sscanf (string, &quot;%d %d %d&quot;,
+            &amp;zipcode, &amp;temperature, &amp;relhumidity);
+        total_temp += temperature;
+        free (string);
+    }
+    printf (&quot;地区邮编 '%s' 的平均温度为 %dF\n&quot;,
+        filter, (int) (total_temp / update_nbr));
+ 
+    zmq_close (subscriber);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p><strong>PUSH - PULL</strong>
+下面的服务架构中，任务分发器（ventilator）绑定PUSH套接字在5557端口，在通知任务收集器（sink）后，产生100个任务分发给Worker；Worker从任务分发器PULL任务，任务结束后将结果PUSH给
+任务分发器PULL任务，任务结束后将结果PUSH给任务收集器。
+<img src="https://yinyayun.github.io//post-images/1562898414634.png" alt="PUSH - PULL"></p>
+<p>任务分发器代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    void *context = zmq_init (1);
+ 
+    //  用于发送消息的套接字
+    void *sender = zmq_socket (context, ZMQ_PUSH);
+    zmq_bind (sender, &quot;tcp://*:5557&quot;);
+ 
+    //  用于发送开始信号的套接字
+    void *sink = zmq_socket (context, ZMQ_PUSH);
+    zmq_connect (sink, &quot;tcp://localhost:5558&quot;);
+ 
+    printf (&quot;准备好worker后按任意键开始: &quot;);
+    getchar ();
+    printf (&quot;正在向worker分配任务...\n&quot;);
+ 
+    //  发送开始信号
+    s_send (sink, &quot;0&quot;);
+ 
+    //  初始化随机数生成器
+    srandom ((unsigned) time (NULL));
+ 
+    //  发送100个任务
+    int task_nbr;
+    int total_msec = 0;     //  预计执行时间（毫秒）
+    for (task_nbr = 0; task_nbr &lt; 100; task_nbr++) {
+        int workload;
+        //  随机产生1-100毫秒的工作量
+        workload = randof (100) + 1;
+        total_msec += workload;
+        char string [10];
+        sprintf (string, &quot;%d&quot;, workload);
+        s_send (sender, string);
+    }
+    printf (&quot;预计执行时间: %d 毫秒\n&quot;, total_msec);
+    sleep (1);              //  延迟一段时间，让任务分发完成
+ 
+    zmq_close (sink);
+    zmq_close (sender);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p>Worker代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    void *context = zmq_init (1);
+ 
+    //  获取任务的套接字
+    void *receiver = zmq_socket (context, ZMQ_PULL);
+    zmq_connect (receiver, &quot;tcp://localhost:5557&quot;);
+ 
+    //  发送结果的套接字
+    void *sender = zmq_socket (context, ZMQ_PUSH);
+    zmq_connect (sender, &quot;tcp://localhost:5558&quot;);
+ 
+    //  循环处理任务
+    while (1) {
+        char *string = s_recv (receiver);
+        //  输出处理进度
+        fflush (stdout);
+        printf (&quot;%s.&quot;, string);
+ 
+        //  开始处理
+        s_sleep (atoi (string));
+        free (string);
+ 
+        //  发送结果
+        s_send (sender, &quot;&quot;);
+    }
+    zmq_close (receiver);
+    zmq_close (sender);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p>收集器代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    //  准备上下文和套接字
+    void *context = zmq_init (1);
+    void *receiver = zmq_socket (context, ZMQ_PULL);
+    zmq_bind (receiver, &quot;tcp://*:5558&quot;);
+ 
+    //  等待开始信号
+    char *string = s_recv (receiver);
+    free (string);
+ 
+    //  开始计时
+    int64_t start_time = s_clock ();
+
+    //  确定100个任务均已处理
+    int task_nbr;
+    for (task_nbr = 0; task_nbr &lt; 100; task_nbr++) {
+        char *string = s_recv (receiver);
+        free (string);
+        if ((task_nbr / 10) * 10 == task_nbr)
+            printf (&quot;:&quot;);
+        else
+            printf (&quot;.&quot;);
+        fflush (stdout);
+    }
+    //  计算并输出总执行时间
+    printf (&quot;执行时间: %d 毫秒\n&quot;, 
+        (int) (s_clock () - start_time));
+ 
+    zmq_close (receiver);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p><strong>REQ-ROUTER、DEALER-REP</strong>
+简答的请求应答模式中（如下图），REQ直接与REP绑定，即客户端直接连接服务端，但是如果客户端数量变化了，对客户端是不可知的。
+<img src="https://yinyayun.github.io//post-images/1562899474204.png" alt="rep-req"></p>
+<p>所以，为了为了能够支持服务端的动态扩展，可以引入一个代理（Broker）装置，Broker通过ROUTER套接字将客户端的请求进行路由，通过Dealer套接字分发给服务端，那么我们的服务架构可以调整为：
+<img src="https://yinyayun.github.io//post-images/1562899677973.png" alt="Broker"></p>
+<p>客户端代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    void *context = zmq_init (1);
+ 
+    //  用于和服务端通信的套接字
+    void *requester = zmq_socket (context, ZMQ_REQ);
+    zmq_connect (requester, &quot;tcp://localhost:5559&quot;);
+ 
+    int request_nbr;
+    for (request_nbr = 0; request_nbr != 10; request_nbr++) {
+        s_send (requester, &quot;Hello&quot;);
+        char *string = s_recv (requester);
+        printf (&quot;收到应答 %d [%s]\n&quot;, request_nbr, string);
+        free (string);
+    }
+    zmq_close (requester);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p>代理代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    //  准备上下文和套接字
+    void *context = zmq_init (1);
+    void *frontend = zmq_socket (context, ZMQ_ROUTER);
+    void *backend  = zmq_socket (context, ZMQ_DEALER);
+    zmq_bind (frontend, &quot;tcp://*:5559&quot;);
+    zmq_bind (backend,  &quot;tcp://*:5560&quot;);
+ 
+    //  初始化轮询集合
+    zmq_pollitem_t items [] = {
+        { frontend, 0, ZMQ_POLLIN, 0 },
+        { backend,  0, ZMQ_POLLIN, 0 }
+    };
+    //  在套接字间转发消息
+    while (1) {
+        zmq_msg_t message;
+        int64_t more;           //  检测多帧消息
+ 
+        zmq_poll (items, 2, -1);
+        if (items [0].revents &amp; ZMQ_POLLIN) {
+            while (1) {
+                //  处理所有消息帧
+                zmq_msg_init (&amp;message);
+                zmq_recv (frontend, &amp;message, 0);
+                size_t more_size = sizeof (more);
+                zmq_getsockopt (frontend, ZMQ_RCVMORE, &amp;more, &amp;more_size);
+                zmq_send (backend, &amp;message, more? ZMQ_SNDMORE: 0);
+                zmq_msg_close (&amp;message);
+                if (!more)
+                    break;      //  最后一帧
+            }
+        }
+        if (items [1].revents &amp; ZMQ_POLLIN) {
+            while (1) {
+                //  处理所有消息帧
+                zmq_msg_init (&amp;message);
+                zmq_recv (backend, &amp;message, 0);
+                size_t more_size = sizeof (more);
+                zmq_getsockopt (backend, ZMQ_RCVMORE, &amp;more, &amp;more_size);
+                zmq_send (frontend, &amp;message, more? ZMQ_SNDMORE: 0);
+                zmq_msg_close (&amp;message);
+                if (!more)
+                    break;      //  最后一帧
+            }
+        }
+    }
+    //  程序不会运行到这里，不过还是做好清理工作
+    zmq_close (frontend);
+    zmq_close (backend);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<p>服务端代码：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    void *context = zmq_init (1);
+ 
+    //  用于何客户端通信的套接字
+    void *responder = zmq_socket (context, ZMQ_REP);
+    zmq_connect (responder, &quot;tcp://localhost:5560&quot;);
+ 
+    while (1) {
+        //  等待下一个请求
+        char *string = s_recv (responder);
+        printf (&quot;Received request: [%s]\n&quot;, string);
+        free (string);
+ 
+        //  做一些“工作”
+        sleep (1);
+ 
+        //  返回应答信息
+        s_send (responder, &quot;World&quot;);
+    }
+    //  程序不会运行到这里，不过还是做好清理工作
+    zmq_close (responder);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/6_fDKITDK">
+                  <h3 class="post-title">
+                    VirtualBox Centos磁盘扩容笔记
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
