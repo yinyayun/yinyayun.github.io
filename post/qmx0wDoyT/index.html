@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562900191685">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562920506056">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562900191685" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1562920506056" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -492,8 +492,102 @@ int main (void)
     return 0;
 }
 </code></pre>
+<h2 id="代理组件">代理组件</h2>
+<p>ZMQ中为Broker提供了一些内置装置：</p>
+<ul>
+<li>QUEUE，可用作请求-应答代理；</li>
+<li>FORWARDER，可用作发布-订阅代理服务；</li>
+<li>STREAMER，可用作管道模式代理。</li>
+</ul>
+<p>在之前的例子中，Broker的实现较为复杂，而使用QUEUE之后，代码会变得非常简洁：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+ 
+int main (void) 
+{
+    void *context = zmq_init (1);
+ 
+    //  客户端套接字
+    void *frontend = zmq_socket (context, ZMQ_ROUTER);
+    zmq_bind (frontend, &quot;tcp://*:5559&quot;);
+ 
+    //  服务端套接字
+    void *backend = zmq_socket (context, ZMQ_DEALER);
+    zmq_bind (backend, &quot;tcp://*:5560&quot;);
+ 
+    //  启动内置装置
+    zmq_device (ZMQ_QUEUE, frontend, backend);
+ 
+    //  程序不会运行到这里
+    zmq_close (frontend);
+    zmq_close (backend);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
+<h2 id="zmq多线程编程">ZMQ多线程编程</h2>
+<p>上图的请求应答服务中，都是通过启动多个服务来达到并行处理，也就是利用了TCP通信协议进行实现，接下来主要借助ZMQ提供的进程内通信协议实现服务内的多线程编程，下图虚线内是服务内结构：
+<img src="https://yinyayun.github.io//post-images/1562910346344.png" alt="multithread-server"></p>
+<p>Server端代码如下，需要注意的是，进程间通信需要共享同一个ZMQ上下文：</p>
+<pre><code class="language-c">#include &quot;zhelpers.h&quot;
+#include &lt;pthread.h&gt;
+ 
+static void *
+worker_routine (void *context) {
+    //  连接至代理的套接字
+    void *receiver = zmq_socket (context, ZMQ_REP);
+    zmq_connect (receiver, &quot;inproc://workers&quot;);
+ 
+    while (1) {
+        char *string = s_recv (receiver);
+        printf (&quot;Received request: [%s]\n&quot;, string);
+        free (string);
+        //  工作
+        sleep (1);
+        //  返回应答
+        s_send (receiver, &quot;World&quot;);
+    }
+    zmq_close (receiver);
+    return NULL;
+}
+ 
+int main (void)
+{
+    void *context = zmq_init (1);
+ 
+    //  用于和client进行通信的套接字
+    void *clients = zmq_socket (context, ZMQ_ROUTER);
+    zmq_bind (clients, &quot;tcp://*:5555&quot;);
+ 
+    //  用于和worker进行通信的套接字
+    void *workers = zmq_socket (context, ZMQ_DEALER);
+    zmq_bind (workers, &quot;inproc://workers&quot;);
+ 
+    //  启动一个worker池
+    int thread_nbr;
+    for (thread_nbr = 0; thread_nbr &lt; 5; thread_nbr++) {
+        pthread_t worker;
+        pthread_create (&amp;worker, NULL, worker_routine, context);
+    }
+    //  启动队列装置
+    zmq_device (ZMQ_QUEUE, clients, workers);
+ 
+    //  程序不会运行到这里，但仍进行清理工作
+    zmq_close (clients);
+    zmq_close (workers);
+    zmq_term (context);
+    return 0;
+}
+</code></pre>
 
             </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/mq" class="tag">
+                    MQ
+                  </a>
+                
+              </div>
             
             
               <div class="next-post">
