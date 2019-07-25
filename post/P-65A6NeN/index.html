@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -102,7 +102,7 @@
             <div class="post-date">2018-11-08</div>
             
             <div class="post-content">
-              <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。
+              <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。<br>
 传统的链表很难快速跳转至某一个节点，所以查找也是很耗时的（即使这是一个有序的链表），skip list则解决这些问题，并且查找的时间复杂度是O(log n)，所以skip list在lucene中也是一大利器。</p>
 <!-- more -->
 <p>下图就是一个skip list示例：</p>
@@ -140,14 +140,14 @@
 	}
 }
 </code></pre>
-<p>大致逻辑就是分别创建HEAD、TAIL节点，这两个节点的level设置为maxLevel，即有maxLevel个指针，HEAD节点多级指针都是指向TAIL节点。
+<p>大致逻辑就是分别创建HEAD、TAIL节点，这两个节点的level设置为maxLevel，即有maxLevel个指针，HEAD节点多级指针都是指向TAIL节点。<br>
 这里涉及到一个问题，我们如何设置maxLevel，因为level决定了skip list的查找性能， 可能我们直观上会认为level越大，跳跃约灵活，但是这是相对的，如果skip list中只有8个元素，而level却设置成8，那反而是一种浪费，而如果level设置为1，那和普通的链表也没啥区别，那到底怎么设置maxLevel呢，等我们看完insert节点活说到。</p>
 <p>但是说insert之前，我们先说skip list如何查找元素，因为不管是插入和删除，都逃不了对skip list的查找。以上图的skip list为例，我们查找元素8。</p>
 <p><strong>查找</strong></p>
-<p>首先我们找到了HEAD节点，发现HEAD节点的level3指针指向节点9，而9大于我们想找的8，也就是8在9这个节点之前。
-我们将level降一级，找HEAD的level 2指针，该指针指向节点6,6是小于8的，继续看节点6的level 2指针，也是指向9，所以还得降level，继续看节点6的level 1指针。
-节点6的level 1指针的下一个节点是8，也就是我们要找的元素。
-如果我们要找的是7，在找到节点6的level 1指针后，发现下一个节点8大于7，level已经没法在降了，所以直接返回空节点。
+<p>首先我们找到了HEAD节点，发现HEAD节点的level3指针指向节点9，而9大于我们想找的8，也就是8在9这个节点之前。<br>
+我们将level降一级，找HEAD的level 2指针，该指针指向节点6,6是小于8的，继续看节点6的level 2指针，也是指向9，所以还得降level，继续看节点6的level 1指针。<br>
+节点6的level 1指针的下一个节点是8，也就是我们要找的元素。<br>
+如果我们要找的是7，在找到节点6的level 1指针后，发现下一个节点8大于7，level已经没法在降了，所以直接返回空节点。<br>
 search节点的代码如下：</p>
 <pre><code class="language-java">public ListNode search(int key) {
 	ListNode x = HEAD;
@@ -196,8 +196,8 @@ search节点的代码如下：</p>
 }
 </code></pre>
 <p><strong>level大小</strong></p>
-<p>那么我们怎么设置一个节点的level呢，因为level决定了跳跃表的跳跃性，显然根据数据分布的设置每个节点的level是最好的，但是这种代价太大了，可行性太低了。
-假如level为1，那么和普通的链表并没有什么区别。假如所有节点的level都是相等的，那么和普通链表也没什么区别，反而造成了空间浪费。
+<p>那么我们怎么设置一个节点的level呢，因为level决定了跳跃表的跳跃性，显然根据数据分布的设置每个节点的level是最好的，但是这种代价太大了，可行性太低了。<br>
+假如level为1，那么和普通的链表并没有什么区别。假如所有节点的level都是相等的，那么和普通链表也没什么区别，反而造成了空间浪费。<br>
 既然这样，我们就想能不能一层节点和多层节点各占到一半。skip list是一个概率数据结构，这就体现在level的创建上，我们可以借助概率分布的思想决定每一个新节点的level大小，就像每次在创建一个新的节点时候，我抛一个硬币，正面的level=1，反面level&gt;1，好吧，这只是一个简单的例子，通常的skiplist的level不太可能只是2，我们更加希望看到的是有某个节点level=i，该节点还存在level=i+1的概率是50%，这样才能保证构建的skip list更加平衡高效，至少有一半节点的level&gt;1，但是level&gt;2的节点只是level=1节点的一半，以此类推。</p>
 <p>节点level大小代码如下：</p>
 <pre><code class="language-java">private int randomLevel() {
@@ -212,9 +212,9 @@ search节点的代码如下：</p>
 }
 </code></pre>
 <p>既然说到这了，顺便再提一下MaxLevel如何设置，因为level i+1是level i节点数的1/2,所MaxLevel接近log(n)，假如n=8，那么MaxLevel=3,第一级4个元素，第二级2个元素，第三级1个元素。</p>
-<p><strong>删除</strong>
-最后我们再说一下节点的删除，与插入一样，我们同样需要先找到要删除的节点，例如删除节点9，我们需要先找到遍历到节点9之前，level 3上的前一个节点(节点HEAD)、level 2上的前一个节点(节点6)、level 1上的前一个节点（节点8），然后断开这几个节点与节点9的指针，与节点9各个level上的后继节点连接。
-如图：
+<p><strong>删除</strong><br>
+最后我们再说一下节点的删除，与插入一样，我们同样需要先找到要删除的节点，例如删除节点9，我们需要先找到遍历到节点9之前，level 3上的前一个节点(节点HEAD)、level 2上的前一个节点(节点6)、level 1上的前一个节点（节点8），然后断开这几个节点与节点9的指针，与节点9各个level上的后继节点连接。<br>
+如图：<br>
 <img src="https://yinyayun.github.io//post-images/1562837756775.png" alt="skiplist-delete"></p>
 <p>当然有一点我们要注意，在插入节点的时候，新节点的level高于其他节点level（除HEAD、TAIL），我们将当前skip list的level设置为该节点的level。而对于删除而言，我们同样需要更新当前skip list的level，当时这稍微比插入时的level更新要复杂点，但是如果知道了开头我提到的那个特性之后，其实也不难，也就是说HEAD和TAIL的level=MaxLevel,在skip list中不存在level为MaxLevel的节点情况下，HEAD节点再MaxLevel上的指针是直接可以指向TAIL节点的，如果当前skip list中的其它节点（除去HEAD和TAIL）最大的level为1，那HEAD的level 2指针直接就是指向TAIL节点。</p>
 <p>具体看一下代码：</p>

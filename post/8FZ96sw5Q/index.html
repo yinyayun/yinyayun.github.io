@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -102,11 +102,11 @@
             <div class="post-date">2018-10-31</div>
             
             <div class="post-content">
-              <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。
+              <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。<br>
 无论是那种机器学习模型，要进行使用，肯定逃不了这两个套路：</p>
 <ul>
 <li>模型的加载（初始化）</li>
-<li>模型的调用（预测）
+<li>模型的调用（预测）<br>
 也就是说我们可以在平台层面进行一定的约束，基于我们的规范实现，然后我们提供对应的服务。</li>
 </ul>
 <!-- more -->
@@ -122,19 +122,19 @@
 <h3 id="几个系统变量">几个系统变量</h3>
 <ol>
 <li>
-<p>sys.meta_path
+<p>sys.meta_path<br>
 元路径查找器对象集合，当我们调用一个import语句后，解释器先遍历该集合中的查找器进行module查找。</p>
 </li>
 <li>
-<p>sys.path
+<p>sys.path<br>
 系统搜索module的路径集合，例如:<code>import tensorflow as tf</code>，为什么系统能找到该module，就是因为在sys.path中包含了这个一个路径：<code>C:\\ProgramData\\Anaconda3\\lib\\site-packages</code></p>
 </li>
 <li>
-<p>sys.path_hooks
+<p>sys.path_hooks<br>
 路径解析钩子函数集合，sys.path集合中的路径都会尝试用该钩子函数集合中函数尝试解析，如果该路径能够使用该钩子函数解析，则该钩子函数返回对应的module查找器。</p>
 </li>
 <li>
-<p>sys.modules
+<p>sys.modules<br>
 解释器在遇到import指令后，会优先检查sys.modules字典中有没有需要导入的module，如果有则直接使用，没有的话才会采用Finder和Loader机制，经过Finder和Loader机制加载完后，该module会添加至sys.modules字典。</p>
 </li>
 </ol>
@@ -236,7 +236,7 @@ print(ins.predict([10,5]))
 <li>添加自定义的元路径查找器加入sys.meta_path（原路径查找器集合）</li>
 <li>添加路径解析钩子函数至sys.path_hooks</li>
 </ol>
-<p>理论上这两种方案都是可行的，但是我这边至给出第二种方案的实现。
+<p>理论上这两种方案都是可行的，但是我这边至给出第二种方案的实现。<br>
 首先我们定义一个钩子函数，并添加至系统钩子函数集合中：</p>
 <pre><code class="language-python">def handle_path(path):
     if path.startswith('/server-home'):
@@ -351,7 +351,7 @@ def _find_and_load_unlocked(name, import_):
     ....
 </code></pre>
 <p>上面代码清晰的给出，查找当前module时，会去查找父module有没有加载，如果未加载，那则会转去加载父module，那么问题来了，X的父module就是<code>__init__.py</code>,<code>__init__.py</code>中又需要import X，那么就陷入了死循环，所以我们要先将父module加入sys.modules。</p>
-<p>解决了这个问题，我们看一下相同module名文件（多版本）的加载。
+<p>解决了这个问题，我们看一下相同module名文件（多版本）的加载。<br>
 LocalPathFinder中有一个函数<code>invalidate_caches</code>，该函数主要进行缓存的清理，主要就是被加载的至sys.modules中module清理，那么这个函数在什么时候调用呢，看一下该方案对应的实例动态创建：</p>
 <pre><code class="language-python">def create_ins(self, prefix, moduleName, className):
         try:

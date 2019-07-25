@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -94,6 +94,38 @@
           
             <article class="post-item">
               <div class="left">
+                <a href="https://yinyayun.github.io//post/6wTmKR_f0">
+                  <h2 class="post-title">记一次python段错误排查经历</h2>
+                </a>
+                <div class="post-date">
+                  2018-12-07
+                </div>
+                <div class="post-abstract">
+                  <p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/p1QEe9OVk">
+                  <h2 class="post-title">Linux下Eclipse以及常用插件安装</h2>
+                </a>
+                <div class="post-date">
+                  2018-11-30
+                </div>
+                <div class="post-abstract">
+                  <p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
                 <a href="https://yinyayun.github.io//post/4d8w7j_we">
                   <h2 class="post-title">记一次Python服务实例静默退出排查</h2>
                 </a>
@@ -135,7 +167,7 @@
                   2018-11-08
                 </div>
                 <div class="post-abstract">
-                  <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。
+                  <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。<br>
 传统的链表很难快速跳转至某一个节点，所以查找也是很耗时的（即使这是一个有序的链表），skip list则解决这些问题，并且查找的时间复杂度是O(log n)，所以skip list在lucene中也是一大利器。</p>
 
                 </div>
@@ -152,11 +184,11 @@
                   2018-10-31
                 </div>
                 <div class="post-abstract">
-                  <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。
+                  <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。<br>
 无论是那种机器学习模型，要进行使用，肯定逃不了这两个套路：</p>
 <ul>
 <li>模型的加载（初始化）</li>
-<li>模型的调用（预测）
+<li>模型的调用（预测）<br>
 也就是说我们可以在平台层面进行一定的约束，基于我们的规范实现，然后我们提供对应的服务。</li>
 </ul>
 
@@ -233,52 +265,6 @@
 <li>注意：如果服务没有优雅的终止的话，在下次启动的时候将使用tlog进行重演。所以如果tlog很大的话，实例启动将会变得很慢。</li>
 </ul>
 </li>
-</ul>
-
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/oR4ZpoGWe">
-                  <h2 class="post-title">SolrCloud-分布式索引</h2>
-                </a>
-                <div class="post-date">
-                  2018-09-05
-                </div>
-                <div class="post-abstract">
-                  <blockquote>
-<p>2018.09.05，深夜，最近因为各种事情，心烦意乱，睡不着，索性翻身起来，写一些没有营养的的东西。</p>
-</blockquote>
-<p>个人认为，solr的分布式存在两种：</p>
-<ul>
-<li>伪分布式，即单shard但存在主从。</li>
-<li>真正的分布式</li>
-</ul>
-<p>因为我认为真正意义上的分布式，不光是分流量，同样需要做到计算的分布式。但是呢，无论是哪一种，但凡涉及到数据的一致性的系统，基本都会考虑只允许主写，solr也是一样，只允许shard leader进行索引的索引的写入，再由主向从写入。</p>
-
-                </div>
-              </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/solrcloud">
-                  <h2 class="post-title">SolrCloud中的那些东西</h2>
-                </a>
-                <div class="post-date">
-                  2018-09-05
-                </div>
-                <div class="post-abstract">
-                  <p>因转到人机对话项目上已经有一段时间了，甚是想念solr，所以特地来回顾一下solrcloud中的一些概念，内容不是很全，而且也没有逻辑，就当是备忘吧。</p>
-<p>很多分布式系统都会选用zookeeper作为分布式的协调者，solr同样也不例外，在solr中zookeeper主要起到以下作用：</p>
-<ul>
-<li>依托于znode，实现集中配置存储</li>
-<li>依托于session以及watcher机制实现集群状态检测和提醒</li>
-<li>overseer和shard leader选举</li>
 </ul>
 
                 </div>

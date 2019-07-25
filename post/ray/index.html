@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Ray: A Distributed System for AI | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Ray: A Distributed System for AI</h2>
+            <div class="post-date">2019-07-23</div>
+            
+            <div class="post-content">
+              <p>随着机器学习算法和技术的进步，越来越多的机器学习应用需要多台机器并行性执行。但是，在集群上进行机器学习的基础设施仍然是不够成熟的。虽然确实存在针对特定用例（例如，参数服务器或超参数搜索）和AI之外的高质量分布式系统的良好解决方案（例如，Hadoop或Spark），但是开发算法的从业者通常从头开始构建他们自己的系统基础结构。</p>
+<!-- more -->
+<p>例如，强化学习算法大约有十几行伪代码，Python实现并不需要很多，但是，如果需要在多台机器或集群上有效地运行算法需要更多的工程化工作，实现涉及数千行代码，如定义通信协议，消息序列化和反序列化策略以及各种数据处理策略。</p>
+<p>Ray的目标之一是让从业者能够将在个人电脑上运行的算法变为高性能的分布式应用程序，该应用程序可以在集群（或单个多核机器）上高效运行，而且代码行相对较少。这样的框架应该包括手动优化系统的性能优势，而无需用户推理调度，数据传输和机器故障。</p>
+<p>那么Ray就是一个用于构建和运行分布式应用程序的快速而简单的框架，套用<a href="https://bair.berkeley.edu/blog/2018/01/09/ray/">Ray: A Distributed System for AI</a>中那么多，下面就贴出来<a href="https://arxiv.org/abs/1712.05889">Ray: A Distributed Framework for Emerging AI Applications</a>这一论文中对Ray的设计介绍。</p>
+<h2 id="编程和计算模型">编程和计算模型</h2>
+<p>Ray实现动态图计算模型，它将应用程序建模成在执行时任务的依赖图。在这个模型之上，Ray提供了Actor和一个任务并行编程抽象。这将Ray与CIEL等相关系统区分开来，CIEL只提供任务并行抽象，而Orleans或Akka主要提供了actor抽象。</p>
+<h3 id="编程模型">编程模型</h3>
+<p><strong>Task</strong><br>
+Task表示在无状态的worker上执行的远程函数（remote function），当一个远程函数被调用，用<code>future</code>表示的task结果会被立即返回，future可以通过<code>ray.get()</code>取回结果，也可以作为参数传递给其它远程函数。<br>
+下图为Ray的一些API：<br>
+<img src="https://yinyayun.github.io//post-images/1563932056851.png" alt="Ray API"></p>
+<p><strong>Actor</strong><br>
+Actor表示一个有状态的计算，每个Actor暴露出来的的方法都可以被远程调用或连续执行。<br>
+与Task相似之处在于，Actor的可以被远程执行，也返回future对象。<br>
+不同之处在于Actor是在一个有状态的worker上执行。<br>
+另外可以将Actor的句柄传递给另外一个Actor或者Task，使其可以方便的调用该Actor上的方法。<br>
+下表总结了Task和Actor的一些属性：</p>
+<table>
+<thead>
+<tr>
+<th>Task（无状态）</th>
+<th>Actor（有状态）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>细粒度的负载均衡</td>
+<td>粗粒度负载均衡</td>
+</tr>
+<tr>
+<td>支持本地对象</td>
+<td>不支持本地对象</td>
+</tr>
+<tr>
+<td>小的更新代价较高</td>
+<td>小的更新代价较低</td>
+</tr>
+<tr>
+<td>高效的故障处理</td>
+<td>checkpointing代价较高</td>
+</tr>
+</tbody>
+</table>
+<p>Task通过负载感知调度判断任务粒度，从而做到细粒度调度，每个Task可以在存储输入变量的节点上被调度，并且recovery的代价很低，因此不需要checkpoint或恢复中间状态。<br>
+与之相对的是，Actor提供了更高效的细粒度更新，因为这些更新是在内部执行而不是外部，外部状态的更新则需要序列化和反序列化。<br>
+举例来说，actor可以用于实现参数服务以及基于GPU的迭代计算，另外，actor还可以用于那些难以序列化的处理。</p>
+<h3 id="计算模型">计算模型</h3>
+<p>ray采用动态图计算模型，当输入可见时所有远程函数和actor方法被系统自动触发，这个小节，主要介绍如何根据用户程序构建动态图<br>
+如果忽略actor不说的话，在计算图中有两种类型的节点：</p>
+<ul>
+<li>数据对象（data object）</li>
+<li>远程函数（remote function）或者说是task<br>
+有两种类型的边：</li>
+<li>数据边（data edge）</li>
+<li>控制边（control edge）</li>
+</ul>
+<p><strong>Data edge</strong><br>
+捕获data object和task之间的依赖关系，确切的说，如果data object <code>D</code>是task <code>T</code>的输出，我们则从<code>T</code>到<code>D</code>添加一个data edge，与之相似的，如果<code>D</code>是T的输入，则从<code>D</code>到<code>T</code>添加一个data edge.<br>
+<strong>Control edge</strong><br>
+捕获嵌套Remote Function产生的依赖关系，如果Task <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">T_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 调用<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>T</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">T_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，从<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>T</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">T_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 到<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>T</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">T_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>添加一个control edge。</p>
+<p>Actor的方法调用在计算图中也代表一个节点，他们与task一致，但是有一个关键区别，同一个actor上通过后续的方法调用捕获状态依赖，为此，也需要添加一个edge：状态边（stateful edge）。<br>
+如果同一个actor上的方法<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">M_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>在方法<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">M_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>之后调用，则从<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">M_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>到<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>M</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">M_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>添加一个状态边。因此同一个actor上所有方法的调用会形成一个状态链。</p>
+<p>下面给出一段用户代码.<br>
+代码中<code>@ray.remote</code>修饰了remote function以及actor。调用远程函数或者actor的函数返回future，fucture可以传递给后续的远程函数或者actor方法用来编码任务依赖。每一个actor有一个在它的所有方法中共享的环境对象：<code>self.env</code>。</p>
+<pre><code class="language-python">
+@ray.remote
+def create_policy():
+    # Initialize the policy randomly.
+    return policy
+
+@ray.remote(num_gpus=1)
+class Simulator(object):
+    def __init__(self):
+        # Initialize the environment.
+        self.env = Environment()
+    def rollout(self, policy, num_steps):
+        observations = []
+        observation = self.env.current_state()
+        for _ in range(num_steps):
+            action = policy(observation)
+            observation = self.env.step(action)
+            observations.append(observation)
+        return observations
+
+@ray.remote(num_gpus=2)
+def update_policy(policy, *rollouts):
+    # Update the policy.
+    return policy
+
+@ray.remote
+def train_policy():
+    # Create a policy.
+    policy_id = create_policy.remote()
+    # Create 10 actors.
+    simulators = [Simulator.remote() for _ in range(10)]
+    # Do 100 steps of training.
+    for _ in range(100):
+        # Perform one rollout on each actor.
+        rollout_ids = [s.rollout.remote(policy_id)for s in simulators]
+        # Update the policy with the rollouts.
+        policy_id =update_policy.remote(policy_id, *rollout_ids)
+    return ray.get(policy_id)
+</code></pre>
+<p>当调用代码<code>train_policy.remote()</code>后对应的计算图如下：<br>
+<img src="https://yinyayun.github.io//post-images/1563948606771.png" alt="task graph"></p>
+<p>图中只展示了两个actors，每个actor（task标签<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>A</mi><mn>1</mn></msub><mi>i</mi></mrow><annotation encoding="application/x-tex">A_1i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault">i</span></span></span></span>和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>A</mi><mn>2</mn><mi>i</mi></mrow><annotation encoding="application/x-tex">A2i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault">A</span><span class="mord">2</span><span class="mord mathdefault">i</span></span></span></span>）的方法调用都有一个状态边，表示他们共享一个actor的状态。<br>
+从<code>train_policy</code>到它调用的task都有控制边。<br>
+如果要训练多个策略，那我们可以调用<code>trainpolicy.remote()</code>多次。</p>
+<h2 id="系统架构">系统架构</h2>
+<p>Ray的架构由应用层和系统层构成，其中应用层实现了API，系统层则提供高可扩展性和伸缩性。如下图：<br>
+<img src="https://yinyayun.github.io//post-images/1563876721636.png" alt="Architecture"></p>
+<h3 id="应用层">应用层</h3>
+<p>应用层由三种进程组成：</p>
+<ul>
+<li>Driver：执行用户代码的进程</li>
+<li>Worker：执行driver或者另外一个worker调用的远程函数（remote function或者task）的无状态进程。Worker是由系统层自动启动并分配Task。当一个remote function被声明后，该function会被自动的推送到所有的Worker上，同一个Worker按照顺序执行task。</li>
+<li>Actor：有状态的执行进程。与worker不同的是，actor由worker或者driver显示的实例化。与worker相同的是，Actor也是顺序的执行方法。</li>
+</ul>
+<h3 id="系统层">系统层</h3>
+<p>系统层有三个主要的组件构成，所有的组件都具有水平扩展和容错能力。</p>
+<ul>
+<li>全局控制存储（global control store）</li>
+<li>分布式调度器（distributed scheduler）</li>
+<li>分布式对象存储（distributed object store）</li>
+</ul>
+<h4 id="全局控制存储gcs">全局控制存储（GCS）</h4>
+<p>全局控制存储（GCS）维持了系统的整个控制状态，这也是Ray设计上的一个独特功能。GCS的核心是一个具有发布订阅（PUB-SUB）功能的key-value的存储。使用分片进行扩展，分片的replication链支撑了其高容错。GCS设计的主要目的是要保持系统的容错能力和低延迟，以至于系统每秒可以动态地产生数百万个任务。</p>
+<p>节点发生故障时的容错需要一个解决方案来保存lineage信息，现有解决方案侧重于粗粒度并行，所以可以使用单个节点(例如，master、driver)来存储lineage信息而不影响性能。但是，对于细粒度以及动态工作负载，这种设计是不可伸缩的，因此，需要将lineage storage于其它系统组件分离，这样就可以支持各自独立扩展。</p>
+<p>保持低延迟要求最小化任务调度的开销，这包括选择在何处执行，以及随后的任务分派，这涉及到从另外一个节点检索remote输入。许多现有的数据流系统通过将对象位置和大小存储在一个集中的scheduler中来实现这一点，当调度程序不是瓶颈时，这是一种自然的设计。对于像Allreduce这样对分布式训练非常重要的原语来说，在每个对象传输中涉及到调度的代价是非常昂贵的。因此，我们将对象元数据存储在GCS中而不是存储在调度程序中，从而将任务分发与任务调度完全解耦。</p>
+<p>总的来说，GCS显著简化了Ray的整体设计，所有的组件通过GCS共享需要的状态，这样使系统中的每个组件自身都变得无状态，这不单单是简化了对容错的支持，也使得可以独立地扩展 Distributed object store以及调度器，通过GCS集中存储，还可以轻松的开发debugging、profileing以及一些可视化工具。</p>
+<h4 id="自底向上bottom-up的分布式调度">自底向上（bottom-up）的分布式调度</h4>
+<p>Ray需要每秒动态调度百万个task，每个任务可能只需要几毫秒。我们所知道的集群调度程序都不符合这些要求，大部分的集群计算框架，如Spark、CIEL、以及Dryad都实现了集中式的调度，但是延时都在数十毫秒。例如work stealing、Sparrow以及Canary 能够实现较大规模，但是他们都不考虑数据的本地化，他们或者假设task属于独立的job，或者假设计算图是已知的。</p>
+<p>为了满足上述要求，Ray设计了一个两级分层调度程序，它由全局scheduler和每个节点上的本地调度程序组成。为了避免全局调度器过载，在节点上创建的任务首先被提交给节点的本地调度程序。除非节点过载（即，其本地任务队列超过预定义的阈值）或者它不能满足任务的要求（例如，缺少aGPU），否则本地调度程序在本地调度任务。如果本地调度程序决定不调度任务，则将其转发给全局调度程序。由于该调度程序首先尝试在本地调度任务（即，在调度层次结构的叶子中），因此我们将其称为自底向上调度程序。</p>
+<p>下图表示了bottom-up分布式调度，Task自底向上被提交，从driver和worker到本地调度程序，如果需要再转到全局调度程序。<br>
+<img src="https://yinyayun.github.io//post-images/1563877340580.png" alt="Bottom-up distributed scheduler"></p>
+<p>全局调度程序考虑每个节点的load和task的约束来做出调度决策。准确地说，全局调度器能识别满足任务所请求资源足够的节点集合，并且在这些节点中，选择低评估延时的节点。对于某一节点，该时间是目前该节点上在排队任务预估时间以及task的远程输入传输预估时间（即，远程输入的总大小除以平均带宽）的总和。<br>
+全局调度程序获取每个节点的队列大小以及节点资源可用性，以及任务的输入位置和来自GCS的空间大小。此外，全局调度程序使用简单的指数平均来计算平均任务执行和平均传输带宽。如果全局调度程序成为瓶颈，我们可以实例化更多副本，所有副本都通过GCS共享相同的信息。这使我们的调度程序体系结构具有高度可伸缩性。</p>
+<h4 id="基于内存的分布式对象库object-store">基于内存的分布式对象库（Object Store）</h4>
+<p>为了最大限度地减少任务延迟，Ray实现了一个内存分布式存储系统来存储每个任务的输入和输出，或无状态计算。在每个节点上，Ray通过共享内存实现了Object Store。这样可以做到运行在相同节点上共享数据的Tasks数据的零拷贝。</p>
+<p>如果task的输入不是本地的，则在执行之前将输入复制到本地object store。此外，任务将其输出也会写入本地object store。Replication消除了由于热数据对象导致的潜在瓶颈，并最小化任务执行时间，因为任务只从/向本地内存读取/写入数据。许多AI应用共享一个profile，增加了计算负载的吞吐量。为了保证低延迟，Ray将对象完全保留在内存中，并根据需要使用LRU策略将其驱逐到磁盘。</p>
+<p>与现有的集群计算框架(如Spark和Dryad)一样，object store中数据是不可变的。这消除了对复杂一致性协议的需求(因为对象没有更新)，并简化了对容错的支持。在节点失败的情况下，Ray通过lineager-execution恢复任何需要的对象。GCS中的lineage stored的跟踪了无状态task以及有状态actor的初始执行，所以我们使用前者来重构库的对象。</p>
+<p>简单来说，object store不支持分布式对象，即每个对象都用于单个节点。像大型矩阵或树型结构这样的分布式对象可以在应用程序级实现。</p>
+<h2 id="ray工作流程介绍">Ray工作流程介绍</h2>
+<p>下面通过一个简单的例子演示了Ray是如何端到端工作的，这个例子中两个对象<code>a</code>、<code>b</code>相加，它们可以是标量或矩阵。<br>
+<img src="https://yinyayun.github.io//post-images/1563877505734.png" alt="Executing a task remotely"></p>
+<ul>
+<li>步骤0：远程函数<code>add()</code>在初始化时自动注册到GCS，并分发到系统中的每个Worker</li>
+<li>步骤1：<code>a</code>和<code>b</code>分别是存储在N1、N2节点上，Driver调用<code>add.remote(a,b)</code>后，先将<code>add(a,b)</code>提交给Local scheduler</li>
+<li>步骤2：Local scheduler将请求转发给Global scheduler</li>
+<li>步骤3：Global scheduler在GCS中查找add（a,b）参数所在的位置</li>
+<li>步骤4：Global scheduler决策后，决定在N2上进行Task调度。</li>
+<li>步骤5：N2节点上的Global scheduler检查本地Object store是否包含<code>add(a,b)的参数</code></li>
+<li>步骤6：检查发现本地Object store中不包含对象<code>a</code>，则从GCS中查找a的位置。</li>
+<li>步骤7：N2的object store从N1中复制<code>a</code></li>
+<li>步骤8：<code>add()</code>的所有参数都在存储在本地，Local scheduler则会在本地Worker中调用<code>add()</code></li>
+<li>步骤9：通过共享内存访问参数</li>
+</ul>
+<p>再下面一张图展示了在N2上调度<code>add(a,b)</code>后，N1上执行<code>rat.get()</code>触发的一步步的操作。<br>
+<img src="https://yinyayun.github.io//post-images/1563877548426.png" alt="Returning the result of a remote task"></p>
+<ul>
+<li>步骤1：一旦<code>ray.get(idc)</code>被调用，使用<code>add()</code>返回的将来的<code>idc</code>检查本地object store，以获取<code>c</code>的值</li>
+<li>步骤2：因为本地object store没有存储c，则在GCS中查找。此时，因为c还没有被创建，所有没有c的条目，因此，N1的Object Store会在创建c条目时注册一个带有Object Table的回调函数。</li>
+<li>步骤3：与此同时，N2节点上，<code>add()</code>完成了执行，在本地object store上存储了结果<code>c</code></li>
+<li>步骤4：在将<code>c</code>写入object store时，也会在GCS中添加<code>c</code>的条目</li>
+<li>步骤5：GCS触发一个将<code>c</code>条目写入N1的object store的回调。</li>
+<li>步骤6：接下来，N1从N2上拷贝，最后返回ray.get()的结果。</li>
+</ul>
+<hr>
+<blockquote>
+<p><a href="https://bair.berkeley.edu/blog/2018/01/09/ray/">Ray: A Distributed System for AI</a><br>
+<a href="https://arxiv.org/abs/1712.05889">Ray: A Distributed Framework for Emerging AI Applications</a></p>
+</blockquote>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/nlp" class="tag">
+                    NLP
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/CLkJMEncM">
+                  <h3 class="post-title">
+                    Java知识体系整理
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

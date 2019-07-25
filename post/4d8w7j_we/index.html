@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -106,7 +106,7 @@
 <p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
 <p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
 <!-- more --> 
-<p>无奈，从linux系统日志排查，终于在/var/log/messages发现了问题：
+<p>无奈，从linux系统日志排查，终于在/var/log/messages发现了问题：<br>
 <img src="https://yinyayun.github.io//post-images/1562838175461.png" alt="1543223773953"></p>
 <p>从日志中发现，内核启用了OOM killer机制，该机器总共剩余空闲物理内存16G，此时rss（物理内存）占用14G。而且通常情况下，该应用不会消耗这么大的内存，肯定是那边有泄漏的情况。</p>
 <p>检查该服务实例上所有运行的业务，果然有一个业务代码存在问题。</p>

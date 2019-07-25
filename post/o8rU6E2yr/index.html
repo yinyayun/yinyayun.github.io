@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -110,7 +110,7 @@
 <p>在一些情况下，这种浪费可能接近50%，具体的值可以通过<code>numDocs/maxDocs</code>的比值进行确定。</p>
 <p>当然，如果这种浪费超过50%的话，是很不明智的，下面就具体来说说。</p>
 <h2 id="一个好消息一个坏消息你想听哪个">一个好消息一个坏消息，你想听哪个</h2>
-<p>好消息就是，保证浪费不超过50%很容易。
+<p>好消息就是，保证浪费不超过50%很容易。<br>
 坏消息，在solr7.0.1中没有配置用来保证已经删除文档占整个文档比例。</p>
 <h2 id="lucene段只write-once">lucene段只&quot;write once&quot;</h2>
 <p>突然发现外国小哥哥的语言还是挺博大精深的，如果硬生生的翻译成中文，感觉太别扭了，所以对write once干脆不翻译了，相信看完下面内容就知道什么叫write once。</p>
@@ -122,10 +122,10 @@
 </ul>
 <p>对于segment，lucene是&quot;write once&quot;策略，当hard commit发生时，当前正在写的segment就会被关闭（即不再写），新的segment会被打开。也就是说，如果一个segment包含10000个doc，一旦segment关闭，就算需要进行标记删除，这个段也还是10000个doc不变。</p>
 <h2 id="merge">Merge</h2>
-<p>上面我们说过，当一个硬提交发生时，segment就会关闭。
+<p>上面我们说过，当一个硬提交发生时，segment就会关闭。<br>
 而在这个时候，lucene就会检查那个segment可以合并，lucene中有几种段合并策略，但是所有段合并策略都有共同的地方，也就是他们选择将多个segment合并成一个新的segment，被合并的老的segment就会被删除。关键是segment合并完，就不不包含已删除的文档。</p>
 <p>打个比方，如果有两个segment，每个segment都有10000个doc，其中2500个标记为删除，当着两个segment合并成一个新segment后，每个segment上已经删除的2500个文档就会在合并过程中清除，也就是新的segment只包含15000个文档。</p>
-<p>对于Lucene/Solr中默认的段合并策略TieredMergePolicy（TMP），通常会将已经删除的文档保持在10%-15%。
+<p>对于Lucene/Solr中默认的段合并策略TieredMergePolicy（TMP），通常会将已经删除的文档保持在10%-15%。<br>
 事实证明，段合并策略在一些情况下，会导致已经删除索引的比例接近50%。</p>
 <h3 id="为什么会这样">为什么会这样</h3>
 <p>创建段合并策略时很多因素需要进行衡量，比如：</p>

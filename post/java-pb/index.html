@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -126,7 +126,7 @@ with tf.Session() as sess:
             y:expect
         })
 </code></pre>
-<p>这段程序的核心就是:<code>f(x)=x*w+bias</code>,然后再计算f(x)与给定y（期望）的差值。
+<p>这段程序的核心就是:<code>f(x)=x*w+bias</code>,然后再计算f(x)与给定y（期望）的差值。<br>
 那么对于上面这段tensorflow程序而言，它的Graph是什么样子呢，请看下图：</p>
 <p><img src="https://yinyayun.github.io//post-images/1562824892098.png" alt=""></p>
 <blockquote>
@@ -139,11 +139,11 @@ with tf.Session() as sess:
 <li>变量</li>
 <li>运算操作（加减乘除等等）</li>
 </ul>
-<p>无论是占位符、变量、运算操作，本质上都产生了Tensor在图中流动。
+<p>无论是占位符、变量、运算操作，本质上都产生了Tensor在图中流动。<br>
 对于上图中的椭圆框框，其实就是一个个op，旁边的英文就是该op的name，注意下图中add和sub,其实这两个op的名称准确来说分别为：</p>
 <ul>
 <li>output/add</li>
-<li>loss/sub
+<li>loss/sub<br>
 为什么为这样，因为op不光有name，还可以通过score进行限定，output和loss分别就是我在程序中为其指定的scope。</li>
 </ul>
 <h2 id="什么是模型文件">什么是模型文件</h2>
@@ -162,7 +162,7 @@ saver.save(sess, save_path, global_step)
 </ul>
 <p>其实一旦开始训练，图的结构就固定了，唯一不确定的就是要学习的参数值，也就是Tensorflow中的<code>Variable</code>，我们不断迭代训练根据loss函数然后求梯度去更新<code>Variable</code>的值，所以采用<code>ckpt</code>保存的话，就会把当前图中各个变量的值保存至.index和.data中。</p>
 <h3 id="pb冻结图">PB（冻结图）</h3>
-<p>冻结图是什么呢，顾名思义，就是将Graph中涉及到的Variable参数进行固化，即转变成constant，也就是说一旦一个ckpt转成PB之后，就没法进行再进行参数的更新。所以PB模型可以看做是ckpt的release。
+<p>冻结图是什么呢，顾名思义，就是将Graph中涉及到的Variable参数进行固化，即转变成constant，也就是说一旦一个ckpt转成PB之后，就没法进行再进行参数的更新。所以PB模型可以看做是ckpt的release。<br>
 另外PB文件的大小相较于ckpt会小很多，至于为什么会小，你会在下一章节找到答案。</p>
 <h2 id="生成pb">生成PB</h2>
 <p>下面是一段生成PB模型的代码:</p>
@@ -196,7 +196,7 @@ saver.save(sess, save_path, global_step)
 <li>variable_names_whitelist  转换成constant的variable节点集合，默认所有variable节点都转换</li>
 <li>variable_names_blacklist  不转换为constant的variable节点集合</li>
 </ul>
-<p>这里主要关注一下output_node_names，这个入参取决你在实际场景下，你需要用到什么功能，同时选择哪些输出节点也决定了模型的冗余程度。
+<p>这里主要关注一下output_node_names，这个入参取决你在实际场景下，你需要用到什么功能，同时选择哪些输出节点也决定了模型的冗余程度。<br>
 在release之后，我们使用模型会关心loss值、会关心accuracy吗？显然不会，我们只会关心infer/predict的结果，更有甚者，比如我们想从一个分类模型中抽取文本向量，那么我们只需要输出层前一隐藏层各个神经元的激活值。</p>
 <blockquote>
 <p>因为Tensorflow中的Graph实际是有向图，所以一旦指定output节点，那么只会保存图中和指定的output节点关联的前向节点,output的后续节点都会在冻结图中丢弃。</p>

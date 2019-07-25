@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -160,12 +160,12 @@
 </ul>
 </li>
 </ul>
-<p>硬提交将会触发tlog &quot;rolled over&quot;，即关闭老的，打开新的。
+<p>硬提交将会触发tlog &quot;rolled over&quot;，即关闭老的，打开新的。<br>
 tlog中会保存历史的100个文档，这是什么意思呢，比如你每次批量提交更新25个文档，每提交完做一次硬提交，那么磁盘上一直会存在5个tlog文件，每次提交完，生成一个新的tlog，删除最老的一个tlog，其它4个tlog保存历史上的100个文档。</p>
 <p>注意：tlog文件只有当硬提交发生时才会回滚，如果一直不提交，那么一个tlog文件将会很大。比如我们每秒钟更新100个文档，一小时做一次硬提交，那么单个tlog就会保存360000个文档。</p>
 <h2 id="soft-commit">soft commit</h2>
 <p>软提交关心可见性，硬提交关心持久性。</p>
-<p>软提交保证文档对后续的搜索可见，但是这也是存在代价的，新的searcher会被打开，searcher会进行预热，&quot;top level&quot; cache将会失效，如solfconfig.xml中配置的缓存（filterCache、queryResultCache）。另外FieldValueCache也会失效，所以facet查询将会一直等待，直到缓存刷新完。
+<p>软提交保证文档对后续的搜索可见，但是这也是存在代价的，新的searcher会被打开，searcher会进行预热，&quot;top level&quot; cache将会失效，如solfconfig.xml中配置的缓存（filterCache、queryResultCache）。另外FieldValueCache也会失效，所以facet查询将会一直等待，直到缓存刷新完。<br>
 因为各种缓存的失效，所以soft commit的频率是值得商榷的，虽然频繁会保证文档即时可见，但是也会让缓存的可用性降低。</p>
 <p>soft commit不会使得用于function查询、sort上的&quot;segment level caches&quot;失效。</p>
 <p>这就意味着我们在设置soft commit时，需要考虑以下一些东西：</p>
@@ -198,7 +198,7 @@ tlog中会保存历史的100个文档，这是什么意思呢，比如你每次�
 </li>
 </ul>
 <h2 id="建议">建议</h2>
-<p><strong>优雅的关闭服务</strong>
+<p><strong>优雅的关闭服务</strong><br>
 能不用kill -9就不要使用，优雅关闭可以使得服务在退出前进行硬提交。</p>
 <p><strong>索引更新量大</strong></p>
 <ul>
@@ -210,7 +210,7 @@ tlog中会保存历史的100个文档，这是什么意思呢，比如你每次�
 <li>将soft commit设置的尽量长一些，接近你的最大接受界限。</li>
 <li>将硬提交设置为15秒，openSearcher=false</li>
 </ul>
-<p><strong>索引更新少</strong>
+<p><strong>索引更新少</strong><br>
 除非也别需要近实时，否则的话不要设置soft commit，对于hard commit设置为5-10分钟，openSearcher=true</p>
 <p><strong>索引更新量大，query负载高</strong></p>
 <ul>

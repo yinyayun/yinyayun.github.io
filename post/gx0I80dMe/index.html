@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -110,11 +110,11 @@
 <ul>
 <li>会话ID（Session ID）</li>
 <li>节点名（Node Name）</li>
-<li>序号(SEQ)
-当集群中没有Overseer的时候，就会基于<code>/overseer_elect/election</code>下的临时顺序节点进行主的选举（可以阅读LeaderElector.java）。
+<li>序号(SEQ)<br>
+当集群中没有Overseer的时候，就会基于<code>/overseer_elect/election</code>下的临时顺序节点进行主的选举（可以阅读LeaderElector.java）。<br>
 关于Overseer的选举重点关注这两个方法：</li>
 <li>LeaderElector::joinElection（）</li>
-<li>ElectionWatcher::process()
+<li>ElectionWatcher::process()<br>
 通过这两个方法，我们不难发现Overseer的选举，可能在两种情况出发，第一种就是有节点加入：</li>
 <li>将当前节点注册上去（后面可能参与选举）</li>
 <li>检测当前节点是不是主，即获取<code>/overseer_elect/election</code>下的所有节点并排序（seq从小到大），序号最小的就是主</li>
@@ -133,10 +133,10 @@
 <pre><code class="language-json">{&quot;id&quot;:&quot;${session_id}-${node_name}-n_${seq_id}&quot;}
 </code></pre>
 <p>下面就是Overseer做自己本分的事情了，Overseer节点会启动Overseer线程（进入到Overseer.java中），</p>
-<p>Overseer在行使自己权利之前，还是先要确认一下自己的身份，避免自己越权。其实从上面的逻辑看，该节点99.99%就是主了，但是在一个分布式环境下，我们永远是没办法相信网络是可靠的，所以还是慎重为好。
-一旦确认好自己是主了，那么进入循环，不断的从workQueue(DistributedQueue)中读取消息，然后处理消息。至于workQueue(DistributedQueue)的我们后面说，这边先略过。
+<p>Overseer在行使自己权利之前，还是先要确认一下自己的身份，避免自己越权。其实从上面的逻辑看，该节点99.99%就是主了，但是在一个分布式环境下，我们永远是没办法相信网络是可靠的，所以还是慎重为好。<br>
+一旦确认好自己是主了，那么进入循环，不断的从workQueue(DistributedQueue)中读取消息，然后处理消息。至于workQueue(DistributedQueue)的我们后面说，这边先略过。<br>
 每一个消息都会对应一个<code>operation</code>，该<code>operation</code>主要分为两类：</p>
-<p><strong>CollectionAction</strong>
+<p><strong>CollectionAction</strong><br>
 这一类主要是对Collection的操作，具体有：</p>
 <ul>
 <li>CREATE,创建Collection</li>
@@ -161,7 +161,7 @@
 <li>QUIT,让Overseer线程退出(目前不清楚具体目的)</li>
 <li>DOWN_NODE，某个节点状态置为down</li>
 </ul>
-<p>这上面就是Overseer主要做的事情，下面我们顺便再看一下workQueue(DistributedQueue)到底是个什么东西？Overseer中要处理的消息都是来自workQueue(DistributedQueue)，所以workQueue(DistributedQueue)还是比较关键的。
+<p>这上面就是Overseer主要做的事情，下面我们顺便再看一下workQueue(DistributedQueue)到底是个什么东西？Overseer中要处理的消息都是来自workQueue(DistributedQueue)，所以workQueue(DistributedQueue)还是比较关键的。<br>
 我们不难发现，workQueue实际上就是对<code>/overseer/queue-word</code>子节点操作的封装，比如peek()就是读取第一个子节点,pool（）就是读取第一个节点并删除。</p>
 <p>这样好像就顺了，比如我们想创建一个collection，那么只要客户端向集群中的任意节点发起create collection操作，然后由该节点在<code>/overseer/queue-word</code>创建子节点，指明该节点的内容为创建</p>
 <ul>

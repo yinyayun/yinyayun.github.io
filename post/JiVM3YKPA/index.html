@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -104,7 +104,7 @@
             <div class="post-content">
               <h2 id="教程">教程</h2>
 <h3 id="更快地搜索">更快地搜索</h3>
-<p>为了加快搜索，将数据集合拆分成多个段。我们在多维空间定义了<code>Voronoi单元</code>(cell),数据集的每个向量都会落入一个单元中。检索时找query落入的单元，query向量与单元中的向量比较，从而得到近邻向量。Faiss中<code>IndexIVFFlat</code>类就是使用了对应的实现。
+<p>为了加快搜索，将数据集合拆分成多个段。我们在多维空间定义了<code>Voronoi单元</code>(cell),数据集的每个向量都会落入一个单元中。检索时找query落入的单元，query向量与单元中的向量比较，从而得到近邻向量。Faiss中<code>IndexIVFFlat</code>类就是使用了对应的实现。<br>
 <strong>IndexIVFFlat</strong></p>
 <p>需要进行训练的一种index。使用<code>IndexIVFFlat</code>还需要传入其它的index,即量化器（quantizer,通常使用IndexFlatL2），化器将向量映射到Voronoi单元，每个单元定义一个质心（centroids）。传入的index会根据质心（centroids）找出query向量落在的单元，再计算近邻的向量。</p>
 <p>search时需要指定用于执行近邻搜索的单元格数量（nprobe），搜索的耗时会随着nprobe增长而增长。但是随着nprobe增长，搜索结果也会越逼近穷尽搜索的结果。</p>
@@ -289,7 +289,7 @@ avg_relative_error = ((x - x2)**2).sum() / (x ** 2).sum()
 <p>这个问题用于补充上面的聚类（即上面的<code>...</code>）选项，数据集聚类至不同的桶，在搜索时只遍历部分的桶（<code>nprobe</code> buckets）</p>
 <p>如果小于1M：<code>...,IVFx，...</code></p>
 <p>如果介于1M-10M：<code>...,IVF65536_HNSW32,...</code></p>
-<p>如果介于10M-100M：<code>IVF262144_HNSW32,...</code>
+<p>如果介于10M-100M：<code>IVF262144_HNSW32,...</code><br>
 如果结局100M-1B：<code>IVF1048576_HNSW32,...</code></p>
 <h2 id="faiss-indexes">Faiss indexes</h2>
 <h3 id="基础indexes">基础Indexes</h3>

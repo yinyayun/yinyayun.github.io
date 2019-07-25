@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Java知识体系整理 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Java知识体系整理</h2>
+            <div class="post-date">2019-07-13</div>
+            
+            <div class="post-content">
+              <h1 id="java基础">Java基础</h1>
+<h2 id="jre-jdk">JRE、JDK</h2>
+<ul>
+<li>JRE是JVM程序，Java应用程序需要在JRE上运行</li>
+<li>JDK是JRE和一系列Java开发工具的组合，</li>
+</ul>
+<h2 id="数据类型">数据类型</h2>
+<h3 id="拆箱装箱">拆箱装箱</h3>
+<pre><code>Integer x = 2;     // 装箱
+int y = x;         // 拆箱
+</code></pre>
+<h3 id="缓存池">缓存池</h3>
+<p>基本类型在装箱时，优先从缓存池中获取对应的包装类型，如果数范围在缓存池范围内，则使用缓存池中的对象。</p>
+<p>如Jdk8中的Integer 缓存池的大小默认为 -128~127。</p>
+<p>通常可能触发从缓存池中获取对象有如下情形：</p>
+<pre><code class="language-java">Integer x = 2; 
+Integer.valueOf(2);
+</code></pre>
+<h3 id="string">String</h3>
+<p><strong>JDK8</strong></p>
+<ul>
+<li>final类型，不可被继承</li>
+<li>使用char数组</li>
+</ul>
+<pre><code class="language-java">public final class String
+    implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence {
+    /** The value is used for character storage. */
+    private final char value[];
+}
+</code></pre>
+<p><strong>JDK9</strong></p>
+<ul>
+<li>使用<code>byte</code>数组存储</li>
+<li>使用<code>coder</code>标识编码</li>
+</ul>
+<pre><code class="language-java">public final class String
+    implements java.io.Serializable, Comparable&lt;String&gt;, CharSequence {
+    /** The value is used for character storage. */
+    private final byte[] value;
+
+    /** The identifier of the encoding used to encode the bytes in {@code value}. */
+    private final byte coder;
+}
+</code></pre>
+<h4 id="string-pool">String Pool</h4>
+<ul>
+<li>
+<p>String Pool保存着所有字符串字面量（字面量在编译时期就确定）</p>
+</li>
+<li>
+<p>可以使用<code>intern()</code>方法将字符串添加到String pool中（intern 方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中，具体可参看：<a href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入解析String.intern()</a>）</p>
+</li>
+<li>
+<p>Java 7 之前String Pool属于永久代，Java 7中String Pool 被移到堆中</p>
+</li>
+<li>
+<p>new String(&quot;abc&quot;)，如果String Pool中没有“abc”，那么一共创建两个字符串对象</p>
+</li>
+</ul>
+<h2 id="继承">继承</h2>
+<p><strong>抽象类</strong></p>
+<ul>
+<li>如果一个类中包含抽象方法，那么这个类必须声明为抽象类</li>
+<li>一个类不能继承多个抽象类</li>
+</ul>
+<p><strong>接口</strong></p>
+<ul>
+<li>
+<p>在 Java 8 之前，接口是一个完全抽象的类，不能有实现</p>
+</li>
+<li>
+<p>Java 8 开始，接口也可以拥有默认的方法实现</p>
+</li>
+<li>
+<p>接口的 方法不允许定义为 private 或者 protected，默认都是 public 的，</p>
+</li>
+<li>
+<p>接口的字段只能是 static 和 final 类型的</p>
+</li>
+<li>
+<p>一个类可以实现多个接口</p>
+</li>
+</ul>
+<h3 id="重载与重写">重载与重写</h3>
+<p><strong>重写</strong></p>
+<ul>
+<li>继承体系中的概念
+<ul>
+<li>子类方法的访问权限必须大于等于父类方法；</li>
+<li>子类方法的返回类型必须是父类方法返回类型或为其子类型。</li>
+<li>子类方法抛出的异常类型必须是父类抛出异常类型或为其子类型。</li>
+</ul>
+</li>
+</ul>
+<p><strong>重载</strong></p>
+<ul>
+<li>作用于同一个类中</li>
+<li>方法名称上相同，但是参数类型、个数、顺序至少有一个不同</li>
+</ul>
+<h2 id="object">Object</h2>
+<h3 id="equals">equals()</h3>
+<ul>
+<li>检查引用是否相等，如果是直接返回 true</li>
+<li>检查是否是同一个类型，如果不是，直接返回 false</li>
+<li>判断属性值是否相等</li>
+</ul>
+<h3 id="hashcode">hashCode()</h3>
+<ul>
+<li>等价的两个对象散列值一定相同，散列值相同的两个对象不一定等价</li>
+<li>覆盖 equals() 方法时应当总是覆盖 hashCode()</li>
+</ul>
+<h3 id="clone">clone()</h3>
+<ul>
+<li>
+<p>一个类不显式去重写 clone()，其它类就不能直接去调用该类实例的 clone() 方法。</p>
+</li>
+<li>
+<p>浅拷贝和深拷贝</p>
+</li>
+<li>
+<p>尽量避免使用clone()进行拷贝，而是使用构造函数进行对象拷贝</p>
+</li>
+</ul>
+<h2 id="关键字">关键字</h2>
+<h3 id="final">final</h3>
+<ul>
+<li><code>final int x=10</code>编译时常量</li>
+<li><code>final A y = new A()</code>运行时常量</li>
+<li>作用在方法上，表示方法不能被子类重写</li>
+<li>作用在类上，该类不能被继承</li>
+</ul>
+<h3 id="static">static</h3>
+<p><strong>静态变量</strong></p>
+<ul>
+<li>又称为类变量，静态变量在类加载时初始化，在内存中只存在一份</li>
+</ul>
+<p><strong>静态方法</strong></p>
+<ul>
+<li>静态方法在类加载的时候就存在，所以静态方法必须有实现</li>
+</ul>
+<p><strong>静态语句块</strong></p>
+<ul>
+<li>静态语句块在类初始化时运行一次</li>
+</ul>
+<p><strong>静态内部类</strong></p>
+<ul>
+<li>非静态内部类依赖于外部类的实例，而静态内部类不需要</li>
+<li>静态内部类不能访问外部类的非静态的变量和方法。</li>
+</ul>
+<p><strong>初始化顺序</strong></p>
+<ul>
+<li>优先main方法所在的类</li>
+<li>父类还未初始化，则先初始化父类</li>
+<li>java.lang.reflect对某个类进行反射调用时，如果未初始化，则需要进行初始化</li>
+<li>遇到new、getstatic、putstatic、invokestatic指令，需要触发对应类的初始化</li>
+</ul>
+<h2 id="反射">反射</h2>
+<p>反射提供了一种在运行时加载类的方式，这包括在编译期不存在的class文件也可以被加载。</p>
+<pre><code class="language-java">Class.forName(&quot;com.mysql.jdbc.Driver&quot;)
+##forname()实现细节
+@CallerSensitive
+public static Class&lt;?&gt; forName(String name, boolean initialize,
+                                   ClassLoader loader)
+    throws ClassNotFoundException
+    {
+        Class&lt;?&gt; caller = null;
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            // Reflective call to get caller class is only needed if a security manager
+            // is present.  Avoid the overhead of making this call otherwise.
+            caller = Reflection.getCallerClass();
+            if (sun.misc.VM.isSystemDomainLoader(loader)) {
+                ClassLoader ccl = ClassLoader.getClassLoader(caller);
+                if (!sun.misc.VM.isSystemDomainLoader(ccl)) {
+                    sm.checkPermission(
+                        SecurityConstants.GET_CLASSLOADER_PERMISSION);
+                }
+            }
+        }
+        return forName0(name, initialize, loader, caller);
+ }
+</code></pre>
+<p>Class 和 java.lang.reflect 一起对反射提供了支持，java.lang.reflect 类库主要包含了以下三个类：</p>
+<ul>
+<li><strong>Field</strong> ：可以使用 get() 和 set() 方法读取和修改 Field 对象关联的字段；</li>
+<li><strong>Method</strong> ：可以使用 invoke() 方法调用与 Method 对象关联的方法；</li>
+<li><strong>Constructor</strong> ：可以用 Constructor 创建新的对象。</li>
+</ul>
+<p><strong>反射的缺点</strong></p>
+<ul>
+<li>性能开销大，反射为动态解析，所以 JVM 无法对代码进行优化</li>
+<li>安全性差，反射允许代码执行一些在正常情况下不被允许的操作（比如访问私有的属性和方法）</li>
+</ul>
+<h2 id="异常">异常</h2>
+<p><strong>Throwable</strong></p>
+<ul>
+<li><strong>Error</strong> JVM 无法处理</li>
+<li><strong>Exception</strong>
+<ul>
+<li>受检异常</li>
+<li>非受检异常，RuntimeException</li>
+</ul>
+</li>
+</ul>
+<h2 id="泛型">泛型</h2>
+<p>泛型就是<code>类型的参数化</code></p>
+<p>泛型只在编译器有效，编译完之后泛型的相关信息会被檫除，然后在对象进入和离开方法的边界处添加类型检查和类型转换的方法。</p>
+<p><strong>不能创建一个确切的泛型类型的数组</strong></p>
+<pre><code class="language-java">//不支持
+List&lt;String&gt;[] ls = new ArrayList&lt;String&gt;[10];
+//支持
+List&lt;?&gt;[] ls = new ArrayList&lt;?&gt;[10];
+</code></pre>
+<p>这主要还是因为泛型作用在编译期，运行时并没有泛型信息，所以有些错误只有在运行时才知道，例如下面的场景：</p>
+<pre><code>List&lt;String&gt;[] lsa = new List&lt;String&gt;[10]; // Not really allowed.    
+Object o = lsa;    
+Object[] oa = (Object[]) o;    
+List&lt;Integer&gt; li = new ArrayList&lt;Integer&gt;();    
+li.add(new Integer(3));    
+oa[1] = li; // Unsound, but passes run time store check    
+String s = lsa[1].get(0); // Run-time error: ClassCastException.
+</code></pre>
+<p>所以为了避免这种错误的发生，干脆就不支持创建一个确切的泛型类型的数组。</p>
+<h2 id="collection">Collection</h2>
+<h3 id="queue">Queue</h3>
+<p>同set、List一样，Queue继承了Collection接口。</p>
+<p><strong>非阻塞实现</strong></p>
+<ul>
+<li>
+<p>PriorityQueue</p>
+</li>
+<li>
+<p>ConcurrentLinkedQueue</p>
+<p>无界队列，采用cas原子机制</p>
+</li>
+</ul>
+<p><strong>阻塞实现</strong></p>
+<p>阻塞队列集成BlockingQueue接口，所谓阻塞指当没有空间或者元素可用时，队列的添加或者删除操作会被阻塞。</p>
+<ul>
+<li>
+<p>ArrayBlockingQueue</p>
+</li>
+<li>
+<p>LinkedBlockingQueue</p>
+<p>若不指定容量，即容量没有上限，put操作不会被阻塞</p>
+</li>
+<li>
+<p>PriorityBlockingQueue</p>
+<p>该队列没有上限，put操作永远不会被阻塞</p>
+</li>
+<li>
+<p>DelayQueue</p>
+<p>同PriorityBlockingQueue一样，该队列也是基于PriorityQueue 进行实现，也是一个无界队列，只有在元素延期后才能取出，所有暂时没有延期元素，则队列没有头部。</p>
+</li>
+<li>
+<p>SynchronousQueue</p>
+</li>
+</ul>
+<p>对于阻塞的实现，使用ReentrantLock进行实现，队列在初始化时，创建ReentrantLock以及对应的两个监视器（<code>notEmpty</code>，<code>notFull</code>），同时也会指定锁的策略（公平、非公平）。</p>
+<p>在队列家族上，还有一个特殊的队列，双端队列<code>Deque</code>，LinkedList就是它的一个实现。</p>
+<h3 id="set">Set</h3>
+<ul>
+<li>
+<p>HashSet：<code>hashcode()</code>、<code>equals()</code>，基于HashMap实现</p>
+</li>
+<li>
+<p>LinkedHashSet：基于LinkedHashMap实现</p>
+</li>
+<li>
+<p>TreeSet：有序、基于红黑树，查找效率低于HashSet</p>
+</li>
+</ul>
+<h3 id="list">List</h3>
+<ul>
+<li>ArraryList
+<ul>
+<li>基于数组实现，成员为：<code>transient Object[] elementData</code>，因为不是所有的空间都被使用。因此使用了 <code>transient</code> 修饰，可以防止被自动序列化。</li>
+<li>默认大小为10</li>
+<li>扩容1.5倍，即<code>oldCapacity + (oldCapacity &gt;&gt; 1)</code></li>
+</ul>
+</li>
+<li>LinkedList： 双向链表实现，与ArrayList相比，插入或删除方便，但是查找慢</li>
+<li>Vector
+<ul>
+<li>ArraryList的线程安全版，通过synchronized实现</li>
+<li>扩容大小为2倍</li>
+</ul>
+</li>
+<li>CopyOnWriteArrayList
+<ul>
+<li>读写分离，写操作在一个复制的数组上进行</li>
+<li>写操作需要加锁，防止并发写入时导致写入数据丢失</li>
+<li>适用于读多，写少的场景</li>
+</ul>
+</li>
+</ul>
+<p><strong>Fail-Fast</strong></p>
+<p>这里主要是For-Each这个语法糖带来的问题，在Java中For-Each是通过迭代器的hasNext()和next()实现的，ArrayList提供了快速<code>fail fast</code>机制，当面对并发修改时，迭代器能够快速检测并抛出异常。</p>
+<pre><code class="language-java">for (int i = 0; i &lt; list.size(); i++){
+    String temp = list.get(i);
+    list.remove(temp);
+}
+// OK
+for (String temp : list) {
+    list.remove(temp);
+}
+// Exception in thread &quot;main&quot; java.util.ConcurrentModificationException
+</code></pre>
+<p>我们可以看一下ArrayList的内部迭代器Itr：</p>
+<pre><code class="language-java">int expectedModCount = modCount
+public E next(){
+    checkForComodification();
+    ....
+}
+public void remove(){
+	....
+	checkForComodification();
+	....
+}
+final void checkForComodification(){
+	if(modCount != expectedModCount)
+		throw new ConcurrentModificationException();
+}
+</code></pre>
+<p>在对ArrayList中的每次操作，会对<code>modCount</code>进行自增，迭代器遍历的时候对ArrayList修改后会导致<code>modCount</code>和<code>expectedModCount</code>不一致，从而抛出异常。</p>
+<p>所以如果需要在迭代时删除元素，还有一种办法就是使用迭代器自身提供的<code>remove()</code>方法。每次删除完元素后会强制修正<code>expectedModCount</code>和<code>modCount</code>的一致性。</p>
+<h3 id="map">Map</h3>
+<ul>
+<li>HashMap</li>
+<li>HashTable</li>
+<li>Properties :对HashTable的扩展</li>
+<li>LinkedHashMap</li>
+<li>IdentityHashMap</li>
+<li>TreeMap</li>
+<li>WeakHashMap
+<ul>
+<li>WeakHashMap 的 Entry 继承自 WeakReference，被 WeakReference 关联的对象在下一次垃圾回收时会被回收。</li>
+</ul>
+</li>
+<li>ConcurrentHashMap</li>
+</ul>
+<p>所有通用 Map 都使用哈希映射，将元素映射至数组对应位置上，每个位置我们称为Hash桶（bucket），Hash桶数量即为数组大小。</p>
+<pre><code class="language-java">//
+int hashvalue = Maths.abs(key.hashCode()) % table.length;
+//
+int hashvalue = (key.hashCode() &amp; 0x7FFFFFFF) % table.length;
+</code></pre>
+<p>这两种方式从功能上说，都没有问题，但是采用<code>&amp;</code>性能更好。</p>
+<p>当不同元素拥有相同hash值，就会产生hash冲突，冲突产生后，会在数据对应位置处插入链接列表，后续冲突元素都添加至链表中。</p>
+<p><strong>HashMap优化</strong></p>
+<p>如果哈希映射在同一个桶上，那该桶连接的元素链表将会很长，这必然导致元素的查找速度线性增长。所以哈希均匀映射在数组不同位置上，能够提升查找效率。</p>
+<ul>
+<li>
+<p>调整Map大小</p>
+<p>Map支持自动调整桶的数量，降低冲突的可能性，从而提升查找速度。当然桶数量调整意味着Hash映射的位置可能发生变化，元素需要插入到数组新的位置上。所以调整开销比较大。</p>
+</li>
+<li>
+<p>负载因子</p>
+<p>为确定何时调整大小，而不是对每个存储桶中的链接列表的深度进行记数，HashMap使用一个额外的参数粗略的计算存储桶的密度。如果<code>负载因子 x 桶数量 &lt; Map大小</code>则调整桶的数量。</p>
+</li>
+<li>
+<p>红黑树</p>
+<p>在JDK1.7中，链表长度大于<code>TREEIFY_THRESHOLD=8</code>时，链表将转换为红黑树</p>
+</li>
+</ul>
+<p><strong>HashMap和HashTable</strong></p>
+<ul>
+<li>HashTable方案使用<code>synchronized</code>进行同步</li>
+<li>HashTable key和value都不能是null，而HashMap可以</li>
+<li>哈希桶定位算法不同，HashMap采用位运算效率更高，而HashTable使用取余的方式</li>
+<li>Hashtable中hash数组默认大小是11，按照<code>size*2+1</code>进行扩容，HashMap中hash数组的默认大小是16，因为需要使用位运算方式定位hash桶，所以数组大小必须是2的指数</li>
+<li>默认负载因子都是0.75</li>
+</ul>
+<p><strong>HashMap空转问题</strong></p>
+<p>该操作主要发生在并发场景下HashMap的扩容，容易在一个桶上形成环形链表。</p>
+<p><strong>ConcurrentHashMap</strong></p>
+<p>JDK1.7</p>
+<ul>
+<li>
+<p>结构为Segment 数组、HashEntry数组（即hashmap中的桶概念）</p>
+</li>
+<li>
+<p>分段锁思想，Segment 继承于 ReentrantLock</p>
+</li>
+<li>
+<p>put的过程大致为</p>
+<ul>
+<li>定位segment段</li>
+<li>尝试获取锁，失败则自旋获取，重试<code>MAX_SCAN_RETRIES</code>次后改为阻塞锁获取</li>
+<li>根据key的hashcode定位HashEntry</li>
+<li>如果HashEntry上的链表不为空，该遍历链表，找到替换或者插入位置</li>
+<li>插入后需要查看当前负载，以决定是否需要扩容</li>
+</ul>
+</li>
+</ul>
+<p>JDK1.8</p>
+<ul>
+<li>结构上取消分段锁设计，HashEntry数组调整为Node数组</li>
+<li>采用<code>CAS + synchronized</code> 来保证并发安全性</li>
+<li>put过程
+<ul>
+<li>计算key的hashcode，定位Node位置</li>
+<li>如果该位置为空，利用 CAS 尝试写入，失败则自旋保证成功</li>
+<li>当前位置的 <code>hashcode == MOVED == -1</code>,则需要进行扩容</li>
+<li>如果不满足，则利用 synchronized 锁写入数据</li>
+<li>数量大于 <code>TREEIFY_THRESHOLD</code> 则要转换为红黑树。</li>
+</ul>
+</li>
+</ul>
+<p><strong>LinkedHashMap</strong></p>
+<ul>
+<li>由hash桶数组+双向链表实现
+<ul>
+<li>transient Entry&lt;K,V&gt; head；</li>
+<li>transient Entry&lt;K,V&gt; tail;</li>
+</ul>
+</li>
+<li>排序方式有两种
+<ul>
+<li>写入顺序排序 <code>accessOrder=false</code></li>
+<li>访问顺序排序 <code>accessOrder=true</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="java并发">Java并发</h2>
+<p><strong>并发编程的优点：</strong></p>
+<ul>
+<li>充分利用多核CPU的计算能力</li>
+<li>提升应用性能</li>
+</ul>
+<p><strong>并发编程的缺点：</strong></p>
+<ul>
+<li>频繁的上下文切换，单核CPU通过时间片分割让我们感觉多线程并行的，也就是说在一个时间片中只有一个线程在执行，执行完在切换到另外一个线程，在切换时都需要保存当前线程上下文，这样在后需时间片执行该线程时，才能继续恢复到之前的状态</li>
+<li>线程安全，在并发编程时，需要注意临界区安全问题，还需避免死锁问题</li>
+</ul>
+<p><strong>避免频繁上下文切换</strong></p>
+<ul>
+<li>CAS，即使用原子锁（乐观锁）更新数据，从而避免锁竞争带来的上下文切换</li>
+<li>避免过多线程</li>
+<li>协程：在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换</li>
+<li>无锁编程，分段锁</li>
+</ul>
+<h3 id="线程">线程</h3>
+<h4 id="状态">状态</h4>
+<ul>
+<li>new （新建），创建完之后并没有调用start()</li>
+<li>runnable（运行），调用了start()，尝试占用CPU资源</li>
+<li>blocked（阻塞），线程尝试进入临界区（等待排他锁，当抢到锁之后才能从阻塞态恢复到运行态）</li>
+<li>waiting（等待），已经进入临界区（拥有锁），调用wait，join，park方法后进入等待态，此时不会被分配CPU时间片
+<ul>
+<li>Object.notify() / Object.notifyAll()</li>
+<li>Thread.join()</li>
+<li>LockSupport.park()/LockSupport.unpark(Thread)</li>
+</ul>
+</li>
+<li>time_waiting（限期等待），调用wait(t),sleep(t),join(t),parkNanos,parkUntil，无需其它线程显示唤醒，一定时间后自动被系统唤醒</li>
+<li>terminated（终止）</li>
+</ul>
+<p>阻塞和等待的区别：</p>
+<ul>
+<li>阻塞是为了争夺锁，即临界区的访问权限</li>
+<li>等待是程序已经进入了临界区，但是因为程序自身发现需要其他一些资源，自发的挂起等待，此时不会分片时间片，需要其它线程显示的唤醒。</li>
+</ul>
+<h4 id="守护线程">守护线程</h4>
+<ul>
+<li>
+<p>程序运行时在后台提供服务的线程，Java中典型的守护线程有：GC、JIT</p>
+</li>
+<li>
+<p>所有非守护线程结束时，程序也就终止，同时会杀死所有守护线程</p>
+</li>
+<li>
+<p>可以通过<code>setDaemon(true)</code>将一个线程设置为守护线程</p>
+</li>
+</ul>
+<h4 id="线程使用">线程使用</h4>
+<ul>
+<li>Thread</li>
+<li>Runnable</li>
+<li>Callable</li>
+</ul>
+<p><strong>实现Thread和Runnable的区别</strong></p>
+<ul>
+<li>Runnable是接口，所以支持多实现，而继承了Thread之后，该类并不能在继承其它类</li>
+<li>很多地方都说继承Thread开销过大，但是没找到合理解释</li>
+<li>继承Runnable对多线程任务设计上更加友好，能够更方便的进行资源共享，下面的例子中，通过继承Thread的创建两个线程，其中资源x并不是两个线程共享。</li>
+</ul>
+<pre><code class="language-java">// 通过Thread方式实现
+public class MyThread extends Thread
+{  
+    int x=1;
+    @Override
+    public void run() {
+        x++;
+    }
+}
+ public static void main(String[] args) {
+			 new MyThread().start();
+			 new MyThread().start();
+ }
+// 通过Runnable实现
+public class MyRunnable implements Runnable {
+    int x = 1;
+
+    @Override
+    public void run() {
+        x++;
+    }
+
+    public static void main(String[] args) {
+        Runnable run = new MyRunnable();
+        new Thread(run).start();
+        new Thread(run).start();
+    }
+}
+</code></pre>
+<h4 id="线程状态转换">线程状态转换</h4>
+<p><strong>中断</strong><br>
+线程的interrupt()方法给线程设置了中断标志。对于满足如下条件的线程是无法被中断的：</p>
+<ul>
+<li>run()方法无线循环</li>
+<li>且没有sleep()、wait()、interrupted()被调用</li>
+</ul>
+<p>一旦中断标志被捕获后，会清除中断标志，如下代码中：</p>
+<pre><code class="language-java">public static void main(String[] args) throws InterruptedException {
+		// sleepThread睡眠1000ms
+		final Thread sleepThread = new Thread() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				super.run();
+			}
+		};
+
+		Thread interruptedThread = new Thread() {
+			@Override
+			public void run() {
+				while (Thread.interrupted())
+					;
+			}
+		};
+
+		Thread busyThread = new Thread() {
+			@Override
+			public void run() {
+				while (true)
+					;
+			}
+		};
+		sleepThread.start();
+		interruptedThread.start();
+		busyThread.start();
+		sleepThread.interrupt();
+		interruptedThread.interrupt();
+		busyThread.interrupt();
+		Thread.sleep(1500);
+		System.out.println(String.format(
+				&quot;sleepThread isInterrupted %s,interruptedThread isInterrupted:%s,busyThread isInterrupted:%s &quot;,
+				sleepThread.isInterrupted(), interruptedThread.isInterrupted(), busyThread.isInterrupted()));
+	}
+</code></pre>
+<p>输出:<code>sleepThread isInterrupted false,interruptedThread isInterrupted:false,busyThread isInterrupted:true</code></p>
+<p><strong>yield()</strong><br>
+当线程调用yield()后，会让自己让出CPU时间片，切换给与自己优先级相同的其他线程执行。</p>
+<p>让出的CPU并不是代表当前线程不再运行了，如果在下一次竞争中，又获得了CPU时间片当前线程依然会继续运行。</p>
+<p><strong>join()</strong><br>
+一个线程调用另外一个线程的join（）方法，会将当前线程挂起，一直到目标线程结束。</p>
+<p><strong>wait() notify() notifyAll()</strong></p>
+<ul>
+<li>当线程为了等待某个条件满足时，会调用wait()方法将当前线程挂起，让其他线程执行，当其他线程使得wait（）线程等待的条件满足后，使用notify() 或者 notifyAll() 来唤醒挂起的线程。</li>
+<li>wait() 挂起期间，线程会释放锁</li>
+<li>wait() notify() notifyAll()属于Object的方法</li>
+</ul>
+<p><strong>wait() vs sleep()</strong></p>
+<ul>
+<li>wait() 会释放锁，sleep() 不会</li>
+<li>sleep() 是 Thread 的静态方法</li>
+</ul>
+<p><strong>await() signal() signalAll()</strong><br>
+这些方法为j.u.c包中基于Condition 类来实现线程之间的协调，Condition 上调用 await() 方法使线程等待，其它线程调用 signal() 或 signalAll() 方法唤醒等待的线程。<br>
+借助ArrayBlockQueue实现看一下用法：</p>
+<pre><code class="language-java">public class ArrayBlockingQueue&lt;E&gt; extends AbstractQueue&lt;E&gt;
+        implements BlockingQueue&lt;E&gt;, java.io.Serializable {	
+	/** Main lock guarding all access */
+    final ReentrantLock lock;
+
+    /** Condition for waiting takes */
+    private final Condition notEmpty;
+
+    /** Condition for waiting puts */
+    private final Condition notFull;
+    
+    public void put(E e) throws InterruptedException {
+        checkNotNull(e);
+        final ReentrantLock lock = this.lock;
+        lock.lockInterruptibly();
+        try {
+            while (count == items.length)
+                notFull.await();
+            enqueue(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    private void enqueue(E x) {
+        .....
+        notEmpty.signal();
+    }
+    
+    public E take() throws InterruptedException {
+        final ReentrantLock lock = this.lock;
+        lock.lockInterruptibly();
+        try {
+            while (count == 0)
+                notEmpty.await();
+            return dequeue();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+    private E dequeue() {
+		...
+        notFull.signal();
+        ...
+    }
+}
+</code></pre>
+<h3 id="内存模型jmm">内存模型（JMM）</h3>
+<p>因为Java主要通过共享内存的方式进行通信，即线程间通过读写共享变量进行隐式的通信。<br>
+Java内存模型（JMM)是JVM虚拟机规范中定义用来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果。</p>
+<h4 id="jmm抽象结构">JMM抽象结构</h4>
+<p>从抽象结构上来说，JMM分为主内存和工作内存两种。<br>
+<code>JMM定义了线程访问共享变量的规则</code>，线程的工作内存中保存着主内存中共享变量的副本，线程对共享变量的操作，都是在工作内存中完成，而不能直接读写主内存中的变量。</p>
+<h4 id="内存间交互操作">内存间交互操作</h4>
+<p>JMM定义了 8 个操作来完成主内存和工作内存的交互操作:</p>
+<ul>
+<li>read：把一个变量的值从主内存传输到工作内存中</li>
+<li>load：在 read 之后执行，把 read 得到的值放入工作内存的变量副本中</li>
+<li>use：把工作内存中一个变量的值传递给执行引擎</li>
+<li>assign：把一个从执行引擎接收到的值赋给工作内存的变量</li>
+<li>store：把工作内存的一个变量的值传送到主内存中</li>
+<li>write：在 store 之后执行，把 store 得到的值放入主内存的变量中</li>
+<li>lock：作用于主内存的变量</li>
+<li>unlock</li>
+</ul>
+<h4 id="jmm三大特性">JMM三大特性</h4>
+<pre><code>**原子性**
+</code></pre>
+<p>JMM保证上面的8中操作具有原子性。对于i++并不具有原子性，因为i++可以分解成3个指令：</p>
+<pre><code class="language-c">load
+assgin
+store
+</code></pre>
+<p>另外还有几种保证原子性的方式：</p>
+<ul>
+<li>AtomicInteger 能保证多个线程修改的原子性</li>
+<li>synchronized</li>
+</ul>
+<p><strong>可见性</strong><br>
+可见性指当一个线程修改了共享变量的值，其它线程能够立即得知这个修改。<br>
+主要有三种实现可见性的方式：</p>
+<ul>
+<li>volatile</li>
+<li>synchronized，对一个变量执行 unlock 操作之前，必须把变量值同步回主内存。</li>
+<li>final，被 final 关键字修饰的字段在构造器中一旦初始化完成，并且没有发生 this 逃逸（其它线程通过 this 引用访问到初始化了一半的对象），那么其它线程就能看见 final 字段的值。</li>
+</ul>
+<p><strong>有序性</strong><br>
+有序性是指：在本线程内观察，所有操作都是有序的。在一个线程观察另一个线程，所有操作都是无序的，无序是因为发生了指令重排序。<br>
+保证有序性的方式：</p>
+<ul>
+<li>volatile，通过添加内存屏障的方式来禁止指令重排，即重排序时不能把后面的指令放到内存屏障之前。</li>
+<li>synchronized，它保证每个时刻只有一个线程执行同步代码，相当于是让线程顺序执行同步代码。</li>
+</ul>
+<p>为了保证有序性，JVM 还规定了一些原则：</p>
+<ol>
+<li>单一线程原则（Single Thread rule）<br>
+在一个线程内，在程序前面的操作先行发生于后面的操作。</li>
+<li>管程锁定规则（Monitor Lock Rule）<br>
+一个 unlock 操作先行发生于后面对同一个锁的 lock 操作。</li>
+<li>volatile 变量规则（Volatile Variable Rule）<br>
+对一个 volatile 变量的写操作先行发生于后面对这个变量的读操作。</li>
+<li>线程启动规则（Thread Start Rule）<br>
+Thread 对象的 start() 方法调用先行发生于此线程的每一个动作。</li>
+<li>线程加入规则（Thread Join Rule）<br>
+Thread 对象的结束先行发生于 join() 方法返回。</li>
+<li>线程中断规则（Thread Interruption Rule）<br>
+对线程 interrupt() 方法的调用先行发生于被中断线程的代码检测到中断事件的发生，可以通过 interrupted() 方法检测到是否有中断发生。</li>
+<li>对象终结规则（Finalizer Rule）<br>
+一个对象的初始化完成（构造函数执行结束）先行发生于它的 finalize() 方法的开始。</li>
+<li>传递性（Transitivity）<br>
+如果操作 A 先行发生于操作 B，操作 B 先行发生于操作 C，那么操作 A 先行发生于操作 C。</li>
+</ol>
+<p>根据上面给定的规则，我们发现可以通过<code>volatile</code>、<code>synchronized</code>显示的保证有序性。</p>
+<h3 id="并发关键字">并发关键字</h3>
+<h4 id="synchronized">synchronized</h4>
+<p><strong>原理</strong><br>
+<code>synchronized</code> 在编译之后在同步方法调用前加入一个 <code>monitor.enter</code> 指令，在退出方法和异常处插入 <code>monitor.exit</code> 的指令，所以本质上<code>synchronized</code> 是获取一个对象监视器（Monitor），没有获取到对象监视器的会阻塞在方法入口，直到获取锁的线程调用<code>monitor.exit</code>之后其它线程才能继续获取锁。</p>
+<p>如下java代码：</p>
+<pre><code class="language-java">public class SynchronizedTest {
+	public void method() {
+		synchronized (SynchronizedTest.class) {
+			System.out.println(&quot;synchronized test&quot;);
+		}
+	}
+}
+</code></pre>
+<p>编译完后，执行<code>javap -c SynchronizedTest</code>查看编译的信息：</p>
+<pre><code class="language-java">public class com.focustech.fnlp.tfmodel.SynchronizedTest {
+  public com.focustech.fnlp.tfmodel.SynchronizedTest();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V
+       4: return
+
+  public void method();
+    Code:
+       0: ldc           #2                  // class com/focustech/fnlp/tfmodel/SynchronizedTest
+       2: dup
+       3: astore_1
+       4: monitorenter
+       5: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       8: ldc           #4                  // String synchronized test
+      10: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+      13: aload_1
+      14: monitorexit
+      15: goto          23
+      18: astore_2
+      19: aload_1
+      20: monitorexit
+      21: aload_2
+      22: athrow
+      23: return
+    Exception table:
+       from    to  target type
+           5    15    18   any
+          18    21    18   any
+}
+</code></pre>
+<p>可以看到在同步块的入口和出口分别有 <code>monitorenter,monitorexit</code> 指令。<br>
+下图表现了对象，对象监视器，同步队列以及执行线程状态之间的关系：<br>
+<img src="https://yinyayun.github.io//post-images/1563275284798.png" alt="synchronized"></p>
+<p>该图可以看出，任意线程对Object的访问，首先要获得Object的监视器，如果获取失败，线程状态变为BLOCKED状态，并进入同步队列，，当Object的监视器占有者释放后，在同步队列中得线程就会有机会重新获取该监视器。</p>
+<h4 id="volatile">volatile</h4>
+<p>当一个变量被 volatile 修饰时，任何线程对它的写操作都会立即刷新到主内存中，并且会强制让缓存了该变量的线程中的数据清空，必须从主内存重新读取最新数据。</p>
+<p><strong>内存语义</strong><br>
+<code>volatile</code>只能保证内存的可见性，并不能保证线程安全性，举个例子：</p>
+<pre><code class="language-java">public class App implements Runnable {
+    public volatile int i = 0;
+    @Override
+    public void run() {
+        i++;
+    }
+}
+</code></pre>
+<p>虽然每个线程拿到的<code>i</code>都是最新的，但是，<code>i++</code>操作并不具备原子性，所以并不具备线程安全性。</p>
+<p><strong>禁止指令重排 语义</strong><br>
+内存可见性只是 volatile 的其中一个语义，它还可以防止 JVM 进行指令重排优化。<br>
+典型的一个场景就是单例的实现：</p>
+<pre><code class="language-java">public class Singleton {
+    private static volatile Singleton singleton;
+    private Singleton() {}
+    public static Singleton getInstance() {
+        if (singleton == null) {
+            synchronized (Singleton.class) {
+                if (singleton == null) {
+                    singleton = new Singleton();
+                }
+            }
+        }
+        return singleton;
+    }
+}
+</code></pre>
+<p>我们先看一下<code>singleton = new Singleton()</code>实际上底层会涉及到三个指令：</p>
+<pre><code class="language-c">inst = allocat()； // 分配内存  
+constructor(inst); // 执行构造函数
+sSingleton = inst;      // 赋值
+</code></pre>
+<p>如果没有使用volatile，指令重排，赋值操作在前，就会导致某些线程拿到为执行构造函数的对象。</p>
+<h4 id="final-2">final</h4>
+<p><strong>禁止指令重排 语义</strong></p>
+<pre><code class="language-java">public class App {
+    private int a;
+    private final int b;
+    private static App app;
+    public App() {
+        a=10;
+        b=10;
+    }
+    public static void init(){
+        app=new App();
+    }
+    public static String get(){
+        return app.a+&quot;_&quot;+app.b;
+    }
+}
+</code></pre>
+<p>该例子中有两个成员变量，<code>a</code>、<code>b</code>，不同的是<code>b</code>是<code>final</code>修饰的，如果在两个线程通知调用init()和get()：</p>
+<pre><code class="language-java">Runnable r1 = () -&gt; App.init();
+Runnable r2 = () -&gt; App.get();
+</code></pre>
+<p><code>new App()</code>操作的非原子性，实际涉及到<code>内存分配</code>、<code>构造函数</code>、<code>实例赋值</code>三个操作组成，对于普通成员变量<code>a</code>的初始化很可能会被重排到构造函数之外，在线程2读取<code>a</code>的值时，很有可能a还没有被初始化，而final会禁止变量b的初始化被重新排序到构造函数之外。</p>
+<p>final域禁止重新排序，在对象引用为任意线程可见之前，对象的final域已经被正确初始化过了，而普通域就不具有这个保障。</p>
+<p><strong>final实现原理</strong><br>
+final域修饰的变量，在写入之后会编译器会添加：<code>StoreStore</code>屏障，在对其读取之前，编译器会添加一个<code>LoadLoad</code>屏障。</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/qmx0wDoyT">
+                  <h3 class="post-title">
+                    初识ZeroMQ
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

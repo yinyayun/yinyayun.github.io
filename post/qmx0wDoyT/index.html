@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -103,7 +103,7 @@
             
             <div class="post-content">
               <p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
-<p><strong>ZMQ连接协议</strong>
+<p><strong>ZMQ连接协议</strong><br>
 ZMQ提供多种传输协议用于不同场景下的通信，主要有三个单播传输协议和两个广播协议。</p>
 <ul>
 <li>单播传输
@@ -159,7 +159,7 @@ zmq_connect();
 <li>ZMQ发送消息，先传输到本地的缓冲队列</li>
 <li>ZMQ套接字支持和多个套接字连接，而TCP只能点对点</li>
 </ul>
-<p><strong>套接字类型</strong>
+<p><strong>套接字类型</strong><br>
 套接字类型决定了套接字的行为，即在发送或接受消息时的规则。</p>
 <ul>
 <li>ZMQ_REP</li>
@@ -189,8 +189,8 @@ zmq_connect();
 </ul>
 <h2 id="demo">Demo</h2>
 <p><strong>PUB - SUB（发布订阅）</strong></p>
-<p>下面的天气信息发布订阅服务，Server绑定PUB套接字在5556端口，Client端创建SUB套接字并连接至服务端的5556端口。
-<img src="https://yinyayun.github.io//post-images/1562897403739.png" alt="PUB-SUB">
+<p>下面的天气信息发布订阅服务，Server绑定PUB套接字在5556端口，Client端创建SUB套接字并连接至服务端的5556端口。<br>
+<img src="https://yinyayun.github.io//post-images/1562897403739.png" alt="PUB-SUB"><br>
 服务端代码：</p>
 <pre><code class="language-c">#include &quot;zhelpers.h&quot;
  
@@ -257,8 +257,8 @@ int main (int argc, char *argv [])
 }
 </code></pre>
 <p><strong>PUSH - PULL</strong></p>
-<p>下面的服务架构中，任务分发器（ventilator）绑定PUSH套接字在5557端口，在通知任务收集器（sink）后，产生100个任务分发给Worker；Worker从任务分发器PULL任务，任务结束后将结果PUSH给
-任务分发器PULL任务，任务结束后将结果PUSH给任务收集器。
+<p>下面的服务架构中，任务分发器（ventilator）绑定PUSH套接字在5557端口，在通知任务收集器（sink）后，产生100个任务分发给Worker；Worker从任务分发器PULL任务，任务结束后将结果PUSH给<br>
+任务分发器PULL任务，任务结束后将结果PUSH给任务收集器。<br>
 <img src="https://yinyayun.github.io//post-images/1562898414634.png" alt="PUSH - PULL"></p>
 <p>任务分发器代码：</p>
 <pre><code class="language-c">#include &quot;zhelpers.h&quot;
@@ -379,9 +379,9 @@ int main (void)
 }
 </code></pre>
 <p><strong>REQ-ROUTER、DEALER-REP</strong></p>
-<p>简答的请求应答模式中（如下图），REQ直接与REP绑定，即客户端直接连接服务端，但是如果客户端数量变化了，对客户端是不可知的。
+<p>简答的请求应答模式中（如下图），REQ直接与REP绑定，即客户端直接连接服务端，但是如果客户端数量变化了，对客户端是不可知的。<br>
 <img src="https://yinyayun.github.io//post-images/1562899474204.png" alt="rep-req"></p>
-<p>所以，为了为了能够支持服务端的动态扩展，可以引入一个代理（Broker）装置，Broker通过ROUTER套接字将客户端的请求进行路由，通过Dealer套接字分发给服务端，那么我们的服务架构可以调整为：
+<p>所以，为了为了能够支持服务端的动态扩展，可以引入一个代理（Broker）装置，Broker通过ROUTER套接字将客户端的请求进行路由，通过Dealer套接字分发给服务端，那么我们的服务架构可以调整为：<br>
 <img src="https://yinyayun.github.io//post-images/1562899677973.png" alt="Broker"></p>
 <p>客户端代码：</p>
 <pre><code class="language-c">#include &quot;zhelpers.h&quot;
@@ -525,7 +525,7 @@ int main (void)
 }
 </code></pre>
 <h2 id="zmq多线程编程">ZMQ多线程编程</h2>
-<p>上图的请求应答服务中，都是通过启动多个服务来达到并行处理，也就是利用了TCP通信协议进行实现，接下来主要借助ZMQ提供的进程内通信协议实现服务内的多线程编程，下图虚线内是服务内结构：
+<p>上图的请求应答服务中，都是通过启动多个服务来达到并行处理，也就是利用了TCP通信协议进行实现，接下来主要借助ZMQ提供的进程内通信协议实现服务内的多线程编程，下图虚线内是服务内结构：<br>
 <img src="https://yinyayun.github.io//post-images/1562910346344.png" alt="multithread-server"></p>
 <p>Server端代码如下，需要注意的是，进程间通信需要共享同一个ZMQ上下文：</p>
 <pre><code class="language-c">#include &quot;zhelpers.h&quot;

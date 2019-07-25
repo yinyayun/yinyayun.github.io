@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1562984684550">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1562984684550" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -111,7 +111,7 @@
 <!-- more -->
 <p>那么怎么能从appe关联到apple呢，往简单点说，就是appe和apple两个词的相似度很高，那怎么去衡量两个词的相似度呢，这就是我们今天要讲的编辑距离。</p>
 <blockquote>
-<p>原谅我的孤陋寡闻，只能从脑海出检索出apple和appe相关了
+<p>原谅我的孤陋寡闻，只能从脑海出检索出apple和appe相关了<br>
 本文只考虑Levenshtein，因为常见的编辑距离还有汉明距离（对于两个相等长度字符串，所需要的替换次数），最长公共子串距离。</p>
 </blockquote>
 <h2 id="定义">定义</h2>
@@ -120,8 +120,8 @@
 <p>我们再分以下情况来讨论：</p>
 <ol>
 <li>假如字符串S1和S2有一个为空串，那么他们的编辑距离为非空字符串的长度，即D(0,j)=j、D（i,0）=i</li>
-<li>假如两个字符串都不为空，同样存在两种情况：
-2.1 如果S1(i)=S2(j),即存在D(i,j)=D(i-1,j-1),这点应该很好理解。
+<li>假如两个字符串都不为空，同样存在两种情况：<br>
+2.1 如果S1(i)=S2(j),即存在D(i,j)=D(i-1,j-1),这点应该很好理解。<br>
 2.2 如果S1(i)!=S2(j)，有一点可以肯定的D(i,j)=min(D(i-1,j-1),D(i-1,j),D(i,j-1))+1,即可能为S1(i)位置进行替换，S(i-1)之后插入，S(i)位置删除。例如：S1=“cat”和S2=“can”:</li>
 </ol>
 <ul>
