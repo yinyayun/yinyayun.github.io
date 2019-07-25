@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-07-25T04:00:58.621Z</updated>
+    <updated>2019-07-25T04:02:21.734Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -20,13 +20,6 @@
 ]]></summary>
         <content type="html"><![CDATA[<p>随着机器学习算法和技术的进步，越来越多的机器学习应用需要多台机器并行性执行。但是，在集群上进行机器学习的基础设施仍然是不够成熟的。虽然确实存在针对特定用例（例如，参数服务器或超参数搜索）和AI之外的高质量分布式系统的良好解决方案（例如，Hadoop或Spark），但是开发算法的从业者通常从头开始构建他们自己的系统基础结构。</p>
 ]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Java知识体系整理]]></title>
-        <id>https://yinyayun.github.io//post/CLkJMEncM</id>
-        <link href="https://yinyayun.github.io//post/CLkJMEncM">
-        </link>
-        <updated>2019-07-13T04:28:01.000Z</updated>
     </entry>
     <entry>
         <title type="html"><![CDATA[初识ZeroMQ]]></title>
@@ -102,6 +95,17 @@
         <summary type="html"><![CDATA[<p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
 ]]></summary>
         <content type="html"><![CDATA[<p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[记一次python段错误排查经历]]></title>
+        <id>https://yinyayun.github.io//post/6wTmKR_f0</id>
+        <link href="https://yinyayun.github.io//post/6wTmKR_f0">
+        </link>
+        <updated>2018-12-07T09:45:36.000Z</updated>
+        <summary type="html"><![CDATA[<p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
 ]]></content>
     </entry>
 </feed>

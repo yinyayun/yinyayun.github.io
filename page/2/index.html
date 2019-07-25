@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027234282">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564027310165">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027234282" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564027310165" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -91,22 +91,6 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/6wTmKR_f0">
-                  <h2 class="post-title">记一次python段错误排查经历</h2>
-                </a>
-                <div class="post-date">
-                  2018-12-07
-                </div>
-                <div class="post-abstract">
-                  <p>最近被python折腾惨了，所以分享一次segfault错误排查的经历。</p>
-
-                </div>
-              </div>
-              
-            </article>
           
             <article class="post-item">
               <div class="left">
@@ -266,6 +250,30 @@
 </ul>
 </li>
 </ul>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/oR4ZpoGWe">
+                  <h2 class="post-title">SolrCloud-分布式索引</h2>
+                </a>
+                <div class="post-date">
+                  2018-09-05
+                </div>
+                <div class="post-abstract">
+                  <blockquote>
+<p>2018.09.05，深夜，最近因为各种事情，心烦意乱，睡不着，索性翻身起来，写一些没有营养的的东西。</p>
+</blockquote>
+<p>个人认为，solr的分布式存在两种：</p>
+<ul>
+<li>伪分布式，即单shard但存在主从。</li>
+<li>真正的分布式</li>
+</ul>
+<p>因为我认为真正意义上的分布式，不光是分流量，同样需要做到计算的分布式。但是呢，无论是哪一种，但凡涉及到数据的一致性的系统，基本都会考虑只允许主写，solr也是一样，只允许shard leader进行索引的索引的写入，再由主向从写入。</p>
 
                 </div>
               </div>
