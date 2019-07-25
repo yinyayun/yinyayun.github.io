@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-07-25T04:02:21.734Z</updated>
+    <updated>2019-07-25T04:03:49.516Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -23,10 +23,14 @@
     </entry>
     <entry>
         <title type="html"><![CDATA[初识ZeroMQ]]></title>
-        <id>https://yinyayun.github.io//post/qmx0wDoyT</id>
-        <link href="https://yinyayun.github.io//post/qmx0wDoyT">
+        <id>https://yinyayun.github.io//post/start-zeromq</id>
+        <link href="https://yinyayun.github.io//post/start-zeromq">
         </link>
         <updated>2019-07-11T01:50:57.000Z</updated>
+        <summary type="html"><![CDATA[<p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
+]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[VirtualBox Centos磁盘扩容笔记]]></title>
