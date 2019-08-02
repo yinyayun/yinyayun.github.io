@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-07-26T11:33:31.685Z</updated>
+    <updated>2019-08-02T02:35:32.968Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://yinyayun.github.io//images/avatar.png</logo>
     <icon>https://yinyayun.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, 殷亚云的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Tornado IOLoop以及高并发应用开发]]></title>
+        <id>https://yinyayun.github.io//post/tornado-ioloop</id>
+        <link href="https://yinyayun.github.io//post/tornado-ioloop">
+        </link>
+        <updated>2019-07-26T09:56:42.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[IO以及select、poll、epoll]]></title>
         <id>https://yinyayun.github.io//post/OzCA5WT_K</id>
@@ -95,17 +102,6 @@
         <content type="html"><![CDATA[<blockquote>
 <p>本文用例引用至 <a href="http://mccormickml.com/2017/10/13/product-quantizer-tutorial-part-1">product-quantizer-tutorial</a></p>
 </blockquote>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Python module加载机制剖析]]></title>
-        <id>https://yinyayun.github.io//post/jH_HzuYXb</id>
-        <link href="https://yinyayun.github.io//post/jH_HzuYXb">
-        </link>
-        <updated>2018-12-17T10:01:50.000Z</updated>
-        <summary type="html"><![CDATA[<p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>之前实现了python module多版本动态加载，但是在最近一次一个小哥上传的模型中居然有对<code>.so</code>文件的import，十万只草泥马，Python居然还有这种操作，所以再一次对Python的import流程做了一次梳理。</p>
 ]]></content>
     </entry>
 </feed>
