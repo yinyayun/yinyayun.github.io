@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-08-02T02:35:32.968Z</updated>
+    <updated>2019-08-03T10:12:31.313Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://yinyayun.github.io//images/avatar.png</logo>
     <icon>https://yinyayun.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, 殷亚云的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Solr 索引数据相关]]></title>
+        <id>https://yinyayun.github.io//post/index-data</id>
+        <link href="https://yinyayun.github.io//post/index-data">
+        </link>
+        <updated>2019-08-02T08:00:39.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Tornado IOLoop以及高并发应用开发]]></title>
         <id>https://yinyayun.github.io//post/tornado-ioloop</id>
@@ -88,20 +95,5 @@
         <link href="https://yinyayun.github.io//post/JiVM3YKPA">
         </link>
         <updated>2018-12-27T10:41:18.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[点积量化(Product Quantizer)]]></title>
-        <id>https://yinyayun.github.io//post/UjeaMrCsE</id>
-        <link href="https://yinyayun.github.io//post/UjeaMrCsE">
-        </link>
-        <updated>2018-12-19T10:03:17.000Z</updated>
-        <summary type="html"><![CDATA[<blockquote>
-<p>本文用例引用至 <a href="http://mccormickml.com/2017/10/13/product-quantizer-tutorial-part-1">product-quantizer-tutorial</a></p>
-</blockquote>
-]]></summary>
-        <content type="html"><![CDATA[<blockquote>
-<p>本文用例引用至 <a href="http://mccormickml.com/2017/10/13/product-quantizer-tutorial-part-1">product-quantizer-tutorial</a></p>
-</blockquote>
-]]></content>
     </entry>
 </feed>

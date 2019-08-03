@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Solr 索引数据相关 | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564827148076">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1564827148076" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Solr 索引数据相关</h2>
+            <div class="post-date">2019-08-02</div>
+            
+            <div class="post-content">
+              <p>将数据导入Solr时，有很多选择，虽然我们需要通过HTTP与Solr进程通信，但是不一定需要在请求中包含需要索引的文档，所以Solr支持一种remote streaming的方式，可以通过给定一个URL资源，这种情况适用于数据已经在Solr所在机器，或者本地可以访问的文件系统上；还有另外一种方式是使用DataImportHandler (DIH), 该方式可以让Solr从数据库或者其它源上拉取数据，DIH这种方式，伸缩性较强，可以适用于自定义数据源的场景。</p>
+<p>Solr支持不同格式的数据索引：</p>
+<ul>
+<li>XML</li>
+<li>JSON</li>
+<li>Java-Bin，该方式需要配合SolrJ进行提交</li>
+<li>CSV</li>
+<li>Rich documents，例如PDF、XLS、DOC、PPT、Text，但是需要通过Solr Cell模块实现。</li>
+</ul>
+<p>虽然有很多方法向Solr提交索引数据，但是必须是HTTP POST方式，我们可以在Linux命令行中使用curl发送HTTP POST请求，但是为了跨平台，Solr为我们提供了更好的选择：<code>post.jar</code>，关于它的更多用法，我们可以通过以下命令查看：</p>
+<pre><code class="language-bash">$ java –jar post.jar -help
+
+SimplePostTool version 5.0.0
+Usage: java [SystemProperties] -jar post.jar [-h|-] [&lt;file|folder|url|arg&gt; [&lt;file|folder|url|arg&gt;...]]
+
+Supported System Properties and their defaults:
+  -Dc=&lt;core/collection&gt;
+  -Durl=&lt;base Solr update URL&gt; (overrides -Dc option if specified)
+  -Ddata=files|web|args|stdin (default=files)
+  -Dtype=&lt;content-type&gt; (default=application/xml)
+  -Dhost=&lt;host&gt; (default: localhost)
+  -Dport=&lt;port&gt; (default: 8983)
+  -Dbasicauth=&lt;user:pass&gt; (sets Basic Authentication credentials)
+  -Dauto=yes|no (default=no)
+  -Drecursive=yes|no|&lt;depth&gt; (default=0)
+  -Ddelay=&lt;seconds&gt; (default=0 for files, 10 for web)
+  -Dfiletypes=&lt;type&gt;[,&lt;type&gt;,...] (default=xml,json,jsonl,csv,pdf,doc,docx,ppt,pptx,xls,xlsx,odt,odp,ods,ott,otp,ots,rtf,htm,html,txt,log)
+  -Dparams=&quot;&lt;key&gt;=&lt;value&gt;[&amp;&lt;key&gt;=&lt;value&gt;...]&quot; (values must be URL-encoded)
+  -Dcommit=yes|no (default=yes)
+  -Doptimize=yes|no (default=no)
+  -Dout=yes|no (default=no)
+</code></pre>
+<p>如果我们使用curl进行索引提交的话，我们同样有两种选择：</p>
+<ul>
+<li>curl http://localhost:8983/solr/mycollection/update -H 'Content-type:text/xml; charset=utf-8' --data-binary @data.xml</li>
+<li>curl http://localhost:8983/solr/mycollection/update -F stream.body=@data.xml<br>
+第二种是基于form表单的形式提交，通过stream.body参数指定数据，但是需要注意的是solrconfig.xml中模型配置的<code>multipartUploadLimitInKB</code>是2G，如果数据是在Solr所在的机器上，我们可以通过<code>stream.file</code>参数指定，而如果需要从其它URL获取数据，可以通过<code>stream.url</code>给定一个URL参数。<br>
+但是无论是<code>stream.file</code>还是<code>stream.url</code>其实都是使用的远程流（remote streaming ），至于要不要开启remote streaming可以在solrconfig.xml中通过<code>enableRemoteStreamingsetting</code>参数设置。</li>
+</ul>
+<p>一个合法的XML格式的更新如下：<br>
+<img src="https://yinyayun.github.io//post-images/1564802529161.png" alt="Update Xml"><br>
+基于XML格式的合法删除：</p>
+<pre><code class="language-xml">&lt;!--基于唯一字段值得删除--&gt;
+&lt;delete&gt;
+		&lt;id&gt;Artist:11604&lt;/id&gt;
+		&lt;id&gt;Artist:11603&lt;/id&gt;
+&lt;/delete&gt;
+&lt;!--基于query查询结果删除--&gt;
+&lt;delete&gt;
+	&lt;query&gt;timestamp:[* TO NOW-12HOUR]&lt;/query&gt;
+&lt;/delete&gt;
+</code></pre>
+<h2 id="commit">Commit</h2>
+<p>发送给Solr索引数据并不是立即可检索的，同样对于删除动作也不是立即生效的，这就和数据库一样，所有的变更必须被Commit，Solr中有两种类型的Commit：</p>
+<ul>
+<li>Hard commit，该操作代价比较昂贵，会显著的影响性能，一旦进行Hard commit，则会推送给文件系统进行数据更新，也就是说，变更会被持久化，我们可以在solrconfig.xml中的<code>&lt;autoCommit&gt;</code>中设置Hard commit相关参数，也可以在请求参数中给出commit=true通知solr进行 Hard commit；</li>
+<li>Soft commit，与Hard commit对比，代价相对较小，但是不会被持久化。</li>
+</ul>
+<p>关于Solr的Commit我们还需要知道一些重要事项：</p>
+<ul>
+<li>commit操作可能非常的慢，会受到索引大小、硬盘、Solr的预热、缓存状态等影响</li>
+<li>没有事务隔离，这就意味着当有多个Solr客户端同时修改和commit时，某一个客户端的部分更改会在该客户端还未主动commit的时候就被commit掉了，对于回滚，同样也存在这个问题，所以为了避免该问题，可以考虑使用一个客户端进程负责Solr的更新。</li>
+<li>避免同时进行多个commit，这与Solr的query预热机制是有关系的，当有一个commit发生，一个新的searcher就会被创建，紧接着就会调用searcher的预热进程（缓存更新等），当预热的searcher越多，意味着内存的开销越大。（为了自我保护，Solr允许在solrconfig.xml中配置maxWarmingSearchers）。</li>
+</ul>
+<p>因为以上一些问题的存在，所以使用Solr的时候，需要尽量避免主动commit，对此Solr提供服务端自动commit的配置，我们可以在SolrConfig配置自动Commit的条件（例如文档数量阈值、时间）。</p>
+<h2 id="索引优化index-optimization">索引优化（Index optimization）</h2>
+<p>Lucene的索引由一个或多个segments组成，当索引文档的buffer被刷新至硬盘时，将会产生一个新的segment，删除的文档记录在另外一个文件中，在写完一个segment之后，Lucene会将其中一些segment进行合并，一定程度上而言，段数量越多，查询性能就越低；对于索引优化而言，索引越大，消耗的时间则越长。</p>
+<p>通常Solr建议在合适的时间显示优化索引，例如在由大量数据加载之后，或者非流量高峰时。</p>
+<p>显示的commit和optimize命令有两个boolean可选值：</p>
+<pre><code class="language-xml">&lt;optimize waitFlush=&quot;true&quot; waitSearcher=&quot;true&quot;/&gt;
+</code></pre>
+<p>如果设置成false，则异步处理，即请求立即返回，客户端不阻塞等待commit、optimize正真执行完成。</p>
+<p>但是需要注意的是，不管commit或者optimize需要多久，Solr仍会并行的处理search请求，而不是加读锁。</p>
+<h2 id="回滚rolling-back">回滚（Rolling back）</h2>
+<p>Solr中所有未被commit的的更改是可以回滚的，我们可以通过向Solr发送rollback命令：</p>
+<pre><code class="language-bash">http://localhost:8983/solr/mycollection/update?rollback=true
+</code></pre>
+<p>当启用了<code>Tansaction log</code>后，Solr则会将原文档写入tlog文件中以达到<code>recovery</code>的目的，<code>Tansaction log</code>主要用于NRT、持久化以及SolrCloud副本的recovery。<br>
+启用tlog很简单，只需要在solrconfig.xml中作如下配置：</p>
+<pre><code class="language-xml">&lt;updateLog&gt;  &lt;str name=&quot;dir&quot;&gt;${solr.ulog.dir:}&lt;/str&gt;&lt;/updateLog&gt;
+</code></pre>
+<h2 id="文档局部更新updating-parts-of-documents">文档局部更新（Updating Parts of Documents）</h2>
+<p>Solr支持3种文档局部更新策略：</p>
+<ul>
+<li>Atomic Updates</li>
+<li>In-Place Updates</li>
+<li>Optimistic Concurrency</li>
+</ul>
+<h3 id="atomic-updates">Atomic Updates</h3>
+<p>原子更新允许我们对已有文档做部分更新，而不是整个文档的更新，例如我们只想给文档添加一个新字段值、向已存在值得多值字段（multivalued field）添加新值或者对一个数值字段自增等等。</p>
+<p>原子更新只需要我们提供文档变更的部分，并添加特殊的修饰符，如果Solr接受到文档之后并发现这些特殊修饰符，就知道这是对已有文档的原子更新，这就使得Solr支持了NoSQL的特性。<br>
+原子更新支持的修饰符如下：</p>
+<ul>
+<li>set</li>
+<li>add</li>
+<li>remove</li>
+<li>removeregex</li>
+<li>inc<br>
+另外需要说明的是，原子更新要求schema中文档的所有字段都设置成<code>stored=&quot;true&quot;</code>（除去<code>&lt;copyField/&gt;</code>）</li>
+</ul>
+<p>下面是一段JSON格式的原子更新DEMO，下面是原索引中的文档：</p>
+<pre><code class="language-json">{&quot;id&quot;:&quot;mydoc&quot;,
+ &quot;price&quot;:10,
+ &quot;popularity&quot;:42,
+ &quot;categories&quot;:[&quot;kids&quot;],
+ &quot;promo_ids&quot;:[&quot;a123x&quot;],
+ &quot;tags&quot;:[&quot;free_to_try&quot;,&quot;buy_now&quot;,&quot;clearance&quot;,&quot;on_sale&quot;]
+}
+</code></pre>
+<p>使用原子更新命令：</p>
+<pre><code class="language-json">{&quot;id&quot;:&quot;mydoc&quot;, 
+&quot;price&quot;:{&quot;set&quot;:99},
+&quot;popularity&quot;:{&quot;inc&quot;:20}, 
+&quot;categories&quot;:{&quot;add&quot;:[&quot;toys&quot;,&quot;games&quot;]},
+&quot;promo_ids&quot;:{&quot;remove&quot;:&quot;a123x&quot;}, 
+&quot;tags&quot;:{&quot;remove&quot;:[&quot;free_to_try&quot;,&quot;on_sale&quot;]}
+}
+</code></pre>
+<p>更新后的结果：</p>
+<pre><code class="language-json">{&quot;id&quot;:&quot;mydoc&quot;,
+ &quot;price&quot;:99,
+ &quot;popularity&quot;:62,
+ &quot;categories&quot;:[&quot;kids&quot;,&quot;toys&quot;,&quot;games&quot;],
+ &quot;tags&quot;:[&quot;buy_now&quot;,&quot;clearance&quot;]
+}
+</code></pre>
+<h3 id="in-place-updates">In-Place Updates</h3>
+<p>In-Place Updates原子更新非常相似，从某种意义上说，这是原子更新的一个子集。在常规原子更新中，整个文档在更新期间会被重新索引。但是，在此方法中，只有要更新的字段会受到影响，其余文档不会在内部从新索引。因此，In-Place的效率不受更新的文档的大小（如字段的数量、字段的大小等）的影响。除了这些内部差异之外，原子更新和In-Place Updates之间没有功能差异</p>
+<p>当且仅当遇到以下条件时，才会使用该方式进行更新：</p>
+<ul>
+<li>indexed=&quot;false&quot;、stored=&quot;false&quot;、multiValued=&quot;false&quot;、docValues=&quot;true&quot;</li>
+<li>_version_字段也是非索引、非存储、单值docvalue字段</li>
+<li>如果存在copy字段也同样需要是非索引、非存储、单值numeric docvalue字段<br>
+鉴于以上条件，所以in-place updates只需要使用到如下修饰符：</li>
+<li>set</li>
+<li>inc</li>
+</ul>
+<h2 id="optimistic-concurrency">Optimistic Concurrency</h2>
+<p>乐观并发是Solr的一个特性，客户端应用可以使用它来更新/替换文档，以确保其替换/更新的文档未被其他客户端应用同时修改，该特性工作原理是在索引中的所有文档上都需要_version_字段，并将其与更新命令一同指定的_version_进行比对。</p>
+<p>通常，使用乐观并发涉及以下工作流：</p>
+<ul>
+<li>客户端读一个文档，在Solr中可以使用<code>/get</code> handler检索文档来保证是否含有最新版本</li>
+<li>客户端本地修改文档</li>
+<li>客户端重新提交更改后的文档</li>
+<li>当提交后的__version__已经与目前最新不一致，则说明版本冲突，该文档已经被其它应用做了更新，则需要重新获取最新文档</li>
+</ul>
+<p>如果正在更新的文档不包含_version_字段，并且未使用原子更新，则将通过正常的Solr规则处理该文档；<br>
+使用Optimistic Concurrency时，客户端也可以包含可选的versions = true请求参数，要求文档更新后的最新版本包含在响应中，而不需要再次发出冗余/获取请求。</p>
+<p>FROM：</p>
+<ul>
+<li>Apache Solr Enterprise Search Server</li>
+<li><a href="https://lucene.apache.org/solr/guide/6_6/updating-parts-of-documents.html#UpdatingPartsofDocuments-DocumentCentricVersioningConstraints">Updating Parts of Documents</a></li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/tornado-ioloop">
+                  <h3 class="post-title">
+                    Tornado IOLoop以及高并发应用开发
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
