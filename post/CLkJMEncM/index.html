@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1564827207147">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1565687812413">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1564827207147" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1565687812413" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -913,6 +913,7 @@ Runnable r2 = () -&gt; App.get();
 <p>final域禁止重新排序，在对象引用为任意线程可见之前，对象的final域已经被正确初始化过了，而普通域就不具有这个保障。</p>
 <p><strong>final实现原理</strong><br>
 final域修饰的变量，在写入之后会编译器会添加：<code>StoreStore</code>屏障，在对其读取之前，编译器会添加一个<code>LoadLoad</code>屏障。</p>
+<h3 id="lock">Lock</h3>
 
             </div>
             

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Min-Hash &amp; LSH | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1565687812413">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1565687812413" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Min-Hash &amp; LSH</h2>
+            <div class="post-date">2019-08-13</div>
+            
+            <div class="post-content">
+              <p>本文转至：<a href="https://towardsdatascience.com/understanding-locality-sensitive-hashing-49f6d1f6134">Locality Sensitive Hashing</a><br>
+当需要从大量文档中检测相似文档，使用Min hashing+LSH（Locality-sensitive hashing）需要有如下几个大的步骤：</p>
+<ul>
+<li>Shingling</li>
+<li>Min hashing</li>
+<li>LSH<br>
+<img src="https://yinyayun.github.io//post-images/1565667530526.png" alt="steps"></li>
+</ul>
+<h2 id="shingling">Shingling</h2>
+<p>将每个文档转换为一组长度为k的字符（也称为k-shingles或k-gram），即将每个文档转换成k-shingles表示.<br>
+例如有一个文档：“Nadal”，如果将其转换成为2-shingles表示为{Na，ad，da，al}.</p>
+<ul>
+<li>相似的文档理论上会共享shingles</li>
+<li>一篇文章，个别词做替换或段落重新排序对shingles影响不大</li>
+<li>通常k的取值为8-10</li>
+</ul>
+<h2 id="jaccard指数">Jaccard指数</h2>
+<p>我们将每个文档使用shingles形式表示后，我们需要使用一个指标表示文档间的相似度，Jaccard指数就是一个很好的选择，使用Jaccard指数表示A和B两个文档的相似度可以被定义为：</p>
+<p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>J</mi><mo>(</mo><mi>A</mi><mo separator="true">,</mo><mi>B</mi><mo>)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∩</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow><mrow><mi mathvariant="normal">∣</mi><mi>A</mi><mo>∪</mo><mi>B</mi><mi mathvariant="normal">∣</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">J(A,B)=\frac {|A \cap B|} { |A \cup B|}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.09618em;">J</span><span class="mopen">(</span><span class="mord mathdefault">A</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mord">∣</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">∣</span><span class="mord mathdefault">A</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.05017em;">B</span><span class="mord">∣</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>加入A为“Nadal”，B为“Nadia”，使用2-shingles表示后：</p>
+<ul>
+<li>A：{Na, ad, da, al}</li>
+<li>B: {Na, ad, di, ia}<br>
+Jaccard指数为：2/6</li>
+</ul>
+<p>上面的算法看似简单，但是如果需要进行大量文档的相似度比对，那么算法的时间复杂度和空间复杂度都会极具上升。</p>
+<p>散列的想法是使用散列函数H将每个文档转换为签名。假设我们的语料库中的文档用d表示：</p>
+<ul>
+<li>H(d)是文档签名，与原文档相比，它的内存占用足够小</li>
+<li>如果文档<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">d_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>d</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">d_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>相似度很高，那么<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>H</mi><mo>(</mo><mi>d</mi><mn>1</mn><mo>)</mo><mo>=</mo><mo>=</mo><mi>H</mi><mo>(</mo><mi>d</mi><mn>2</mn><mo>)</mo></mrow><annotation encoding="application/x-tex">H(d1)==H(d2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.08125em;">H</span><span class="mopen">(</span><span class="mord mathdefault">d</span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span></span><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.08125em;">H</span><span class="mopen">(</span><span class="mord mathdefault">d</span><span class="mord">2</span><span class="mclose">)</span></span></span></span>相等的概率也会很高</li>
+</ul>
+<p>对于使用Jaccard指标度量文档相似度，min hash是最好的选择。</p>
+<h2 id="min-hash">Min Hash</h2>
+<p>min hash算法的核心在于：</p>
+<ul>
+<li>步骤1：按行随机排序文档的shingle矩阵<br>
+<img src="https://yinyayun.github.io//post-images/1565675687903.png" alt="permutation">
+<ul>
+<li>步骤2：Hash函数值就是C列中第一次出现1所在的行索引，该值就是min-hash</li>
+</ul>
+</li>
+</ul>
+<p>如此重复的进行n次排序创建列的签名。<br>
+例如对下面4个文档做三次排序，那么得到的签名矩阵如下：<br>
+<img src="https://yinyayun.github.io//post-images/1565677078344.png" alt="1"><br>
+<img src="https://yinyayun.github.io//post-images/1565677104486.png" alt="2"></p>
+<p>如上图，那么C1和C3的相似度为2/3，两个签名的相似度近似于Jaccard相似性，签名越长，则错误率越低。</p>
+<p>另外，我们可以发现，使用min-hash后我们不但保持了文档的相似性，同时也消除了向量的稀疏性。</p>
+<blockquote>
+<p>在实际场景中，如果我们要生成100个签名的min-hash，按照理论的话，我们需要对shingle矩阵做100次可重现的按行随机排序，但是随着文档数量的增强，这个实现代价较高， 所以通常我们会选择100个hash函数，并将文档的shingles串，逐个串hash，每次去取hash最小，这样100个hash函数就会生成长度为100的签名列。<br>
+大致思想就是把文档看作一个词袋，从袋子里抽取100次，用这100个词代表该文档，如果两个文档抽取到的这100个词相似，那两个文档则相似。</p>
+</blockquote>
+<h2 id="lshlocality-sensitive-hashing">LSH（Locality-sensitive hashing）</h2>
+<p>当文档量较大是，我们希望能够加速相似文档的查找，而非对所有文档进行线性比较。那么LSH的思想就是，假如我们输入两个文档的签名，则会告诉我们这两个文档是否构成候选对。<br>
+对于min-hash签名矩阵：</p>
+<ul>
+<li>签名矩阵M的Hash列使用多个Hash函数</li>
+<li>如果至少有一个Hash函数将2个文档映射至同一个hash桶中，我们则可以把这两个文档看作候选对<br>
+那么现在的问题就是如何创建不同的hash函数，这里我们使用波段分区。<br>
+算法的思路为：</li>
+<li>将签名矩阵划分为b个波段，每个波段具有r行</li>
+<li>对于每个波段，将其hash映射至具有k个桶的hash表中</li>
+<li>候选列对是那些至少有一个波段被映射至同一个桶中的签名列</li>
+<li>可以通过调整波段数量或者每个波段的行数来控制相似对数量</li>
+</ul>
+<p><img src="https://yinyayun.github.io//post-images/1565682467360.png" alt="Band partition"></p>
+<p>理想情况下，对于每个波段，我们希望k等于列在波段内可以采用的所有可能值组合，即理想情况我们不希望产生碰撞，但是这显然不可能，否则k将是一个庞大的数字，这在计算上是不可行的。例如一个波段有5行，签名中的元素是32位整数，那么在这种情况下k将是（2³²）⁵~1.4615016e+ 48，通常k约为100万。<br>
+<img src="https://yinyayun.github.io//post-images/1565682984793.png" alt=""></p>
+<p>如果波段数量（b）较多，就意味着需要较多的hash函数，随之，每个波段的行数（r）也会减小。直观地说，这意味着我们增加了找到候选对的概率。</p>
+<p>假如签名举证有100行，考虑如下两种场景：<br>
+（1）b=10 r=10<br>
+（1）b=20 r=5<br>
+第二种情况下，2个文档出现在同一个桶的概率更高，因为较多波段且少量签名元素的比较意味着机会更多。较高的b意味着较低的相似性阈值，而较低的b意味着较高的相似性阈值。</p>
+<p>下面使用一个例子来理解上面的观点：</p>
+<ul>
+<li>100000个文档，签名长度为100</li>
+<li>签名举证即为：100*100000</li>
+<li>波段数量b=20，每个波段行数r=5</li>
+<li>相似度阈值t：80%</li>
+</ul>
+<p>我们希望2个文档（D1和D2）具有80％的相似性，那20个波段中的至少一个波段中会被映射至同一个桶中。</p>
+<ul>
+<li>那么在特定的一个波段中，文档D1和D2相同，即5行相同的概率为：(0.8)⁵=0.328
+<ul>
+<li>在20个波段中，文档D1和D2所有波段不同的概率为 ：(1–0.328)^20 = 0.00035</li>
+</ul>
+</li>
+</ul>
+<p>这就意味着在相似度为0.8时，我们有0.035%的概率漏召回文档。</p>
+<p>假如我们希望两个相似度为30%的文档D3 和 D4，20个段的任何一个都不会被映射至同一个hash桶中。</p>
+<ul>
+<li>那么在特定波段中，文档D3和D4相同，即5行相同的概率为：(0.3)⁵ = 0.00243</li>
+<li>D3和D4在20个频带中的至少一个中是相似的概率为：1 — (1–0.00243)^20 = 0.0474</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/algorithm" class="tag">
+                    Algorithm
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/index-data">
+                  <h3 class="post-title">
+                    Solr 索引数据相关
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
