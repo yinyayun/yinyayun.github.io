@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-08-14T00:47:31.382Z</updated>
+    <updated>2019-08-15T07:41:28.227Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://yinyayun.github.io//images/avatar.png</logo>
     <icon>https://yinyayun.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, 殷亚云的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Faiss::IndexIVF]]></title>
+        <id>https://yinyayun.github.io//post/Yu0wNa7sk</id>
+        <link href="https://yinyayun.github.io//post/Yu0wNa7sk">
+        </link>
+        <updated>2019-08-15T07:38:56.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Min-Hash & LSH]]></title>
         <id>https://yinyayun.github.io//post/lsh</id>
@@ -84,16 +91,5 @@
         <link href="https://yinyayun.github.io//post/g0S9hEebM">
         </link>
         <updated>2019-01-18T11:03:06.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[JNI开发整理]]></title>
-        <id>https://yinyayun.github.io//post/mpuD1E0R5</id>
-        <link href="https://yinyayun.github.io//post/mpuD1E0R5">
-        </link>
-        <updated>2019-01-08T11:00:49.000Z</updated>
-        <summary type="html"><![CDATA[<p>在进行JNI开发之前，我们必须要了解下面一些东西，首先JNI开发的流程，再然后我们需要了解一下Native和Java中类型映射关系，以及JVM中已经为我们提供的一些常用JNI函数，最后再了解一下C/C++开发的一些注意事项。</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>在进行JNI开发之前，我们必须要了解下面一些东西，首先JNI开发的流程，再然后我们需要了解一下Native和Java中类型映射关系，以及JVM中已经为我们提供的一些常用JNI函数，最后再了解一下C/C++开发的一些注意事项。</p>
-]]></content>
     </entry>
 </feed>
