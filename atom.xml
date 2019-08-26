@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-08-15T07:41:28.227Z</updated>
+    <updated>2019-08-26T02:50:46.538Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -10,6 +10,27 @@
     <logo>https://yinyayun.github.io//images/avatar.png</logo>
     <icon>https://yinyayun.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, 殷亚云的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[Lucene60 - Index File Formats]]></title>
+        <id>https://yinyayun.github.io//post/jyQBBzq3u</id>
+        <link href="https://yinyayun.github.io//post/jyQBBzq3u">
+        </link>
+        <updated>2019-08-21T02:28:46.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Lucene Docvalues]]></title>
+        <id>https://yinyayun.github.io//post/QNAZopX7A</id>
+        <link href="https://yinyayun.github.io//post/QNAZopX7A">
+        </link>
+        <updated>2019-08-20T08:21:16.000Z</updated>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Lucene ToParentBlockJoinQuery]]></title>
+        <id>https://yinyayun.github.io//post/Q3sXI4FDc</id>
+        <link href="https://yinyayun.github.io//post/Q3sXI4FDc">
+        </link>
+        <updated>2019-08-20T07:30:11.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Faiss::IndexIVF]]></title>
         <id>https://yinyayun.github.io//post/Yu0wNa7sk</id>
@@ -66,30 +87,5 @@
 ]]></summary>
         <content type="html"><![CDATA[<p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
 ]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[VirtualBox Centos磁盘扩容笔记]]></title>
-        <id>https://yinyayun.github.io//post/6_fDKITDK</id>
-        <link href="https://yinyayun.github.io//post/6_fDKITDK">
-        </link>
-        <updated>2019-01-30T11:10:21.000Z</updated>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Docker入门整理]]></title>
-        <id>https://yinyayun.github.io//post/HjfEYHyRj</id>
-        <link href="https://yinyayun.github.io//post/HjfEYHyRj">
-        </link>
-        <updated>2019-01-25T11:08:28.000Z</updated>
-        <summary type="html"><![CDATA[<p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>对开发和管理人员来说，docker是一个用容器开发、发布、运行应用程序的平台。Docker主要包含两个概念，镜像（Image）、容器（container）、Docker Registry：</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用JNI封装Faiss]]></title>
-        <id>https://yinyayun.github.io//post/g0S9hEebM</id>
-        <link href="https://yinyayun.github.io//post/g0S9hEebM">
-        </link>
-        <updated>2019-01-18T11:03:06.000Z</updated>
     </entry>
 </feed>

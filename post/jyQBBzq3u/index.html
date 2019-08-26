@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Lucene60 - Index File Formats | 殷亚云的博客</title>
+<meta name="description" content="化身石桥，受五百年风吹雨打">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1566787841837">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://yinyayun.github.io/">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1566787841837" class="site-logo">
+        <h1 class="site-title">殷亚云的博客</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      化身石桥，受五百年风吹雨打
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://yinyayun.github.io/" target="_blank">殷亚云的博客</a> | <a class="rss" href="https://yinyayun.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Lucene60 - Index File Formats</h2>
+            <div class="post-date">2019-08-21</div>
+            
+            <div class="post-content">
+              <p>有关于Lucene索引的实现都可以在<code>org.apache.lucene.codecs.lucene60</code>找到，该包中核心类主要包含：</p>
+<ul>
+<li>Lucene60Codec	,实现Lucene 6.0索引格式，包含可配置的字段倒排链和Docvalues格式</li>
+<li>Lucene60FieldInfosFormat，Lucene 6.0 Field Infos格式</li>
+<li>Lucene60PointsFormat，Lucene 6.0 point格式，将维度值通过KD树构建</li>
+</ul>
+<h2 id="概念">概念</h2>
+<p>Lucene的基本概念有index、document、field、term，index中包含一系列的documents：</p>
+<ul>
+<li>一个document包含很多fields</li>
+<li>field由terms序列组成</li>
+<li>term就是一个字节序列</li>
+</ul>
+<h2 id="倒排索引">倒排索引</h2>
+<p>索引存储有关Term的统计信息，以便提高Term的查询效率。Luene的索引属于倒排索引范畴，倒排索引链上会列出包含该term的所有文档。</p>
+<h2 id="field类型">Field类型</h2>
+<p>Field在索引中有两种形式：</p>
+<ul>
+<li>stored，将文本信息直接存储索引中，而不是倒排索引的方式</li>
+<li>indexed，以倒排的形式存在索引中<br>
+text形式的field，既可以通过分词成terms存在于索引中，也可以部分词作为一个term存在索引中，但是通常我们都会选择分词。</li>
+</ul>
+<h2 id="segments">Segments</h2>
+<p>Lucene的索引由多个子索引或者segments组成，每个segment是一个独立的索引，可以被独立搜索。<br>
+在索引中，segment有几种生成方式：</p>
+<ul>
+<li>添加新的documents生成了新的segments</li>
+<li>合并现有segments<br>
+搜索可能涉及多个段和/或多个索引，每个索引可能由一组段组成。</li>
+</ul>
+<h2 id="document-numbers">Document Numbers</h2>
+<p>Lucene通过一个整型的文档号指向文档，添加至索引中的第一个文档的编号为0，每个后续添加的文档都会得到一个比前一个文档大的数字。<br>
+在使用文档编号时，有一些注意事项：</p>
+<ul>
+<li>每个段中存储的数字仅在段内是惟一的，必须进行转换才能在全局的上下文中使用。可以通过文档的段内编号加上段的基编号得到文档的全局编号。</li>
+<li>文档删除时，文档编号会产生间隙，当索引合并时，那些删除的文档才会被真正的删除，文档编号的间隙才会被消除。</li>
+</ul>
+<h2 id="索引结构概述">索引结构概述</h2>
+<p>每个索引段包含如下内容：</p>
+<ul>
+<li>段信息，它包含有关段的元数据，例如文档数</li>
+<li>字段名，包含索引中使用的字段名称集</li>
+<li>设置为Stored的字段值</li>
+<li>Term dictionary，包含所有文档的所有索引字段中term的字典。字典还记录包含该term的文档数量</li>
+<li>Term Frequency 数据，存储Term词典中某个term在某个document出现的次数，除非设置了IndexOptions.DOCS_ONLY，即忽略频率</li>
+<li>Term Proximity 数据，记录term在指定文档中的位置信息</li>
+<li>Normalization factors，对于文档中的每个字段，存储一个标准化的因子，用于匹配打分时，乘以该字段上的匹配分值。</li>
+<li>Term Vectors，对于每个文档中的每个字段，可以存储Term Vectors，Term Vectors由Term文本和Term频率组成。</li>
+<li>Docvalue，即正向索引</li>
+<li>存活文档，可选文件，指示哪些文档是活动的</li>
+<li>Point values，可选的一组文件，记录维度索引字段，支持快速的数值范围过滤和BigInteger、BigDecimal (1D)、地理形状(2D、3D)这类大数值的交集运算</li>
+</ul>
+<h2 id="索引文件名">索引文件名</h2>
+<p>同一个段中的所有文件，具有相同的名称，唯独扩展名不同。<br>
+使用复合文件格式时(1.4或更高版本中默认值)，这些文件(段信息文件、锁文件和已删除文档文件除外)被折叠成一个.cfs文件.<br>
+从2.1版(无锁提交)开始，文件名就不再被重用。也就是说，当任何文件被保存到目录中时，都会给它一个从未使用过的文件名。这是通过使用简单的生成方法实现的。例如，第一个段文件是segments_1，然后是segments_2，等等，生成方式为字母+数字。<br>
+下面总结了Lucene中文件的名称和扩展名：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>扩展名</th>
+<th>简要介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Segments File</td>
+<td>segments_N</td>
+<td>存储有关提交点的信息</td>
+</tr>
+<tr>
+<td>Lock File</td>
+<td>write.lock</td>
+<td>防止多个IndexWriters写入同一文件.</td>
+</tr>
+<tr>
+<td>Segment Info</td>
+<td>.si</td>
+<td>存储有关段的元数据</td>
+</tr>
+<tr>
+<td>Compound File</td>
+<td>.cfs, .cfe</td>
+<td>一个可选的“虚拟”文件，由多个索引文件组成，用于避免过多句柄打开.</td>
+</tr>
+<tr>
+<td>Fields</td>
+<td>.fnm</td>
+<td>存储有关字段的信息</td>
+</tr>
+<tr>
+<td>Field Index</td>
+<td>.fdx</td>
+<td>包含指向字段数据的指针</td>
+</tr>
+<tr>
+<td>Field Data</td>
+<td>.fdt</td>
+<td>存储的文档字段</td>
+</tr>
+<tr>
+<td>Term Dictionary</td>
+<td>.tim</td>
+<td>Term词典，存储Term信息</td>
+</tr>
+<tr>
+<td>Term Index</td>
+<td>.tip</td>
+<td>Term词典的索引</td>
+</tr>
+<tr>
+<td>Frequencies</td>
+<td>.doc</td>
+<td>存储每个Term的文档链，以及Term在该文档上的频率</td>
+</tr>
+<tr>
+<td>Positions</td>
+<td>.pos</td>
+<td>存储有关Term在索引中出现位置信息</td>
+</tr>
+<tr>
+<td>Payloads</td>
+<td>.pay</td>
+<td>存储每个位置额外的元数据信息，如payloads信息</td>
+</tr>
+<tr>
+<td>Norms</td>
+<td>.nvd, .nvm</td>
+<td>文档和字段长度以及权重因子</td>
+</tr>
+<tr>
+<td>Docvalues</td>
+<td>.dvd, .dvm</td>
+<td>额外打分因子或其他每个文档的信息.</td>
+</tr>
+<tr>
+<td>Term Vector Index</td>
+<td>.tvx</td>
+<td>Term Vector索引</td>
+</tr>
+<tr>
+<td>Term Vector Documents</td>
+<td>.tvd</td>
+<td>Term Vector文档级别的信息</td>
+</tr>
+<tr>
+<td>Term Vector Fields</td>
+<td>.tvf</td>
+<td>Term Vector字段级别的信息</td>
+</tr>
+<tr>
+<td>Live Documents</td>
+<td>.liv</td>
+<td>那些文件是活动的</td>
+</tr>
+<tr>
+<td>Point values</td>
+<td>.dii, .dim</td>
+<td>断点</td>
+</tr>
+</tbody>
+</table>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/QNAZopX7A">
+                  <h3 class="post-title">
+                    Lucene Docvalues
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

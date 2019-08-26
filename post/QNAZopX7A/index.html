@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Linux下Eclipse以及常用插件安装 | 殷亚云的博客</title>
+<title>Lucene Docvalues | 殷亚云的博客</title>
 <meta name="description" content="化身石桥，受五百年风吹雨打">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -98,65 +98,42 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Linux下Eclipse以及常用插件安装</h2>
-            <div class="post-date">2018-11-30</div>
+            <h2 class="post-title">Lucene Docvalues</h2>
+            <div class="post-date">2019-08-20</div>
             
             <div class="post-content">
-              <p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
-<!-- more -->
-<p>登入新系统，第一件事就是安装JDK、Maven，紧接着就是安装IDE,比较传统，喜欢用Eclipse，而且我都是用<a href="https://www.eclipse.org/downloads/packages/release/2018-09/r/eclipse-ide-java-developers">Eclipse IDE for Java Developers</a>没有太多乱七八糟的东西。</p>
-<p>安装完Eclipse之后，就是去安装经常用的一些插件：</p>
+              <p>DocValue其实就是Lucene中的正向索引概念，为什么有倒排索引还需要正排索引，倒排索引是解决检索的性能问题的话，而正排索引则是解决搜索字段排名问题。</p>
+<p>其实在4.0之前，Lucene也有FieldCache的概念，将文档的字段值放入内存，同样是根据docid取得某个字段上的值，但是为什么有产生了DocValues呢？</p>
+<p>Lucene的FieldCache是怎么构建出来的呢，答案是从倒排索引反推出来，但是这种效率极低的，当索引足够大的时候，从倒排索引构建FieldCache是非常耗时的，所以在4.0之后就产生了Docvalues正向索引的存储结构。</p>
+<p>Docvalues是面向列存储的，被标记为Docvalues的Field在建索引的时候，会将字段值存储到磁盘上，即索引目录中每个Segment中的如下格式文件：</p>
 <ul>
-<li>subclipse (因为代码托管使用的是subversionm即SVN)</li>
-<li>m2e（Maven SCM Integration for Subversion，有了该插件可以在eclipse直接通过scm从svn导入maven项目）</li>
-<li>easyshell</li>
-<li>markdown</li>
-<li>pydev</li>
+<li>.dvd，元数据文件</li>
+<li>.dvm，meta文件，可以认为是正向索引数据的索引，保存了每条记录的起始位置、长度以及数据格式</li>
 </ul>
-<p>上面的这些插件，除了m2e从Eclipse Marketplace找不到，其它都可以通过市场去安装。</p>
-<p>m2e目前需要从离线的压缩包安装，附上下载地址：<a href="https://github.com/subclipse/m2e">m2e</a></p>
-<p>通常随subclipse插件安装都会关联两个svn客户端插件：</p>
+<p>何为列存储，众所周知，大部分存储系统都是采用append的模式记录数据的，如更新、删除还少是找到之前数据的位置编辑的，这样的代价太大了，而基于append这种模式，会有两种选择：</p>
 <ul>
-<li>JavaHL</li>
-<li>SVNKit</li>
+<li>行存储，也就是先将一个文档的所有字段值写入，再继续写入下一个文档</li>
+<li>列存储，先将固定写某个字段，即将所有文档的某个字段写入，再去下个字段</li>
 </ul>
-<p>个人比较喜欢使用JavaHL,但是想要在Centos Linux中使用JavaHL还需要做一些额外的工作，也就是需要在系统层面安装：</p>
+<p>下图给出行列存储的结构：<br>
+<img src="https://yinyayun.github.io//post-images/1566293795415.png" alt="行列存储"></p>
+<p>对于这两种模式，其实各有优劣，主要看场景，举例来说，假如我们想连续读取doc1、doc2、doc3...在字段F1上的值，那么显然基于列存储是最优的，因为同一个字段是在连续存储，在取值时，大大减少了磁盘寻址时间。而如果我们存在大量按文档读取的情形，那么基于行存储是合适的。</p>
+<p>因为Docvalues更偏向于key-value结构的使用方式，所以无论write还是read其实采用列存储的方式都是合适的，在索引没有被commit前，Docvalues数据都是写入内存的，直到commit动作到来后，才会落盘。</p>
+<p>在Lucene中提供了几种DocvaluesFormat：</p>
 <ul>
-<li>subversion</li>
-<li>subversion-javahl</li>
+<li>Lucene54DocValuesFormat，默认的</li>
+<li>MemoryDocValuesFormat</li>
+<li>DirectDocValuesFormat</li>
 </ul>
-<p>在安装subversion之前，需要注意eclipse中javahl插件的版本，如果eclipse中javahl插件版本为1.9.x，那subversion选择1.9.x安装为最优。附上一个centos7下yum安装subversion 1.9.x的步骤：</p>
-<ol>
-<li>配置repo源：</li>
-</ol>
-<pre><code class="language-shell">$ sudo vi /etc/yum.repos.d/wandisco.repo
-</code></pre>
-<pre><code class="language-ini">[WandiscoSVN]
-name=Wandisco SVN Repo
-baseurl=http://opensource.wandisco.com/centos/7/svn-1.9/RPMS/$basearch/
-enabled=1
-gpgcheck=0
-</code></pre>
-<ol start="2">
-<li>安装subversion</li>
-</ol>
-<pre><code class="language-shell">$ sudo yum install subversion --nogpgcheck
-</code></pre>
-<ol start="3">
-<li>安装subversion-javahl</li>
-</ol>
-<pre><code>$ sudo yum install subversion-javahl
-</code></pre>
-<p>如果不能解决可移步：<a href="https://github.com/subclipse/subclipse/wiki/JavaHL-on-Linux">JavaHL-on-Linux</a></p>
 
             </div>
             
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://yinyayun.github.io//post/4d8w7j_we">
+                <a href="https://yinyayun.github.io//post/Q3sXI4FDc">
                   <h3 class="post-title">
-                    记一次Python服务实例静默退出排查
+                    Lucene ToParentBlockJoinQuery
                   </h3>
                 </a>
               </div>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Linux下Eclipse以及常用插件安装 | 殷亚云的博客</title>
+<title>Solr 请求处理流程 | 殷亚云的博客</title>
 <meta name="description" content="化身石桥，受五百年风吹雨打">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -98,68 +98,30 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Linux下Eclipse以及常用插件安装</h2>
-            <div class="post-date">2018-11-30</div>
+            <h2 class="post-title">Solr 请求处理流程</h2>
+            <div class="post-date">2019-08-21</div>
             
             <div class="post-content">
-              <p>近期从windowd换了到了Centos上进行开发，就系统而言，体验挺棒的，挺干净的，而且常用软件支持都挺好的。</p>
-<!-- more -->
-<p>登入新系统，第一件事就是安装JDK、Maven，紧接着就是安装IDE,比较传统，喜欢用Eclipse，而且我都是用<a href="https://www.eclipse.org/downloads/packages/release/2018-09/r/eclipse-ide-java-developers">Eclipse IDE for Java Developers</a>没有太多乱七八糟的东西。</p>
-<p>安装完Eclipse之后，就是去安装经常用的一些插件：</p>
+              <p>Solr组件架构：<br>
+<img src="https://yinyayun.github.io//post-images/1566351016510.png" alt="架构"><br>
+Solr HttpRequest处理流程：<br>
+<img src="https://yinyayun.github.io//post-images/1566350996987.png" alt="处理流程"></p>
 <ul>
-<li>subclipse (因为代码托管使用的是subversionm即SVN)</li>
-<li>m2e（Maven SCM Integration for Subversion，有了该插件可以在eclipse直接通过scm从svn导入maven项目）</li>
-<li>easyshell</li>
-<li>markdown</li>
-<li>pydev</li>
+<li>SolrDispatchFilter：启动时，负责SolrCore的加载；请求阶段，将请求分到对应的处理器</li>
+<li>SolrRequestHandler :所有的SolrRequestHandler都注册在SolrCore，负责更新，搜索和Collection管理等</li>
+<li>SearchComponent，查询组件，主要包含搜索请求预处理、搜索逻辑处理（QueryComponent,SuggestComponent等）</li>
 </ul>
-<p>上面的这些插件，除了m2e从Eclipse Marketplace找不到，其它都可以通过市场去安装。</p>
-<p>m2e目前需要从离线的压缩包安装，附上下载地址：<a href="https://github.com/subclipse/m2e">m2e</a></p>
-<p>通常随subclipse插件安装都会关联两个svn客户端插件：</p>
-<ul>
-<li>JavaHL</li>
-<li>SVNKit</li>
-</ul>
-<p>个人比较喜欢使用JavaHL,但是想要在Centos Linux中使用JavaHL还需要做一些额外的工作，也就是需要在系统层面安装：</p>
-<ul>
-<li>subversion</li>
-<li>subversion-javahl</li>
-</ul>
-<p>在安装subversion之前，需要注意eclipse中javahl插件的版本，如果eclipse中javahl插件版本为1.9.x，那subversion选择1.9.x安装为最优。附上一个centos7下yum安装subversion 1.9.x的步骤：</p>
-<ol>
-<li>配置repo源：</li>
-</ol>
-<pre><code class="language-shell">$ sudo vi /etc/yum.repos.d/wandisco.repo
-</code></pre>
-<pre><code class="language-ini">[WandiscoSVN]
-name=Wandisco SVN Repo
-baseurl=http://opensource.wandisco.com/centos/7/svn-1.9/RPMS/$basearch/
-enabled=1
-gpgcheck=0
-</code></pre>
-<ol start="2">
-<li>安装subversion</li>
-</ol>
-<pre><code class="language-shell">$ sudo yum install subversion --nogpgcheck
-</code></pre>
-<ol start="3">
-<li>安装subversion-javahl</li>
-</ol>
-<pre><code>$ sudo yum install subversion-javahl
-</code></pre>
-<p>如果不能解决可移步：<a href="https://github.com/subclipse/subclipse/wiki/JavaHL-on-Linux">JavaHL-on-Linux</a></p>
 
             </div>
             
-            
-              <div class="next-post">
-                <div class="next">下一篇</div>
-                <a href="https://yinyayun.github.io//post/4d8w7j_we">
-                  <h3 class="post-title">
-                    记一次Python服务实例静默退出排查
-                  </h3>
-                </a>
+              <div class="tag-container">
+                
+                  <a href="https://yinyayun.github.io//tag/solr" class="tag">
+                    Solr
+                  </a>
+                
               </div>
+            
             
 
             
