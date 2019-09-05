@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Java知识体系整理 | 殷亚云的博客</title>
+<title>知识体系整理 | 殷亚云的博客</title>
 <meta name="description" content="化身石桥，受五百年风吹雨打">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1566787841837">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1566787841837" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -98,29 +98,30 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Java知识体系整理</h2>
+            <h2 class="post-title">知识体系整理</h2>
             <div class="post-date">2019-07-13</div>
             
             <div class="post-content">
-              <h1 id="java基础">Java基础</h1>
-<h2 id="jre-jdk">JRE、JDK</h2>
+              <p>[TOC]</p>
+<h2 id="java基础">Java基础</h2>
+<h3 id="jre-jdk">JRE、JDK</h3>
 <ul>
 <li>JRE是JVM程序，Java应用程序需要在JRE上运行</li>
 <li>JDK是JRE和一系列Java开发工具的组合，</li>
 </ul>
-<h2 id="数据类型">数据类型</h2>
-<h3 id="拆箱装箱">拆箱装箱</h3>
-<pre><code>Integer x = 2;     // 装箱
+<h3 id="数据类型">数据类型</h3>
+<h4 id="拆箱装箱">拆箱装箱</h4>
+<pre><code class="language-java">Integer x = 2;     // 装箱
 int y = x;         // 拆箱
 </code></pre>
-<h3 id="缓存池">缓存池</h3>
+<h4 id="缓存池">缓存池</h4>
 <p>基本类型在装箱时，优先从缓存池中获取对应的包装类型，如果数范围在缓存池范围内，则使用缓存池中的对象。</p>
 <p>如Jdk8中的Integer 缓存池的大小默认为 -128~127。</p>
 <p>通常可能触发从缓存池中获取对象有如下情形：</p>
 <pre><code class="language-java">Integer x = 2; 
 Integer.valueOf(2);
 </code></pre>
-<h3 id="string">String</h3>
+<h4 id="string">String</h4>
 <p><strong>JDK8</strong></p>
 <ul>
 <li>final类型，不可被继承</li>
@@ -146,7 +147,7 @@ Integer.valueOf(2);
     private final byte coder;
 }
 </code></pre>
-<h4 id="string-pool">String Pool</h4>
+<h5 id="string-pool">String Pool</h5>
 <ul>
 <li>
 <p>String Pool保存着所有字符串字面量（字面量在编译时期就确定）</p>
@@ -155,13 +156,13 @@ Integer.valueOf(2);
 <p>可以使用<code>intern()</code>方法将字符串添加到String pool中（intern 方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中，具体可参看：<a href="https://tech.meituan.com/2014/03/06/in-depth-understanding-string-intern.html">深入解析String.intern()</a>）</p>
 </li>
 <li>
-<p>Java 7 之前String Pool属于永久代，Java 7中String Pool 被移到堆中</p>
+<p>Java 7 之前String Pool属于永久代，Java 7中String Pool 被移到堆外</p>
 </li>
 <li>
 <p>new String(&quot;abc&quot;)，如果String Pool中没有“abc”，那么一共创建两个字符串对象</p>
 </li>
 </ul>
-<h2 id="继承">继承</h2>
+<h3 id="继承">继承</h3>
 <p><strong>抽象类</strong></p>
 <ul>
 <li>如果一个类中包含抽象方法，那么这个类必须声明为抽象类</li>
@@ -175,17 +176,8 @@ Integer.valueOf(2);
 <li>
 <p>Java 8 开始，接口也可以拥有默认的方法实现</p>
 </li>
-<li>
-<p>接口的 方法不允许定义为 private 或者 protected，默认都是 public 的，</p>
-</li>
-<li>
-<p>接口的字段只能是 static 和 final 类型的</p>
-</li>
-<li>
-<p>一个类可以实现多个接口</p>
-</li>
+<li></li>
 </ul>
-<h3 id="重载与重写">重载与重写</h3>
 <p><strong>重写</strong></p>
 <ul>
 <li>继承体系中的概念
@@ -201,19 +193,19 @@ Integer.valueOf(2);
 <li>作用于同一个类中</li>
 <li>方法名称上相同，但是参数类型、个数、顺序至少有一个不同</li>
 </ul>
-<h2 id="object">Object</h2>
-<h3 id="equals">equals()</h3>
+<h3 id="object">Object</h3>
+<h4 id="equals">equals()</h4>
 <ul>
 <li>检查引用是否相等，如果是直接返回 true</li>
 <li>检查是否是同一个类型，如果不是，直接返回 false</li>
 <li>判断属性值是否相等</li>
 </ul>
-<h3 id="hashcode">hashCode()</h3>
+<h4 id="hashcode">hashCode()</h4>
 <ul>
 <li>等价的两个对象散列值一定相同，散列值相同的两个对象不一定等价</li>
 <li>覆盖 equals() 方法时应当总是覆盖 hashCode()</li>
 </ul>
-<h3 id="clone">clone()</h3>
+<h4 id="clone">clone()</h4>
 <ul>
 <li>
 <p>一个类不显式去重写 clone()，其它类就不能直接去调用该类实例的 clone() 方法。</p>
@@ -225,15 +217,15 @@ Integer.valueOf(2);
 <p>尽量避免使用clone()进行拷贝，而是使用构造函数进行对象拷贝</p>
 </li>
 </ul>
-<h2 id="关键字">关键字</h2>
-<h3 id="final">final</h3>
+<h3 id="关键字">关键字</h3>
+<h4 id="final">final</h4>
 <ul>
 <li><code>final int x=10</code>编译时常量</li>
 <li><code>final A y = new A()</code>运行时常量</li>
 <li>作用在方法上，表示方法不能被子类重写</li>
 <li>作用在类上，该类不能被继承</li>
 </ul>
-<h3 id="static">static</h3>
+<h4 id="static">static</h4>
 <p><strong>静态变量</strong></p>
 <ul>
 <li>又称为类变量，静态变量在类加载时初始化，在内存中只存在一份</li>
@@ -258,7 +250,7 @@ Integer.valueOf(2);
 <li>java.lang.reflect对某个类进行反射调用时，如果未初始化，则需要进行初始化</li>
 <li>遇到new、getstatic、putstatic、invokestatic指令，需要触发对应类的初始化</li>
 </ul>
-<h2 id="反射">反射</h2>
+<h3 id="反射">反射</h3>
 <p>反射提供了一种在运行时加载类的方式，这包括在编译期不存在的class文件也可以被加载。</p>
 <pre><code class="language-java">Class.forName(&quot;com.mysql.jdbc.Driver&quot;)
 ##forname()实现细节
@@ -295,7 +287,7 @@ public static Class&lt;?&gt; forName(String name, boolean initialize,
 <li>性能开销大，反射为动态解析，所以 JVM 无法对代码进行优化</li>
 <li>安全性差，反射允许代码执行一些在正常情况下不被允许的操作（比如访问私有的属性和方法）</li>
 </ul>
-<h2 id="异常">异常</h2>
+<h3 id="异常">异常</h3>
 <p><strong>Throwable</strong></p>
 <ul>
 <li><strong>Error</strong> JVM 无法处理</li>
@@ -306,7 +298,7 @@ public static Class&lt;?&gt; forName(String name, boolean initialize,
 </ul>
 </li>
 </ul>
-<h2 id="泛型">泛型</h2>
+<h3 id="泛型">泛型</h3>
 <p>泛型就是<code>类型的参数化</code></p>
 <p>泛型只在编译器有效，编译完之后泛型的相关信息会被檫除，然后在对象进入和离开方法的边界处添加类型检查和类型转换的方法。</p>
 <p><strong>不能创建一个确切的泛型类型的数组</strong></p>
@@ -325,19 +317,50 @@ oa[1] = li; // Unsound, but passes run time store check
 String s = lsa[1].get(0); // Run-time error: ClassCastException.
 </code></pre>
 <p>所以为了避免这种错误的发生，干脆就不支持创建一个确切的泛型类型的数组。</p>
-<h2 id="collection">Collection</h2>
-<h3 id="queue">Queue</h3>
+<h3 id="collection">Collection</h3>
+<h4 id="queue">Queue</h4>
 <p>同set、List一样，Queue继承了Collection接口。</p>
 <p><strong>非阻塞实现</strong></p>
-<ul>
-<li>
-<p>PriorityQueue</p>
-</li>
-<li>
-<p>ConcurrentLinkedQueue</p>
+<h5 id="priorityqueue">PriorityQueue</h5>
+<p>优先级队列，内部为堆排序的实，默认大小为11</p>
+<pre><code class="language-java">public boolean offer(E e) {
+    if (e == null)
+        throw new NullPointerException();
+    modCount++;
+    int i = size;
+    // 如果容量小于64，则2*oldCapacity+2方式扩容，否则扩容1.5倍
+    if (i &gt;= queue.length)
+        grow(i + 1);
+    size = i + 1;
+    if (i == 0)
+        queue[0] = e;
+    else
+        //堆排序实现，将插入元素放入末尾的叶子节点，采用从下至上上浮的方式将最大最小节点交换至根节点
+        siftUp(i, e);
+    return true;
+}
+
+private void siftUp(int k, E x) {
+    if (comparator != null)
+        siftUpUsingComparator(k, x);
+    else
+        siftUpComparable(k, x);
+}
+
+private void siftUpUsingComparator(int k, E x) {
+    while (k &gt; 0) {
+        int parent = (k - 1) &gt;&gt;&gt; 1;
+        Object e = queue[parent];
+        if (comparator.compare(x, (E) e) &gt;= 0)
+            break;
+        queue[k] = e;
+        k = parent;
+    }
+    queue[k] = x;
+}
+</code></pre>
+<h5 id="concurrentlinkedqueue">ConcurrentLinkedQueue</h5>
 <p>无界队列，采用cas原子机制</p>
-</li>
-</ul>
 <p><strong>阻塞实现</strong></p>
 <p>阻塞队列集成BlockingQueue接口，所谓阻塞指当没有空间或者元素可用时，队列的添加或者删除操作会被阻塞。</p>
 <ul>
@@ -362,7 +385,7 @@ String s = lsa[1].get(0); // Run-time error: ClassCastException.
 </ul>
 <p>对于阻塞的实现，使用ReentrantLock进行实现，队列在初始化时，创建ReentrantLock以及对应的两个监视器（<code>notEmpty</code>，<code>notFull</code>），同时也会指定锁的策略（公平、非公平）。</p>
 <p>在队列家族上，还有一个特殊的队列，双端队列<code>Deque</code>，LinkedList就是它的一个实现。</p>
-<h3 id="set">Set</h3>
+<h4 id="set">Set</h4>
 <ul>
 <li>
 <p>HashSet：<code>hashcode()</code>、<code>equals()</code>，基于HashMap实现</p>
@@ -374,7 +397,7 @@ String s = lsa[1].get(0); // Run-time error: ClassCastException.
 <p>TreeSet：有序、基于红黑树，查找效率低于HashSet</p>
 </li>
 </ul>
-<h3 id="list">List</h3>
+<h4 id="list">List</h4>
 <ul>
 <li>ArraryList
 <ul>
@@ -403,12 +426,10 @@ String s = lsa[1].get(0); // Run-time error: ClassCastException.
 <pre><code class="language-java">for (int i = 0; i &lt; list.size(); i++){
     String temp = list.get(i);
     list.remove(temp);
-}
-// OK
+}// OK
 for (String temp : list) {
     list.remove(temp);
-}
-// Exception in thread &quot;main&quot; java.util.ConcurrentModificationException
+}// Exception in thread &quot;main&quot; java.util.ConcurrentModificationException
 </code></pre>
 <p>我们可以看一下ArrayList的内部迭代器Itr：</p>
 <pre><code class="language-java">int expectedModCount = modCount
@@ -428,7 +449,7 @@ final void checkForComodification(){
 </code></pre>
 <p>在对ArrayList中的每次操作，会对<code>modCount</code>进行自增，迭代器遍历的时候对ArrayList修改后会导致<code>modCount</code>和<code>expectedModCount</code>不一致，从而抛出异常。</p>
 <p>所以如果需要在迭代时删除元素，还有一种办法就是使用迭代器自身提供的<code>remove()</code>方法。每次删除完元素后会强制修正<code>expectedModCount</code>和<code>modCount</code>的一致性。</p>
-<h3 id="map">Map</h3>
+<h4 id="map">Map</h4>
 <ul>
 <li>HashMap</li>
 <li>HashTable</li>
@@ -460,7 +481,7 @@ int hashvalue = (key.hashCode() &amp; 0x7FFFFFFF) % table.length;
 </li>
 <li>
 <p>负载因子</p>
-<p>为确定何时调整大小，而不是对每个存储桶中的链接列表的深度进行记数，HashMap使用一个额外的参数粗略的计算存储桶的密度。如果<code>负载因子 x 桶数量 &lt; Map大小</code>则调整桶的数量。</p>
+<p>为确定何时调整大小，而不是对每个存储桶中的链接列表的深度进行记数，HashMap使用一个额外的参数粗略的计算存储桶的密度。如果map中包含的桶数量大于等于threshold = loadFactor * capacity的时候，且新建的桶刚好落在一个非空的桶上，此刻触发扩容机制，将其容量扩大为2倍。</p>
 </li>
 <li>
 <p>红黑树</p>
@@ -513,17 +534,63 @@ int hashvalue = (key.hashCode() &amp; 0x7FFFFFFF) % table.length;
 </ul>
 <p><strong>LinkedHashMap</strong></p>
 <ul>
-<li>由hash桶数组+双向链表实现
+<li>
+<p>由hash桶数组+三向（before, after，next）链表实现</p>
 <ul>
 <li>transient Entry&lt;K,V&gt; head；</li>
 <li>transient Entry&lt;K,V&gt; tail;</li>
 </ul>
 </li>
-<li>排序方式有两种
+<li>
+<p>排序方式有两种</p>
 <ul>
 <li>写入顺序排序 <code>accessOrder=false</code></li>
 <li>访问顺序排序 <code>accessOrder=true</code></li>
 </ul>
+<p>可以通过重载<code>removeEldestEntry</code>方法实现一个简单的LRU。</p>
+<p>LinkedHashMap的主要结构：</p>
+<pre><code class="language-java">public class LinkedHashMap&lt;K,V&gt;
+    extends HashMap&lt;K,V&gt;
+    implements Map&lt;K,V&gt;
+{
+	transient LinkedHashMap.Entry&lt;K,V&gt; head;
+	transient LinkedHashMap.Entry&lt;K,V&gt; tail;
+	final boolean accessOrder;
+	//Node的next用于桶上的元素遍历
+    static class Entry&lt;K,V&gt; extends HashMap.Node&lt;K,V&gt; {
+    		//before, after维护插入、或者访问顺序
+            Entry&lt;K,V&gt; before, after;
+            Entry(int hash, K key, V value, Node&lt;K,V&gt; next) {
+                super(hash, key, value, next);
+            }
+    }
+    Node&lt;K,V&gt; newNode(int hash, K key, V value, Node&lt;K,V&gt; e) {
+            LinkedHashMap.Entry&lt;K,V&gt; p =
+                new LinkedHashMap.Entry&lt;K,V&gt;(hash, key, value, e);
+            linkNodeLast(p);
+            return p;
+    }
+    //将新建的节点放入尾部
+    private void linkNodeLast(LinkedHashMap.Entry&lt;K,V&gt; p) {
+        LinkedHashMap.Entry&lt;K,V&gt; last = tail;
+        tail = p;
+        if (last == null)
+            head = p;
+        else {
+            p.before = last;
+            last.after = p;
+        }
+    }
+    //当有元素插入时，决定是否需要删除一个节点
+    void afterNodeInsertion(boolean evict) { // possibly remove eldest
+        LinkedHashMap.Entry&lt;K,V&gt; first;
+        if (evict &amp;&amp; (first = head) != null &amp;&amp; removeEldestEntry(first)) {
+            K key = first.key;
+            removeNode(hash(key), key, null, false, true);
+        }
+    }
+}
+</code></pre>
 </li>
 </ul>
 <h2 id="java并发">Java并发</h2>
@@ -536,6 +603,13 @@ int hashvalue = (key.hashCode() &amp; 0x7FFFFFFF) % table.length;
 <ul>
 <li>频繁的上下文切换，单核CPU通过时间片分割让我们感觉多线程并行的，也就是说在一个时间片中只有一个线程在执行，执行完在切换到另外一个线程，在切换时都需要保存当前线程上下文，这样在后需时间片执行该线程时，才能继续恢复到之前的状态</li>
 <li>线程安全，在并发编程时，需要注意临界区安全问题，还需避免死锁问题</li>
+</ul>
+<p><strong>死锁的四个必要条件</strong></p>
+<ul>
+<li>互斥访问（同一个资源同一时间只能被一个线程占有）</li>
+<li>不剥夺</li>
+<li>请求与保持，即线程已经获得资源，但是还需要请求新的资源，而新资源又被其他线程占有</li>
+<li>循环等待</li>
 </ul>
 <p><strong>避免频繁上下文切换</strong></p>
 <ul>
@@ -587,7 +661,7 @@ int hashvalue = (key.hashCode() &amp; 0x7FFFFFFF) % table.length;
 <ul>
 <li>Runnable是接口，所以支持多实现，而继承了Thread之后，该类并不能在继承其它类</li>
 <li>很多地方都说继承Thread开销过大，但是没找到合理解释</li>
-<li>继承Runnable对多线程任务设计上更加友好，能够更方便的进行资源共享，下面的例子中，通过继承Thread的创建两个线程，其中资源x并不是两个线程共享。</li>
+<li>个人觉得，继承Runnable对多线程任务设计上更加友好，能够更方便的进行资源共享，下面的例子中，通过继承Thread的创建两个线程，其中资源x并不是两个线程共享。另外值得一提的时Java的的线程池接口也是对Runnable友好，而非Thread</li>
 </ul>
 <pre><code class="language-java">// 通过Thread方式实现
 public class MyThread extends Thread
@@ -685,8 +759,9 @@ public class MyRunnable implements Runnable {
 <li>sleep() 是 Thread 的静态方法</li>
 </ul>
 <p><strong>await() signal() signalAll()</strong><br>
-这些方法为j.u.c包中基于Condition 类来实现线程之间的协调，Condition 上调用 await() 方法使线程等待，其它线程调用 signal() 或 signalAll() 方法唤醒等待的线程。<br>
-借助ArrayBlockQueue实现看一下用法：</p>
+这些方法为j.u.c包中基于Condition 类来实现线程之间的协调，Condition 上调用 await() 方法使线程等待，其它线程调用 signal() 或 signalAll() 方法唤醒等待的线程。</p>
+<p>需要注意的是，await()方法后会使得当前线程释放lock，并进入到同步队列。</p>
+<p>借助<span id="ArrayBlockQueue">ArrayBlockQueue</span>实现看一下用法：</p>
 <pre><code class="language-java">public class ArrayBlockingQueue&lt;E&gt; extends AbstractQueue&lt;E&gt;
         implements BlockingQueue&lt;E&gt;, java.io.Serializable {	
 	/** Main lock guarding all access */
@@ -736,11 +811,10 @@ public class MyRunnable implements Runnable {
 }
 </code></pre>
 <h3 id="内存模型jmm">内存模型（JMM）</h3>
-<p>因为Java主要通过共享内存的方式进行通信，即线程间通过读写共享变量进行隐式的通信。<br>
-Java内存模型（JMM)是JVM虚拟机规范中定义用来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果。</p>
-<h4 id="jmm抽象结构">JMM抽象结构</h4>
-<p>从抽象结构上来说，JMM分为主内存和工作内存两种。<br>
-<code>JMM定义了线程访问共享变量的规则</code>，线程的工作内存中保存着主内存中共享变量的副本，线程对共享变量的操作，都是在工作内存中完成，而不能直接读写主内存中的变量。</p>
+<p>JMM是为了解决Java线程通信提出来的模型，Java是采用共享内存（共享变量）的方式进行线程间的通信，从抽象结构上说，JMM分为主内存和工作内存两种，线程对变量的操作都在工作内存中完成，工作内存中保存着主内存中变量的副本。</p>
+<p>因为这种内存结构的存在，所以就存在各个线程中对变量（内存）的不可见，JMM则提供volatile、synchronize等关键字保证了内存的可见性；另外为了提升并发性能，编译器和处理器会对指令进行重排，为了消除重拍对并发的影响，JMM同样可以通过volatile、synchronize、final等关键字解决；并发编程另一大问题就是操作的原子性问题，则可以通过cas、synchronize进行解决。</p>
+<p>总之JMM就是为了我们能够高效进行并发编程提出来的模型。</p>
+<p>volatile、synchronize、final之所以可以解决内存可见性、以及指令重排问题，主要还是依赖于内存屏障进行实现。</p>
 <h4 id="内存间交互操作">内存间交互操作</h4>
 <p>JMM定义了 8 个操作来完成主内存和工作内存的交互操作:</p>
 <ul>
@@ -803,6 +877,7 @@ Thread 对象的结束先行发生于 join() 方法返回。</li>
 <p>根据上面给定的规则，我们发现可以通过<code>volatile</code>、<code>synchronized</code>显示的保证有序性。</p>
 <h3 id="并发关键字">并发关键字</h3>
 <h4 id="synchronized">synchronized</h4>
+<p>synchronized可以保证可见性和原子性；</p>
 <p><strong>原理</strong><br>
 <code>synchronized</code> 在编译之后在同步方法调用前加入一个 <code>monitor.enter</code> 指令，在退出方法和异常处插入 <code>monitor.exit</code> 的指令，所以本质上<code>synchronized</code> 是获取一个对象监视器（Monitor），没有获取到对象监视器的会阻塞在方法入口，直到获取锁的线程调用<code>monitor.exit</code>之后其它线程才能继续获取锁。</p>
 <p>如下java代码：</p>
@@ -853,7 +928,7 @@ Thread 对象的结束先行发生于 join() 方法返回。</li>
 <h4 id="volatile">volatile</h4>
 <p>当一个变量被 volatile 修饰时，任何线程对它的写操作都会立即刷新到主内存中，并且会强制让缓存了该变量的线程中的数据清空，必须从主内存重新读取最新数据。</p>
 <p><strong>内存语义</strong><br>
-<code>volatile</code>只能保证内存的可见性，并不能保证线程安全性，举个例子：</p>
+<code>volatile</code>只能保证内存的可见性，并不能保证线程安全性（原子性），举个例子：</p>
 <pre><code class="language-java">public class App implements Runnable {
     public volatile int i = 0;
     @Override
@@ -913,7 +988,2155 @@ Runnable r2 = () -&gt; App.get();
 <p>final域禁止重新排序，在对象引用为任意线程可见之前，对象的final域已经被正确初始化过了，而普通域就不具有这个保障。</p>
 <p><strong>final实现原理</strong><br>
 final域修饰的变量，在写入之后会编译器会添加：<code>StoreStore</code>屏障，在对其读取之前，编译器会添加一个<code>LoadLoad</code>屏障。</p>
-<h3 id="lock">Lock</h3>
+<h3 id="juc">J.U.C</h3>
+<p><code>java.util.concurrent</code>主要包含两个子包<code>atomic</code>和<code>lock</code>以及一些实用且高性能的并发工具类，例如例如阻塞队列、Executors，都是我们经常实用的，这些类的实现主要是依赖于volatile以及CAS。</p>
+<p>在Java5之前，程序为了防止多个线程同时访问共享资源，主要是靠synchronized关键字实现锁功能，Java5之后，增加了Lock接口，在支持synchronize的功能特性之后，还支持了可中断、超时获取等特性。但synchronize与Lock相比，优势在于，synchronize同步块在遇到异常后，会自动释放锁，而lock必须程序主动释放。</p>
+<h4 id="lock">Lock</h4>
+<p><code>java.util.concurrent.locks.Lock</code>接口定义如下：</p>
+<pre><code>public interface Lock {
+	/**
+	获取锁，会一直阻塞直到获取锁
+	*/
+	void lock();
+	/**
+	获取锁，同样阻塞，但是允许被中断
+	*/
+	void lockInterruptibly() throws InterruptedException;
+	/**
+	获取锁，但是不会阻塞，如果锁空闲，占有锁并立即返回true，否则返回false
+	*/
+	boolean tryLock();
+	/**
+	如果锁空闲，立即占有并返回true，否则阻塞等到直到如下事件发生：
+	（1）当前线程获取到锁
+	（2）其它线程中断了该线程
+	（3）等待超过指定时间
+	*/
+	boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
+	/**
+	释放锁
+	*/
+	void unlock();
+	/**
+	返回绑定到此锁实例的新条件实例
+	*/
+	Condition newCondition();
+
+}
+</code></pre>
+<p>ReentrantLock就是实现了lock接口，但是ReentrantLock的源码并没有多少，因为ReentrantLock大部分实现都是调用了其静态类Sync中的方法，而Sync类继承了AbstractQueuedSynchronizer（AQS）。</p>
+<h4 id="aqs">AQS</h4>
+<p>AQS是用来构建锁和其他同步组件的基础框架，它的实现主要依赖一个int成员变量来表示同步状态以及通过一个FIFO队列构成同步队列，我们看一下AQS的主要属性：</p>
+<pre><code class="language-java">public abstract class AbstractQueuedSynchronizer
+    extends AbstractOwnableSynchronizer
+    implements java.io.Serializable {
+     //等待队列的头结点
+     private transient volatile Node head;
+     //等待队列的尾部结点
+     private transient volatile Node tail;
+     //同步状态
+     private volatile int state;
+}
+</code></pre>
+<p>同步器的子类必须实现AQS以下几个方法：</p>
+<pre><code class="language-java"> /**
+ 尝试以独占模式获取，该方法会被线程调用以达到该线程独占资源的模式；
+ 如果获取失败，则会将该线程加入同步队列进行排队，直到从其他线程发出释放信号；
+ 这可以用来实现方法{@link Lock#tryLock()}。
+ **/
+ protected boolean tryAcquire(int arg)
+     
+ /**
+ 线程调用该方法释放对资源的占有
+ **/
+ protected boolean tryRelease(int arg)
+ 
+ /**
+ 以共享的模式获取
+ **/
+ protected int tryAcquireShared(int arg)
+ /**
+ 释放共享资源
+ **/
+ protected boolean tryReleaseShared(int arg)
+ /**
+ 是否被当前资源独占
+ **/
+ protected boolean isHeldExclusively()
+</code></pre>
+<h5 id="独占锁">独占锁</h5>
+<p><strong>获取独占锁</strong></p>
+<pre><code class="language-java">public final void acquire(int arg) {
+        if (!tryAcquire(arg) &amp;&amp;
+            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+            selfInterrupt();
+}
+</code></pre>
+<ul>
+<li>尝试获取同步状态，成功则直接返回</li>
+<li>失败，将当前线程加入同步队列，注意同步队列是双向链表构成，存在并发问题，所以采用了CAS方式从尾节点插入（<code>compareAndSetTail(expect, update)</code>）</li>
+<li>进入同步队列的线程如何确保自己有机会获得独占锁，主要通过acquireQueued（）方法自旋获取：
+<ul>
+<li>如果当前节点的先驱节点是head节点，则尝试获取同步状态，成功则将head节点设置为当前节点</li>
+<li>如果没有获取到，先将节点状态设置成SIGNAL，然后调用LookSupport.park方法使得当前线程阻塞。</li>
+</ul>
+</li>
+</ul>
+<p><strong>释放独占锁</strong></p>
+<pre><code class="language-java">public final boolean release(int arg) {
+        if (tryRelease(arg)) {
+            Node h = head;
+            if (h != null &amp;&amp; h.waitStatus != 0)
+                unparkSuccessor(h);
+            return true;
+        }
+        return false;
+}
+</code></pre>
+<p>如果释放成功，取head节点的下一个节点，调用<code>LockSupport.unpark()</code>唤醒该阻塞线程</p>
+<p><strong>可中断获取锁</strong>和<strong>超时等待获取锁</strong>处理方式实际上和<code>acquire()</code>类似，只是在该基础上加入了中断检测以及超时管理。</p>
+<h5 id="共享锁">共享锁</h5>
+<p><strong>获取共享锁</strong></p>
+<p>逻辑和独占式锁的获取基本一模一样，不同的是自旋过程中能够退出的条件是</p>
+<ul>
+<li>当前节点的前驱节点是头结点</li>
+<li>tryAcquireShared(arg)返回值大于等于0即能成功获得同步状态。</li>
+</ul>
+<p><strong>释放共享锁</strong></p>
+<p>因为共享锁，可以被多个线程共享，所以释放的时候回存在多个线程对同步状态的修改，所以需要通过CAS机制释放同步状态</p>
+<h4 id="reentrantlock">ReentrantLock</h4>
+<p>ReentrantLock具有可重入性，并且还支持公平锁和非公平锁两种模式。</p>
+<h5 id="公平锁非公平锁">公平锁非/公平锁</h5>
+<p>ReetrantLock的主要成员为Sync，Sync有两个实现，公平模式和非公平模式（默认为非公平模式）：</p>
+<pre><code class="language-java">public class ReentrantLock implements Lock, java.io.Serializable {
+    private final Sync sync;
+    
+    static final class NonfairSync extends Sync{
+        ......
+    }
+    static final class FairSync extends Sync{
+        ......
+    }
+}
+</code></pre>
+<p>那么公平锁和非公平锁的实现差别主要在与，非公平锁会先检查当前同步状态，如果未被占有，则尝试占有，而公平锁，只要同步队列中有等待的线程，则乖乖进入同步队列中排队。</p>
+<pre><code class="language-java">//非公平获取
+final boolean nonfairTryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc &lt; 0) // overflow
+            throw new Error(&quot;Maximum lock count exceeded&quot;);
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+//公平获取
+protected final boolean tryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (!hasQueuedPredecessors() &amp;&amp;
+            compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc &lt; 0)
+            throw new Error(&quot;Maximum lock count exceeded&quot;);
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+</code></pre>
+<h5 id="condition">Condition</h5>
+<p>Object的wait和notify/notify是和synchronized（本质为对象监视器）配合完成线程等待通知机制，而Condition则是与Lock配合完成线程的等待通知机制。</p>
+<p>从实现上来说，前者通过JDK层面实现，后者为Java语言层面实现，所以后者相对会有更高的扩展性：</p>
+<ul>
+<li>Condition支持被中断</li>
+<li>Condition支持超时</li>
+<li>Condition支持多个等待队列，即new多个Condition对象</li>
+</ul>
+<p><code>lock.newCondition()</code>创建出来的实际是<code>ConditionObject</code>，ConditionObject是AQS的一个内部类，ConditionObject内部维护了一个等待队列：</p>
+<pre><code class="language-java">public class ConditionObject implements Condition, java.io.Serializable {
+    /** First node of condition queue. */
+    private transient Node firstWaiter;
+    /** Last node of condition queue. */
+    private transient Node lastWaiter;
+}
+</code></pre>
+<p><code>condition.await()</code>方法调用后，线程会加入到等待队列中，并且线程状态转换为等待状态，但是需要注意的是ConditionObject中的等待队列是单向队列。</p>
+<p><code>condition.await()</code>源码如下：</p>
+<pre><code class="language-java">public final void await() throws InterruptedException {
+    if (Thread.interrupted())
+        throw new InterruptedException();
+    Node node = addConditionWaiter();
+    int savedState = fullyRelease(node);
+    int interruptMode = 0;
+    while (!isOnSyncQueue(node)) {
+        LockSupport.park(this);
+        if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+            break;
+    }
+    if (acquireQueued(node, savedState) &amp;&amp; interruptMode != THROW_IE)
+        interruptMode = REINTERRUPT;
+    if (node.nextWaiter != null) // clean up if cancelled
+        unlinkCancelledWaiters();
+    if (interruptMode != 0)
+        reportInterruptAfterWait(interruptMode);
+}
+</code></pre>
+<p>大致逻辑如下：</p>
+<ul>
+<li>将当前线程包装成Node，尾插入到等待队列中</li>
+<li>释放当前线程所占用的lock，在释放的过程中会唤醒同步队列（同步队列为AQS中的双向队列）中的下一个节点</li>
+<li>当前线程进入到等待状态</li>
+<li>自旋等待获取到同步状态</li>
+<li>处理被中断</li>
+</ul>
+<p><code>condition.singnal</code>源码：</p>
+<pre><code class="language-java">public final void signal() {
+    if (!isHeldExclusively())
+        throw new IllegalMonitorStateException();
+    Node first = firstWaiter;
+    if (first != null)
+        doSignal(first);
+}
+private void doSignal(Node first) {
+    do {
+        if ( (firstWaiter = first.nextWaiter) == null)
+            lastWaiter = null;
+        first.nextWaiter = null;
+    } while (!transferForSignal(first) &amp;&amp;
+             (first = firstWaiter) != null);
+}
+</code></pre>
+<p>大致逻辑如下：</p>
+<ul>
+<li>检查当前线程是否已经获取lock，没有获得则抛出异常</li>
+<li>将等待队列（wait队列）中等待时间最常的节点（头结点）加入同步队列，以至于处于await的线程有机会被唤醒</li>
+</ul>
+<p>Java中Condition的使用场景可以参考<a href="#ArrayBlockQueue">ArrayBlockQueue</a>.</p>
+<h3 id="reentrantreadwritelock">ReentrantReadWriteLock</h3>
+<ul>
+<li>读锁为共享锁、写锁为互斥锁，读写锁共享一个同步状态</li>
+<li>高16位为读锁计数，低16位为写锁</li>
+</ul>
+<h4 id="cas">CAS</h4>
+<p>CAS操作（又称为无锁操作）是一种乐观锁策略.</p>
+<p>如<code>AtomicInteger</code>中CAS的实现：</p>
+<pre><code class="language-java">public final boolean compareAndSet(int expect, int update) {
+    return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
+}
+</code></pre>
+<p>CAS的原理为，在实际更新时，如果内存中的实际值与期望值一致，则更新。这个思想在很多系统中都会使用，比如Solr中的索引更新，也是采用类似思想，首先获取远程索引版本号，发起更新时，服务端比对客户端提交过来的版本是否与当前版本一致，如果一致，则允许更新。</p>
+<p><strong>存在的问题</strong></p>
+<ol>
+<li>
+<p>ABA问题</p>
+<p>比如一个旧值A变为了成B，然后再变成A，在做CAS时检查发现旧值依然为A，但实际已经发生变化。</p>
+</li>
+<li>
+<p>自旋消耗</p>
+<p>CAS时非阻塞同步，并不会将线程挂起，会自旋（死循环），自旋时间过长对性能也是一个消耗。</p>
+</li>
+</ol>
+<h4 id="并发工具">并发工具</h4>
+<h5 id="locksupport">LockSupport</h5>
+<p>LockSupprot是线程的阻塞原语，用来阻塞线程和唤醒线程。</p>
+<p>主要方法为：</p>
+<ul>
+<li>park()，阻塞当前线程，如果调用unpark()方法或者当前线程被中断，则从park()方法返回</li>
+<li>unpark（），唤醒处于阻塞状态的指定线程。</li>
+</ul>
+<p>LockSupport阻塞和唤醒线程的功能是依赖于sun.misc.Unsafe，例如park()方法的功能实现最底层为调用unsafe.park().</p>
+<h5 id="executor">Executor</h5>
+<p>线程池管理线程主要有好处:</p>
+<ul>
+<li>降低资源消耗，复用已有线程、减少线程关闭的次数</li>
+<li>提升系统响应速度，复用线程，省去创建线程的过程</li>
+<li>提高线程的可管理性</li>
+</ul>
+<h6 id="threadpoolexecutor">ThreadPoolExecutor</h6>
+<p><strong>创建线程池</strong></p>
+<pre><code class="language-java">ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue&lt;Runnable&gt; workQueue,
+                              ThreadFactory threadFactory,
+                              RejectedExecutionHandler handler)
+</code></pre>
+<ul>
+<li>corePoolSize：表示核心线程池的大小</li>
+<li>maximumPoolSize：表示线程池能创建线程的最大个数</li>
+<li>keepAliveTime：空闲线程存活时间，如果当前线程池的线程个数已经超过了corePoolSize，并且线程空闲时间超过了keepAliveTime的话，就会将这些空闲线程销毁</li>
+<li>threadFactory：线程创建的工厂类，可指定线程名、线程优先级等等</li>
+<li>handler：饱和策略
+<ul>
+<li>AbortPolicy： 直接拒绝所提交的任务，并抛出RejectedExecutionException异常</li>
+<li>CallerRunsPolicy：只用调用者所在的线程来执行任务；</li>
+<li>DiscardPolicy：不处理直接丢弃掉任务；</li>
+<li>DiscardOldestPolicy：丢弃掉阻塞队列中存放时间最久的任务，执行当前任务</li>
+</ul>
+</li>
+</ul>
+<p><strong>线程池提交执行逻辑</strong></p>
+<p>提交任务之后，线程池会按照以下流程处理：</p>
+<ul>
+<li>判断核心线程池是否已满，如果不满，则创建线程执行刚才的任务</li>
+<li>如果核心线程池已经满，则判断阻塞队列是否已满，如果未满，则放置在阻塞队列中</li>
+<li>如果阻塞队列已满，则判断线程池中是否已满，如果没有，则创建一个新的线程来执行任务</li>
+<li>如果线程池已满，则按照饱和策略进行处理</li>
+</ul>
+<p><img src="https://yinyayun.github.io//post-images/1567666735545.png" alt="线程池"></p>
+<p><strong>关闭线程池</strong></p>
+<ul>
+<li>shutdownNow，首先将线程池的状态设置为STOP，并中断所有线程</li>
+<li>shutdown，将线程池的状态设置为SHUTDOWN，中断没有正在执行任务的线程</li>
+</ul>
+<h6 id="scheduledthreadpoolexecutor">ScheduledThreadPoolExecutor</h6>
+<p>支持延时或者周期性异步执行任务。</p>
+<pre><code class="language-java">public ScheduledThreadPoolExecutor(int corePoolSize,
+                                       ThreadFactory threadFactory,
+                                       RejectedExecutionHandler handler) {
+    super(corePoolSize, Integer.MAX_VALUE, 0, NANOSECONDS,
+          new DelayedWorkQueue(), threadFactory, handler);
+}
+</code></pre>
+<p>ScheduledThreadPoolExecutor继承了ThreadPoolExecutor，实际上也是调用了ThreadPoolExecutor创建线程池，但是ScheduledThreadPoolExecutor的阻塞队列使用的是DelayedWorkQueue.</p>
+<p>DelayedWorkQueue是ScheduledThreadPoolExecutor能够延时或者定期异步执行任务的关键。</p>
+<p>DelayedWorkQueue是一个优先级队列，它可以保证每次出队的任务都是当前队列中执行时间最靠前的，由于它是基于堆结构的队列，堆结构在执行插入和删除操作时的最坏时间复杂度是 O(logN)。</p>
+<h5 id="countdownlatch">CountDownLatch</h5>
+<p>CountDownLatch通过一个同步状态计数器来达到多个线程间的通信，通常如作业由5线程完成，只有这5个线程结束才能做对作业结果收集，那么就可以使用CountDownLatch进行实现。</p>
+<pre><code class="language-java">public static void main(String[] args) throws InterruptedException {
+    CountDownLatch countDownLatch = new CountDownLatch(5);
+    ExecutorService pool = Executors.newFixedThreadPool(10);
+    for (int i = 0; i &lt; 5; i++) {
+        pool.submit(() -&gt; {
+            try {
+                Thread.sleep(100);
+                countDownLatch.countDown();
+            } catch (InterruptedException e) {
+            }
+        });
+    }
+    long time = System.currentTimeMillis();
+    countDownLatch.await();
+    System.out.println(&quot;所有线程执行结束，耗时:&quot; + (System.currentTimeMillis() - time));
+    pool.shutdown();
+}
+</code></pre>
+<pre><code class="language-shell">$ 所有线程执行结束，耗时:101
+</code></pre>
+<h5 id="cyclicbarrier">CyclicBarrier</h5>
+<p>和CountDownLatch一样具有等待计数的功能，但是相比于CountDownLatch功能更加强大。</p>
+<p>通过它可以实现让一组线程等待至某个状态（这个状态叫做barrier）之后再全部同时执行。叫做回环是因为当所有等待线程都被释放以后，CyclicBarrier可以被重用。</p>
+<pre><code class="language-java">public CyclicBarrier(int parties, Runnable barrierAction) {
+    if (parties &lt;= 0) throw new IllegalArgumentException();
+    this.parties = parties;
+    this.count = parties;
+    this.barrierCommand = barrierAction;
+}
+
+public CyclicBarrier(int parties) {
+    this(parties, null);
+}
+</code></pre>
+<p>举例来说，一组线程只有同时到达barrier状态，然后执行barrierAction后才，这组线程才能继续执行。</p>
+<pre><code class="language-java">public static void main(String[] args) throws InterruptedException {
+    final CyclicBarrier cyclicBarrier = new CyclicBarrier(3, () -&gt; System.out.println(&quot;barrier start...&quot;));
+    ExecutorService pool = Executors.newFixedThreadPool(10);
+    for (int i = 0; i &lt; 3; i++) {
+        pool.submit(() -&gt; {
+            try {
+                System.out.println(Thread.currentThread().getName() + &quot; wait...&quot;);
+                cyclicBarrier.await();
+                System.out.println(Thread.currentThread().getName() + &quot; run...&quot;);
+            } catch (BrokenBarrierException e) {
+                //...
+            } catch (InterruptedException e) {
+                //...
+            }
+        });
+    }
+    pool.shutdown();
+}
+</code></pre>
+<pre><code class="language-shell">pool-1-thread-2 wait...
+pool-1-thread-3 wait...
+pool-1-thread-1 wait...
+barrier start...
+pool-1-thread-3 run...
+pool-1-thread-2 run...
+pool-1-thread-1 run...
+</code></pre>
+<p>CountDownLatch与CyclicBarrier对比：</p>
+<ul>
+<li>CountDownLatch一般为某个线程等待一组其它线程执行完才执行</li>
+<li>CyclicBarrier用于一组线程等待某个状态，大家才一起执行</li>
+</ul>
+<h3 id="并发容器">并发容器</h3>
+<h4 id="concurrenthashmapjdk-18版本">ConcurrentHashMap(JDK 1.8版本)</h4>
+<h4 id="copyonwritearraylist">CopyOnWriteArrayList</h4>
+<h4 id="concurrentlinkedqueue-2">ConcurrentLinkedQueue</h4>
+<h4 id="threadlocal">ThreadLocal</h4>
+<p>线程的<code>本地变量</code>，即每个线程都拥有该变量副本，避免线程进行资源竞争。</p>
+<p>ThreadLocal的实现依赖于ThreadLocalMap（暂且可以认为是一个普通Map），下面是ThreadLoacl的set源码，</p>
+<pre><code class="language-java">public void set(T value) {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null)
+        map.set(this, value);
+    else
+        createMap(t, value);
+}
+</code></pre>
+<p>set大概分为如下几个步骤：</p>
+<ul>
+<li>获取当前线程</li>
+<li>获取当前线程的ThreadLocalMap</li>
+<li>如果当前线程的ThreadLocal为Null，则为当前线程创建ThreadLocalMap并绑定</li>
+<li>如果当前线程ThreadLocal不为Null，使用ThreadLocal实例作为key添加至该线程的ThreadLocalMap中</li>
+</ul>
+<p>所以值得注意的是：</p>
+<ul>
+<li>ThreadLocal维护的变量副本其实都在各个Thread自身中</li>
+<li>ThreadLocalMap中维护变量值的key值是ThreadLocal实例</li>
+</ul>
+<h4 id="blockingqueue">BlockingQueue</h4>
+<h2 id="io">IO</h2>
+<h3 id="io模型">IO模型</h3>
+<p>我们经常讨论的IO模式有以下4种：</p>
+<ul>
+<li>阻塞 I/O（blocking IO）</li>
+<li>非阻塞 I/O（nonblocking IO）</li>
+<li>I/O 多路复用（ IO multiplexing）</li>
+<li>异步 I/O（asynchronous IO）</li>
+</ul>
+<p>至于怎么会产生这4中IO模式，主要是因为Linux操作系统中分为内核空间和用户空间，所以当read（）操作发生时，会经历两个大阶段：</p>
+<ul>
+<li>等待内核空间准备数据</li>
+<li>数据从磁盘读入内核空间的缓冲区</li>
+<li></li>
+</ul>
+<p><img src="https://yinyayun.github.io//post-images/1564118252549.png" alt="user-kernel"></p>
+<h4 id="阻塞-io">阻塞 I/O</h4>
+<p>阻塞IO会一直阻塞用户进程，这个期间，kernel会一直等待数据准备好，然后将数据拷贝到用户空间，最后kernel返回结果，用户接触阻塞。<br>
+<img src="https://yinyayun.github.io//post-images/1564118309936.png" alt="blocking IO"></p>
+<h4 id="非阻塞-io">非阻塞 I/O</h4>
+<p>在内核准备数据阶段，不会阻塞用户进程，用户进程不断的主动询问内核是否将数据准备好，如何没有准备好，则立即返回告知用户进程数据还没准备好。<br>
+一旦内核空间准备好数据，并且再次收到了用户的询问，则阻塞等数据拷贝到用户空间并返回。<br>
+<img src="https://yinyayun.github.io//post-images/1564119342592.png" alt="nonblocking IO"></p>
+<h4 id="io-多路复用">I/O 多路复用</h4>
+<p>IO多路复用即使用一个进程同时处理多个IO连接，它的原理是利用select、poll或epoll函数，即单个进程不断轮询所有的连接（套接字、文件描述符），当某个连接上有数据到达了，就通知用户进程。</p>
+<p>在该模式中，用户进程调用select()，进程会一直阻塞，直到某个连接进入读就绪状态，select（）函数返回。此时用户用户再调用read()方法，这一操作同样阻塞用户进程直到数据从内核拷贝纸用户空间并返回。</p>
+<p><img src="https://yinyayun.github.io//post-images/1564119394474.png" alt="IO multiplexing"></p>
+<p>从上图不难发现，IO多路复用和阻塞 I/O模式很像：</p>
+<ul>
+<li>IO多路复用为两次阻塞</li>
+<li>阻塞IO为一次阻塞</li>
+</ul>
+<p>但是IO多路复用的特点就是一个进程同时处理多个连接，所以基于select/epoll的IO多路复用服务优势在处理更多连接上，如果处理连接不是特别多的话，性能比使用多线程（进程）+阻塞IO模型搭建的服务性能要差。</p>
+<h4 id="异步-io">异步 I/O</h4>
+<p>用户进程发起read（）操作后，kernel立即返回，kernel等待数据准备完，然后将数据拷贝到用户内存，然后给用户进程发送一个信号，通知read操作完成了。<br>
+<img src="https://yinyayun.github.io//post-images/1564123150178.png" alt="Asynchronous IO"></p>
+<h3 id="java-nio">Java NIO</h3>
+<p>NIO（Non-blocking I/O，在Java领域，也称为New I/O），是一种同步非阻塞的I/O模型，也是I/O多路复用的基础。</p>
+<p>Java NIO 由以下几个核心部分组成：</p>
+<ul>
+<li>Buffer、Channel：标准的IO基于字节流和字符流进行操作的，而NIO是基于通道（Channel）和缓冲区（Buffer）进行操作，数据总是从通道读取到缓冲区中，或者从缓冲区写入到通道中。</li>
+<li>Selector：Selector管理着多个Channel</li>
+</ul>
+<h3 id="java-nio和io区别">Java NIO和IO区别</h3>
+<ul>
+<li>NIO基于事件驱动模型</li>
+<li>NIO 采用IO多路复用，Java NIO的Selectors允许一个单独的线程来监视多个输入输出通道，你可以注册多个通道使用一个选择器，然后使用一个单独的线程来“选择”通道。</li>
+<li>NIO为非阻塞I/O，读写不再阻塞</li>
+<li>NIO面向缓冲区，而IO是是基于流的</li>
+<li>更高级的IO函数，zero-copy</li>
+</ul>
+<h3 id="reactor模型">Reactor模型</h3>
+<p>将关注的I/O事件注册到Selector上，一旦有I/O事件触发，将事件分发到事件处理器（Handler）中，执行就绪I/O事件对应的处理函数中。</p>
+<p><strong>经典Reactor模式</strong></p>
+<p>经典Reactor模式（单线程）中，包含以下角色：</p>
+<ul>
+<li>**Reactor ：**将I/O事件发派给对应的Handler</li>
+<li>**Acceptor ：**处理客户端连接请求</li>
+<li>**Handlers ：**执行非阻塞读/写</li>
+</ul>
+<p><img src="https://yinyayun.github.io//post-images/1567666823979.png" alt="经典Reactor"></p>
+<pre><code class="language-java">public class BasicReactorServer {
+
+ public static void start(int port) {
+ 	try {
+ 		Selector selector = Selector.open();
+ 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+ 		serverSocketChannel.configureBlocking(false);
+ 		serverSocketChannel.socket().setReuseAddress(true);
+ 		serverSocketChannel.bind(new InetSocketAddress(port), 128);
+ 		// 注册accept事件
+ 		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, new Acceptor(selector, serverSocketChannel));
+
+ 		// 阻塞等待就绪事件
+ 		while (!Thread.interrupted()) {
+ 			selector.select();
+ 			Set&lt;SelectionKey&gt; selected = selector.selectedKeys();
+ 			Iterator&lt;SelectionKey&gt; it = selected.iterator();
+ 			while (it.hasNext()) {
+ 				Runnable handler = (Runnable) (it.next().attachment());
+ 				handler.run();
+ 			}
+ 			selected.clear();
+ 		}
+ 	} catch (Exception e) {
+ 		e.printStackTrace();
+ 	}
+ }
+
+ /**
+  * 接受连接处理
+  */
+ public static class Acceptor implements Runnable {
+
+ 	private Selector selector;
+
+ 	private ServerSocketChannel serverSocketChannel;
+
+ 	public Acceptor(Selector selector, ServerSocketChannel serverSocketChannel) {
+ 		this.selector = selector;
+ 		this.serverSocketChannel = serverSocketChannel;
+ 	}
+
+ 	public void run() {
+ 		try {
+ 			SocketChannel socketChannel = serverSocketChannel.accept();
+ 			socketChannel.configureBlocking(false);
+ 			socketChannel.register(selector, SelectionKey.OP_READ, new DispatchHandler(socketChannel));
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
+ 	}
+ }
+
+ /**
+  * 读取数据处理
+  */
+ public static class DispatchHandler implements Runnable {
+ 	private SocketChannel socketChannel;
+
+ 	public DispatchHandler(SocketChannel socketChannel) {
+ 		this.socketChannel = socketChannel;
+ 	}
+
+ 	public void run() {
+ 		try {
+ 			ByteBuffer buffer = ByteBuffer.allocate(1024);
+ 			int cnt = 0, total = 0;
+ 			String msg = &quot;&quot;;
+ 			do {
+ 				cnt = socketChannel.read(buffer);
+ 				if (cnt &gt; 0) {
+ 					total += cnt;
+ 					msg += new String(buffer.array());
+ 				}
+ 				buffer.clear();
+ 			} while (cnt &gt;= buffer.capacity());
+ 			System.out.println(&quot;read data num:&quot; + total);
+ 			System.out.println(&quot;recv msg:&quot; + msg);
+ 			// 回写数据
+ 			ByteBuffer sendBuf = ByteBuffer.allocate(msg.getBytes().length + 1);
+ 			sendBuf.put(msg.getBytes());
+ 			socketChannel.write(sendBuf);
+
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}finally {
+ 			socketChannel.close();
+ 		}
+ 	}
+ }
+
+ public static void main(String[] args) {
+ 	BasicReactorServer.start(9999);
+ }
+}
+</code></pre>
+<p><strong>多线程Reactor模式</strong></p>
+<p>与单线程相比，多线程Reactor模式采用一个 Reactor 线程（一个Selector）和多个处理线程（多个Handler），将业务处理交给线程池。</p>
+<p><img src="https://yinyayun.github.io//post-images/1567666861833.png" alt="多线程Reactor模式"></p>
+<p><strong>主从Reactor模式</strong></p>
+<p>虽然多线程的Reactor的模式将业务处理采用多个线程处理，但是实际的发送和读取还是由 Reactor 处理，那么在高并发下，有可能连接来不及接收，所以衍生出了主从 Reactor，主从 Reactor 特点是：使用一个 Selector 池，通常有一个 <strong>主Reactor</strong> 用于处理接收连接事件，多个 <strong>从Reactor</strong> 处理实际的 I/O。</p>
+<p><img src="https://yinyayun.github.io//post-images/1567666892063.png" alt="主从Reactor模式"></p>
+<h3 id="proactor">Proactor</h3>
+<p>Proactor利用异步I/O并行能力，给应用带来了更高的效率，但是同时也增加了编程的复杂度。windows对异步I/O支持非常好；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
+<p><strong>处理逻辑</strong></p>
+<ul>
+<li>打开一个异步channel，绑定端口以及accept的回调类Acceptor</li>
+<li>Acceptor结束后绑定ReadHandler</li>
+<li>当有数据可读时，在ReadHandler中读取数据，绑定WritterHandler</li>
+</ul>
+<pre><code class="language-java">public class Preactor {
+
+    private final static int port = 9999;
+
+    public static void start() throws IOException{
+
+        AsynchronousServerSocketChannel channel = null;
+        try {
+            AsynchronousChannelGroup group = AsynchronousChannelGroup.withThreadPool(Executors.newFixedThreadPool(10));
+            channel = AsynchronousServerSocketChannel.open(group).bind(new InetSocketAddress(port), 128);
+            System.out.println(&quot;服务器已启动，端口号：&quot; + port);
+
+            channel.accept(null, new Acceptor());
+            CountDownLatch latch = new CountDownLatch(1);
+            latch.await();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void main(String[] args){
+
+        try {
+
+            Preactor.start();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static class Acceptor implements CompletionHandler&lt;AsynchronousSocketChannel,AsynchronousServerSocketChannel&gt;{
+
+        public void completed(AsynchronousSocketChannel result, AsynchronousServerSocketChannel attachment) {
+            try {
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+                result.read(buffer, buffer, new ReadHandler(result));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
+        public void failed(Throwable exc, AsynchronousServerSocketChannel attachment) {
+            exc.printStackTrace();
+        }
+    }
+
+    public static class ReadHandler implements CompletionHandler&lt;Integer, ByteBuffer&gt; {
+
+        private AsynchronousSocketChannel socketChannel;
+
+        public ReadHandler(AsynchronousSocketChannel socketChannel) {
+            this.socketChannel = socketChannel;
+        }
+
+        public void completed(Integer result, ByteBuffer attachment) {
+            try {
+                attachment.flip();
+                String msg = new String(attachment.array());
+                System.out.println(&quot;recv client msg:&quot; + msg);
+                socketChannel.write(attachment,attachment, new WritterHandler(socketChannel));
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+        public void failed(Throwable exc, ByteBuffer attachment) {
+            exc.printStackTrace();
+            try {
+                socketChannel.close();;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static class WritterHandler implements CompletionHandler&lt;Integer, ByteBuffer&gt;{
+
+        private AsynchronousSocketChannel socketChannel;
+
+        public WritterHandler(AsynchronousSocketChannel socketChannel) {
+            this.socketChannel = socketChannel;
+        }
+
+        public void completed(Integer result, ByteBuffer attachment) {
+            try {
+                attachment.clear();
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+                socketChannel.read(buffer,buffer, new ReadHandler(socketChannel));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        public void failed(Throwable exc, ByteBuffer attachment) {
+            exc.printStackTrace();
+            try {
+                socketChannel.close();;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+}
+</code></pre>
+<h2 id="jvm">JVM</h2>
+<p>首先看一下JVM的物理结构：</p>
+<p><img src="https://yinyayun.github.io//post-images/1567666917956.png" alt="JVM的物理结构"></p>
+<h3 id="内存结构">内存结构</h3>
+<ul>
+<li>线程共享：堆、方法区</li>
+<li>线程私有：程序计数器、虚拟机栈、本地方法栈</li>
+</ul>
+<p>JDK1.8方法区已经移入直接内存。</p>
+<h3 id="类加载">类加载</h3>
+<p><img src="https://yinyayun.github.io//post-images/1567666940192.png" alt="类加载"></p>
+<h4 id="步骤">步骤</h4>
+<ul>
+<li>加载
+<ul>
+<li>通过类的全限定名读取该类的二进制流</li>
+<li>保存类的基本信息如名字、实现接口等等，即转换为方法区运行时数据结构</li>
+<li>在Java堆中生成一个代表这个类的java.lang.Class对象</li>
+</ul>
+</li>
+<li>验证
+<ul>
+<li>文件格式验证</li>
+<li>元数据验证，实际上就是语法检查</li>
+<li>字节码验证，即保证校验类的方法在运行时不会危害虚拟机</li>
+<li>符号引用验证，确定符号引用通过全限定名能否找到</li>
+</ul>
+</li>
+<li>准备
+<ul>
+<li>在方法区为类的静态属性分配内存，分配内存只会给定默认值（0值），而不会进行初始化，初始化在类的初始化阶段进行。</li>
+<li>特殊情况就是final static修饰的常量，因为编译器就会打上ConstantValue属性，那么在准备阶段就会直接赋值。</li>
+</ul>
+</li>
+<li>解析
+<ul>
+<li>将常量池中符号引用替换为直接引用</li>
+</ul>
+</li>
+<li>初始化
+<ul>
+<li>Java启动时，指定的main方法所在的类</li>
+<li>初始化子类，父类还未初始化，则先初始化父类</li>
+<li>java.lang.reflect对某个类进行反射调用时，如果未初始化，则需要进行初始化</li>
+<li>遇到new、getstatic、putstatic、invokestatic指令，需要触发对应类的初始化</li>
+</ul>
+</li>
+<li>使用</li>
+<li>卸载</li>
+</ul>
+<h4 id="类加载器">类加载器</h4>
+<ul>
+<li>引导类加载器（Bootstrap ClassLoader）该类加载器使用C++语言实现，属于虚拟机自身的一部分，该类加载器无法被Java程序直接引用。</li>
+<li>扩展类加载器（Extension ClassLoader），该加载器主要是负责加载，该加载器可以被开发者直接使用。</li>
+<li>应用程序类加载器（Application ClassLoader）</li>
+</ul>
+<p>自定义类加载器：</p>
+<pre><code class="language-java">class MyClassLoader extends ClassLoader {  
+        //类加载器的名称  
+        private String name;  
+        //类存放的路径  
+        private String path = &quot;E:\\workspace\\Algorithm\\src&quot;;  
+        MyClassLoader(String name) {  
+            this.name = name;  
+        }  
+        MyClassLoader(ClassLoader parent, String name) {  
+            super(parent);  
+            this.name = name;  
+        }  
+        /** 
+         * 重写findClass方法 
+         */  
+        @Override  
+        public Class&lt;?&gt; findClass(String name) {  
+            byte[] data = loadClassData(name);  
+            return this.defineClass(name, data, 0, data.length);  
+        }  
+        public byte[] loadClassData(String name) {  
+            try {  
+                name = name.replace(&quot;.&quot;, &quot;//&quot;);  
+                FileInputStream is = new FileInputStream(new File(path + name + &quot;.class&quot;));  
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+                int b = 0;  
+                while ((b = is.read()) != -1) {  
+                    baos.write(b);  
+                }  
+                return baos.toByteArray();  
+            } catch (Exception e) {  
+                e.printStackTrace();  
+            }  
+            return null;  
+        }  
+    }  
+</code></pre>
+<h3 id="类文件结构">类文件结构</h3>
+<ul>
+<li>魔数，前4个字节，确定该文件是否为一个能被虚拟机接受的class文件</li>
+<li>版本</li>
+<li>常量池，开头用一个u2类型的数据表示常量池的容量。</li>
+<li>访问标志，标识该类是否接口、abstract、public或是final</li>
+<li>类索引、父类索引与接口索引集合，其中类索引和父类索引都是u2类型的数据，接口索引集合是u2类型的数据集合。</li>
+<li>字段表集合</li>
+<li>方法表集合</li>
+<li>属性表集合</li>
+</ul>
+<h3 id="java对象">Java对象</h3>
+<h4 id="对象创建new与内存分配">对象创建（new）与内存分配</h4>
+<ul>
+<li>检查常量池（方法区）是否存在类的符号引用，有的话检查该类是否被加载、解析和初始化</li>
+<li>类加载检查通过，jvm为该对象分配内存。有两种做法：
+<ul>
+<li>指针碰撞（Bump the Pointer）：没有在用的内存和已经使用内存用一个指针划分，所以需要保证java堆中内存是做过整理的。</li>
+<li>空闲列表（Free List） JVM维护一个列表记录那些内存可用</li>
+</ul>
+</li>
+<li>并发下的内存分配策略：
+<ul>
+<li>同步处理，CAS</li>
+<li>TLAB（本地线程分配缓存），每个线程在堆中预先分配一小块内存</li>
+</ul>
+</li>
+</ul>
+<h4 id="对象在内存中的结构">对象在内存中的结构</h4>
+<ul>
+<li>对象头（Header）
+<ul>
+<li>存储对象自身运行数据，如hashcode，GC年龄、锁状态标识，线程持有的锁</li>
+<li>类型指针，即确定该类是哪个类的实例</li>
+</ul>
+</li>
+<li>实例数据（Instance data）</li>
+<li>对齐补充（Padding）</li>
+</ul>
+<h4 id="对象实例访问">对象实例访问</h4>
+<ul>
+<li>JVM栈中对象reference指向Java堆中的对象实例数据</li>
+<li>对象实例数据指向方法区中对象的类型数据</li>
+</ul>
+<h3 id="垃圾回收">垃圾回收</h3>
+<h4 id="四种引用类型">四种引用类型</h4>
+<ul>
+<li>强引用(Strong Reference)，只要强引用存在则GC时则必定不被回收。</li>
+<li>软引用（Soft Reference），非必须的对象，当堆将发生OOM时则会回收软引用所指向的内存空间，若回收后依然空间不足才会抛出OOM，一般用于实现内存敏感的高速缓存。</li>
+<li>弱引用（Weak Reference），发生GC时必定回收弱引用指向的内存空间。</li>
+<li>虚引用（Phantom Reference），虚引用既不会影响对象的生命周期，也无法通过虚引用来获取对象实例，仅用于在发生GC时接收一个系统通知。</li>
+</ul>
+<p><strong>存活对象查找：</strong></p>
+<ul>
+<li>引用计数</li>
+<li>根搜索（gc roots）</li>
+</ul>
+<p><strong>可作为根搜索的对象：</strong></p>
+<ul>
+<li>
+<p>虚拟机栈（栈帧中的本地变量表）中引用的对象；</p>
+</li>
+<li>
+<p>方法区中的类静态属性引用的对象；</p>
+</li>
+<li>
+<p>方法区中常量引用的对象；</p>
+</li>
+<li>
+<p>本地方法栈中JNI（即一般说的Native方法）中引用的对象</p>
+</li>
+</ul>
+<p><strong>Java中几种引用</strong></p>
+<ul>
+<li>强引用，即new出来的对象，只要引用在，不会被回收</li>
+<li>软引用，有用但是并非必须的对象，内存溢出前会把软引用对象列在下次垃圾回收计划中</li>
+<li>弱引用，对象只能活到下次垃圾回收之前</li>
+<li>虚引用，目的就是在这个对象回收前，收到系统回收的通知</li>
+</ul>
+<p><strong>对象死亡判断</strong></p>
+<p>根搜索不可达的对象，也并非立即判处死亡，对象死亡需要两次标记：</p>
+<ul>
+<li>根搜索不可达，执行finalize()，前提是finalize()没有被执行过并且该对象覆盖了finalize()方法</li>
+<li>执行finalize()，如果在finalize()将自己赋值给某个对象，保证根搜索可达，那么就会被移除即将回收集合</li>
+</ul>
+<p><strong>垃圾回收算法</strong></p>
+<ul>
+<li>复制算法</li>
+<li>标记整理</li>
+<li>分代</li>
+<li>标记清除</li>
+</ul>
+<p><strong>方法区回收</strong></p>
+<ul>
+<li>废弃常量</li>
+<li>无用类
+<ul>
+<li>该类所有对象已被回收</li>
+<li>该类classloader已经被回收</li>
+<li>该类对象的java.lang.Class对象没有地方被引用，无法再任何地方通过反射访问该类的方法</li>
+</ul>
+</li>
+</ul>
+<h4 id="gc策略">GC策略</h4>
+<p><strong>并行GC</strong></p>
+<ul>
+<li>分代收集。</li>
+<li>年轻代 ，复制算法，eden：surivive 8:1</li>
+<li>年老代，标记整理，第一次遍历得到所有要回收对象，第二次扫描将存活对象放在最前面，最后直接删除最后一个存活对象后面的内存</li>
+</ul>
+<p><strong>CMS(并发标记清除)</strong></p>
+<ul>
+<li>
+<p>GC模式</p>
+<ul>
+<li>young gc</li>
+<li>cms（标记清除）</li>
+<li>full gc</li>
+</ul>
+</li>
+<li>
+<p>CMS流程</p>
+<ul>
+<li>
+<p>初始标记(gc root直接关联的对象)</p>
+</li>
+<li>
+<p>并发标记(gc root tracing，标记可达对象)</p>
+</li>
+<li>
+<p>重新标记</p>
+</li>
+<li>
+<p>并发清除</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>触发条件：</p>
+<ul>
+<li>年老带占用到68%启用</li>
+<li>程序内存分配失败（Concurrent Mode Failure ），启用full gc</li>
+<li>System.gc()</li>
+</ul>
+<p><strong>G1</strong></p>
+<ul>
+<li>采用Region，各个分代之间内存空间不要求连续</li>
+<li>Humongous（对象超过Region的一半，会申请多个连续的Region）</li>
+<li>-XX:InitiatingHeapOccupancyPercent=45</li>
+<li>GC模式
+<ul>
+<li>young gc</li>
+<li>mixed gc（标记整理）</li>
+<li>full gc</li>
+</ul>
+</li>
+<li>mixed gc
+<ul>
+<li>initial mark</li>
+<li>concurrent marking</li>
+<li>remark</li>
+<li>clean up</li>
+</ul>
+</li>
+</ul>
+<h2 id="java工具篇">Java工具篇</h2>
+<h3 id="命令行工具">命令行工具</h3>
+<ul>
+<li><strong>jps</strong> (JVM Process Status）: 类似 UNIX 的 <code>ps</code> 命令。用户查看所有 Java 进程的启动类、传入参数和 Java 虚拟机参数等信息；</li>
+<li><strong>jstat</strong>（ JVM Statistics Monitoring Tool）: 用于收集 HotSpot 虚拟机各方面的运行数据;</li>
+<li><strong>jinfo</strong> (Configuration Info for Java) : Configuration Info forJava,显示虚拟机配置信息;</li>
+<li><strong>jmap</strong> (Memory Map for Java) :生成堆转储快照;</li>
+<li><strong>jhat</strong> (JVM Heap Dump Browser ) : 用于分析 heapdump 文件，它会建立一个 HTTP/HTML 服务器，让用户可以在浏览器上查看分析结果;</li>
+<li><strong>jstack</strong> (Stack Trace for Java):生成虚拟机当前时刻的线程快照，线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合。</li>
+</ul>
+<h3 id="可视化分析工具">可视化分析工具</h3>
+<ul>
+<li>
+<p>JConsole，基于 JMX 的可视化监视、管理工具</p>
+</li>
+<li>
+<p>Visual VM，All-in-One故障处理工具</p>
+</li>
+</ul>
+<h2 id="zookeeper">Zookeeper</h2>
+<p>Zookeeper 是分布式协同的一个重要实现方式。</p>
+<h3 id="由来">由来</h3>
+<ol>
+<li>Paxos<br>
+角色：提议人、执行人<br>
+流程：prepare阶段，多个提议人向半数的执行人提交编号为n的提议，如果n是执行人目前所接受到的最大提议编号则同意。commit阶段，多个提议人发起对已经同意的编号为n的提议执行，执行人同样需要做验证。<br>
+存在的问题：活锁</li>
+<li>zab协议<br>
+采用选主的方式，保证提议人只有一个，避免活锁问题</li>
+<li>zab协议3阶段
+<ul>
+<li>leader选举</li>
+<li>recovery ，leader将自身的数据（事务）同步到其他节点</li>
+<li>broadcast 提议的广播</li>
+</ul>
+</li>
+<li>zk集群角色
+<ul>
+<li>Leader</li>
+<li>Follower</li>
+<li>Observer(默认没有，Observer机器不参与Leader选举过程，也不参与写操作的『过半写成功』策略，因此Observer可以在不影响写性能的情况下提升集群的读性能。)</li>
+</ul>
+</li>
+<li>zk选主<br>
+每个节点将代表自身投票（my_id,ZXID）发送给其它节点。
+<ul>
+<li>ZXID大的推荐成主，即改变自身投票</li>
+<li>ZXID相同，比较my_id，优先推荐my_id大的</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://yinyayun.github.io//post-images/1567666988267.png" alt="Zk选举"></p>
+<h3 id="数据模型">数据模型</h3>
+<ol>
+<li>数据节点(ZNode)</li>
+</ol>
+<ul>
+<li>持久节点</li>
+<li>持久顺序节点</li>
+<li>临时节点</li>
+<li>临时顺序节点</li>
+</ul>
+<ol start="2">
+<li>数据节点存储的信息</li>
+</ol>
+<ul>
+<li>数据信息</li>
+<li>节点自身状态信息
+<ul>
+<li>节点创建和修改时间</li>
+<li>节点创建和修改对应的事务ID</li>
+<li>节点数据版本和ACL版本</li>
+<li>子节点个数、子节点的数据版本</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>事务<br>
+事务请求的转发发生在Leader和Follower之间，每个事务都会由Leader分配一个事务ID(ZXID),然后写事务日志，之后发起Proposal投票，投票通过之后进行commit。（ZK事务不可回滚）<br>
+事务类型：</li>
+</ol>
+<ul>
+<li>创建节点</li>
+<li>删除节点</li>
+<li>修改节点数据</li>
+<li>Session创建</li>
+<li>Session失效<br>
+事务ID的组成：</li>
+<li>前32位，时间戳</li>
+<li>后32，计数器</li>
+</ul>
+<h3 id="会话session">会话（Session）</h3>
+<p>存在于客户端和服务端之间，一旦连接创建，就会创建一个Session，本质上就是一个TCP的长连接的标识。</p>
+<p><strong>Session创建</strong></p>
+<ul>
+<li>Client连接ZK Server，创建TCP长连接，并创建Session事务请求。</li>
+<li>Client和Server都会保留一份Session内容，Client保存Session主要是为了保证当当前连接的Server节点不可用时，迁移到另外一个节点。</li>
+</ul>
+<p><strong>Session结构</strong></p>
+<ul>
+<li>SessionID</li>
+<li>Timeout</li>
+<li>TickTime,下次超时时间点</li>
+<li>isClosing</li>
+</ul>
+<p><strong>Session会话保持</strong><br>
+Client在创建Session时，会指定Session的超时时间t。那么如何保证一个Session的有效性？</p>
+<ul>
+<li>Client如果t/3时间未收到Server端消息，则主动发送心跳。</li>
+<li>Client如果2t/3时间未收到Server端消息，则尝试连接其他事务ID最新的那个Server</li>
+<li>Server端经过t时间未收到Client端消息，则判断Session失效。</li>
+</ul>
+<p><strong>Session管理</strong></p>
+<ol>
+<li>Session的清理<br>
+ZK服务器中采用定时且分桶清理会话的策略。主要按照一定时间频率清理，按时间分桶。</li>
+<li>Session的激活<br>
+Client定期发送心跳信息，更新Session所在的分桶。</li>
+</ol>
+<p><strong>Session作用</strong></p>
+<ul>
+<li>决定了临时节点的生命周期</li>
+<li>关系到Watcher通知机制</li>
+<li>决定Client请求执行顺序</li>
+</ul>
+<h3 id="zookeeper中读写锁实现">Zookeeper中读写锁实现</h3>
+<ol>
+<li>
+<p><strong>同一个目录下</strong>，创建「<strong>临时顺序节点</strong>」，<strong>前缀不同</strong>，<code>共享自增序号</code></p>
+<ul>
+<li>
+<p>创建 <code>/zookeeperLock/sharedLock/ip-type-id</code> 的「<strong>临时顺序节点</strong>」，来代表<code>读写锁</code>。</p>
+</li>
+<li>
+<p>其中type有 2 种枚举值，<code>R</code>：读锁（共享）、<code>W</code>：写锁（互斥）</p>
+</li>
+<li>
+<p>获取「<strong>读锁</strong>」，会在ZooKeeper 上，创建类似节点：<code>/sharedLock/10.0.10.1-R-0000000001</code>。</p>
+</li>
+<li>
+<p>获取「<strong>写锁</strong>」，会在ZooKeeper 上，创建类似节点：<code>/sharedLock/10.0.10.1-W-0000000002</code>。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>ZooKeeper 内部，采用 <code>InterProcessReadWriteLock</code> 实现共享的读写锁，具体过程：</p>
+<ul>
+<li>
+<p><strong>创建</strong>「<strong>临时顺序节点</strong>」：根据需要获取的锁，创建对应的「读」或者「写」对应的「临时顺序节点」</p>
+</li>
+<li>
+<p>获取「<strong>临时顺序节点</strong>」的<strong>全量列表</strong></p>
+</li>
+<li>
+<p>获取「读锁」或者「写锁」，业务逻辑判断</p>
+<p><strong>读锁</strong>：所有<code>前驱节点</code>中，没有「<strong>W 类型</strong>」节点存在，则，获取 <strong>R 读锁成功</strong>；</p>
+<p><strong>写锁</strong>：所有<code>前驱节点</code>，<code>都不存在</code>，则，获取 <strong>W 写锁成功</strong>；即，当前节点的「序号最小」，则，获取 W 写锁成功；</p>
+</li>
+<li>
+<p>获取「<strong>读锁</strong>」或者「<strong>写锁</strong>」<strong>失败</strong>，则，<strong>监听</strong>「当前路径」的「<strong>子节点列表变更</strong>」，进入<strong>等待锁状态</strong>，Note：为了避免「羊群效应」，可以只监听「前驱节点」。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="网络">网络</h2>
+<h3 id="osi模型">OSI模型</h3>
+<p>七层模型介绍</p>
+<ul>
+<li>物理层：<br>
+物理层负责最后将信息编码成电流脉冲或其它信号用于网上传输，如RJ45等将数据转化成0和1；</li>
+<li>数据链路层:<br>
+数据链路层通过物理网络链路供数据传输。不同的数据链路层定义了不同的网络和协议特征，其中包括物理编址、网络拓扑结构、错误校验、数据帧序列以及流控，可以简单的理解为：规定了0和1的分包形式，确定了网络数据包的形式；</li>
+<li>网络层<br>
+网络层负责在源和终点之间建立连接，可理解为，此处需要确定计算机的位置，怎么确定？IPv4，IPv6！</li>
+<li>传输层<br>
+传输层向高层提供可靠的端到端的网络数据流服务，可以理解为：每一个应用程序都会在网卡注册一个端口号，该层就是端口与端口的通信！常用的（TCP／IP）协议；</li>
+<li>会话层<br>
+建立、管理和终止表示层与实体之间的通信会话，建立一个连接（自动的手机信息、自动的网络寻址）;</li>
+<li>表示层:<br>
+提供多种功能用于应用层数据编码和转化，以确保以一个系统应用层发送的信息 可以被另一个系统应用层识别，可以理解为：解决不同系统之间的通信，例如：Linux下的QQ和Windows下的QQ可以通信；`</li>
+<li>应用层:<br>
+OSI 的应用层协议包括文件的传输、访问及管理协议(FTAM) ,以及文件虚拟终端协议(VIP)和公用管理系统信息(CMIP)等，规定数据的传输协议；</li>
+</ul>
+<p><strong>常用协议分层：</strong></p>
+<ul>
+<li>应用层：TFTP，HTTP，SNMP，FTP，SMTP，DNS，Telnet 等等</li>
+<li>传输层：TCP，UDP</li>
+<li>网络层：IP，ICMP，OSPF，EIGRP，IGMP</li>
+<li>数据链路层：SLIP，CSLIP，PPP，MTU</li>
+</ul>
+<h3 id="tcp">TCP</h3>
+<p>三次握手<br>
+<img src="https://yinyayun.github.io//post-images/1567667046517.png" alt="三次握手"></p>
+<ul>
+<li>客户端发送SYN=1，seq=n，至服务器，客户端进入SYN_SEND</li>
+<li>服务端收到SYN包，知道是建立连接的请求，回复SYN=1,ACK=1(确认),ack=n+1(理论上要求客户端下一个序号为n+1，也可看作是对客户端seq=n报文的确认),seq=m(当前报文序号)。服务端进入SYN_RECV</li>
+<li>客户端收到SYN+ACK包，再次向服务端发送确认报文，ACK=1 ack=m+1。客户端和服务端同时进入ESTABLISH</li>
+</ul>
+<p>四次挥手<br>
+<img src="https://yinyayun.github.io//post-images/1567667067811.png" alt="四次挥手"></p>
+<ul>
+<li>客户端向服务端发送FIN报文，seq=m，客户端端进入FIN_WAIT1状态</li>
+<li>服务端收到FIN报文，确认ack=m+1,服务端进入CLOSE_WAIT状态</li>
+<li>Server发送一个FIN，用来关闭Server到Client的数据传送，Server进入LAST_ACK状态。</li>
+<li>Client收到FIN后，Client进入TIME_WAIT状态，接着发送一个ACK给Server，确认序号为收到序号+1，Server进入CLOSED状态</li>
+</ul>
+<p>说明<br>
+为什么是三次？网络通信本来就没有绝对可靠，而三次就是保证可靠需要的最少次数。<br>
+为什么四次挥手？客户端和服务都需要告诉对方我不再向你发送数据了。</p>
+<h2 id="rpc-vs-http">RPC VS HTTP</h2>
+<ul>
+<li>RPC是面向动作的（方法调用），REST是面向资源（URL）</li>
+<li>HTTP相比于TCP，多了一层协议，性能也有影响</li>
+<li>HTTP相比于RPC来说，跨语言</li>
+</ul>
+<h2 id="数据结构与算法">数据结构与算法</h2>
+<h3 id="排序">排序</h3>
+<h4 id="堆排序">堆排序</h4>
+<p>构建最大最小堆，此时根节点肯定是最大最小元素，逐个下沉，让最最大节点交换到叶子上去。</p>
+<ul>
+<li>堆为二叉树，所以父子节点位置关系为childIndex=2n+1</li>
+<li>构建大堆，即从叶子树开始向上，让最大/最小元素上浮，从而保证每颗子树中的父节点为最大最小节点</li>
+<li>下沉，遍历n次，将根节点元素交换至尾部，因为根节点为最大/最小元素，所以尾部是有序，但是尾部之上的数不再是最大最小堆，所以还需要对其构建最大最小堆</li>
+</ul>
+<pre><code class="language-java">public void heapSort() {
+    int[] array = { 3, 8, 1, 4, 5, 7, 6, 2, 9, 15 };
+    System.out.println(Arrays.toString(array));
+    // 初始化
+    System.out.println(&quot;初始化...&quot;);
+    for (int i = array.length / 2; i &gt;= 0; i--) {
+        down(array, i, array.length);
+    }
+    System.out.println(&quot;开始调整...&quot;);
+    for (int i = array.length - 1; i &gt; 0; i--) {
+        swap(array, 0, i);
+        down(array, 0, i);
+    }
+    System.out.println(Arrays.toString(array));
+}
+
+public void down(int[] array, int pos, int legth) {
+    int childIndex = 2 * pos + 1;
+    while (childIndex &lt; legth) {
+        if (childIndex + 1 &lt; legth &amp;&amp; array[childIndex] &lt; array[childIndex + 1]) {
+            childIndex++;
+        }
+        if (array[pos] &lt; array[childIndex]) {
+            swap(array, pos, childIndex);
+            pos = childIndex;
+            childIndex = 2 * pos + 1;
+        } else {
+            break;
+        }
+    }
+}
+</code></pre>
+<h4 id="快排">快排</h4>
+<pre><code class="language-java">public void sort(int[] array) {
+    quickSort(array, 0, array.length - 1);
+}
+
+public void quickSort(int[] array, int left, int right) {
+    if (left &gt;= right) {
+        return;
+    }
+    int l = left, r = right;
+    int base = array[l];//此处为字母l，而非数字1
+    while (l != r) {
+        // 从后向前，找到小于基准的位置
+        while (l &lt; r &amp;&amp; array[r] &lt; base) {
+            r--;
+        }
+        // 从前向后，找到大于基准的位置
+        while (l &lt; r &amp;&amp; array[l] &gt; base) {
+            l++;
+        }
+        // 对于找到的两个位置进行交换
+        if (l &lt; r)
+            swap(array, l, r);
+    }
+    // 分区间进行同样操作
+    quickSort(array, left, l - 1);
+    quickSort(array, r + 1, right);
+}
+</code></pre>
+<h4 id="冒泡排序">冒泡排序</h4>
+<pre><code class="language-java">//两两比较，交换位置，类似于气泡的上浮
+public class BubblingSort&lt;T&gt; extends Sort&lt;T&gt; {
+	public BubblingSort(Comparator&lt;T&gt; c) {
+		super(c);
+	}
+
+	@Override
+	public void sort1(T[] array) {
+		for (int i = 0; i &lt; array.length; i++) {
+			for (int j = 1; j &lt; array.length; j++) {
+				if (compare(array[j], array[j - 1]) &gt; 0) {
+					swap(array, j, j - 1);
+				}
+			}
+		}
+	}
+    //优化
+    public void sort2(T[] array) {
+		for (int i = array.length; i &gt; 0; i--) {
+			for (int j = 1; j &lt; i; j++) {
+				if (compare(array[j], array[j - 1]) &gt; 0) {
+					swap(array, j, j - 1);
+				}
+			}
+		}
+	}
+}
+</code></pre>
+<h4 id="插入排序">插入排序</h4>
+<p>核心思想:保证区间内有序</p>
+<pre><code class="language-java">public class InsertSort&lt;T&gt; extends Sort&lt;T&gt; {
+
+	public InsertSort(Comparator&lt;T&gt; c) {
+		super(c);
+	}
+
+	/**
+	 * 基准位置从1开始，向后移动;&lt;br&gt;
+	 * 由基准位置与他前面的`集合对比更换位置
+	 */
+	@Override
+	public void sort(T[] array) {
+		for (int i = 1; i &lt; array.length; i++) {
+			T base = array[i];
+			int j = i - 1;
+			for (; j &gt;= 0 &amp;&amp; c.compare(base, array[j]) &gt; 0; j--) {
+				array[j + 1] = array[j];
+			}
+			array[j + 1] = base;
+		}
+	}
+
+}
+</code></pre>
+<h3 id="平衡二叉搜索树avl">平衡二叉搜索树（AVL）</h3>
+<ul>
+<li>任意一个节点，比它的左节点大，比它的右节点小；</li>
+<li>任意结点的孩子节点之间高度差距最大为1；</li>
+</ul>
+<p>左旋：<br>
+<img src="https://yinyayun.github.io//post-images/1567667143502.png" alt="左旋"></p>
+<pre><code class="language-java">public AVLNode&lt;T&gt; leftRotation(AVLNode&lt;T&gt; unbalance) {
+    AVLNode&lt;T&gt; node = unbalance.right;
+    unbalance.right = node.left;
+    node.left = unbalance;
+    unbalance.height = Math.max(height(unbalance.left), height(unbalance.right)) + 1;
+    node.height = Math.max(height(node.left), height(node.right)) + 1;
+    return node;
+}
+</code></pre>
+<p>右旋：</p>
+<pre><code class="language-java">public AVLNode&lt;T&gt; rightRotation(AVLNode&lt;T&gt; unbalance) {
+    AVLNode&lt;T&gt; node = unbalance.left;
+    unbalance.left = node.right;
+    node.left = unbalance;
+    unbalance.height = Math.max(height(unbalance.left), height(unbalance.right)) + 1;
+    node.height = Math.max(height(node.left), height(node.right)) + 1;
+    return node;
+}
+</code></pre>
+<p>左右旋转：<br>
+<img src="https://yinyayun.github.io//post-images/1567667171791.png" alt="左右旋转"></p>
+<pre><code class="language-java">public Node lrRotation(Node p) {
+    leftR(p.left);
+    return rightR(p);
+}
+</code></pre>
+<p>插入：</p>
+<pre><code class="language-java">public AVLNode&lt;T&gt; insertNode(AVLNode&lt;T&gt; node, int key, T t) {
+    if (node == null) {
+        return new AVLNode&lt;T&gt;(key, t);
+    }
+    if (key &lt; node.key) {
+        // 小于当前节点，向左插入
+        node.left = insertNode(node.left, key, t);
+        rebalance(node, key);
+    } else if (key &gt; node.key) {
+        node.right = insertNode(node.right, key, t);
+        rebalance(node, key);
+    } else {
+        node.data = t;
+    }
+    // 已经存在，实际上不需要进行高度+1
+    node.height = Math.max(height(node.left), height(node.right)) + 1;
+    return node;
+}
+
+</code></pre>
+<p>查询：</p>
+<pre><code class="language-java">public AVLNode&lt;T&gt; search(AVLNode&lt;T&gt; node, int key) {
+    if (node == null)
+        return null;
+    if (key &lt; node.key) {
+        return search(node.left, key);
+    } else if (key &gt; node.key) {
+        return search(node.right, key);
+    } else {
+        return node;
+    }
+}
+</code></pre>
+<h3 id="红黑树">红黑树</h3>
+<p>一种自平衡二叉查找树，除了符合二叉查找树的特性，还具有如下特性：</p>
+<ul>
+<li>特性1，节点是红色或黑色，</li>
+<li>特性2，根节点是黑色</li>
+<li>特性3，每个叶子节点都是黑色的空节点（NIL节点）。</li>
+<li>特性4，每个红色节点的两个子节点都是黑色。(从每个叶子到根的所有路径上不能有两个连续的红色节点)</li>
+<li>特性5，从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点（该性质红黑树最主要的条件，后序的插入、删除操作都是为了遵守这个规定，红黑树并不是标准平衡二叉树，该性质作为一种平衡方法，使性能得到了提升。）</li>
+</ul>
+<p>当插入或者删除红黑树的节点时，红黑树的规则可能被打破，则意味着需要对红黑树做调整，红黑树的调整有两种方式：</p>
+<ul>
+<li>变色：尝试把红色节点变为黑色，或者把黑色节点变为红色</li>
+<li>旋转：左旋、右旋</li>
+</ul>
+<h4 id="插入">插入</h4>
+<p>红黑树任何一个节点数到其每个叶子包含的黑色节点数量是固定的，如果插入的是黑色节点，必然违背该特性，另外红黑树不能有连续的两个红色节点，当往红色节点下插入红色节点会违背该特性。</p>
+<p>当我们向红黑树中插入节点时，可能遇到几种场景：</p>
+<ul>
+<li>插入红色节点，父亲和叔叔都是红色节点</li>
+<li>插入红色左节点，父亲是红色，叔叔是黑色</li>
+<li>插入红色右节点，父亲是红色，叔叔是黑色</li>
+</ul>
+<p>对于第一种场景，意味着违背了红黑色不能有连续两个红色节点的特性，那么则需要将父节点、叔叔节点染色成黑色，祖父节点染成红色（因为父亲和叔叔原先是红色，所以祖父不可能是红色），那么可以满足特性4和特性5，但是如果祖父节点的父节点是红色，我们依然要循环向上检测重新染色，直到符合条件。</p>
+<p><img src="https://yinyayun.github.io//post-images/1567667211821.png" alt="变色"></p>
+<p>场景一种的调整，单纯都是染色，只要让红黑树满足特性4特性5即可，相对来说比较容易，如上图插入红色节点D。</p>
+<p>对于场景二，就不是那么简单了，因为父节点为红色、叔叔节点是黑色，那么插入红色节点，必然违背特性4，如果直接将父节点、或者将父节点和叔叔节点都改成红色节点都会导致违背特性5，所以这种情况下无法通过变色的方式进行调整。此时需要先需要进行右旋，之后进行染色，如下图，插入D，以B节点为中心选择，之后将B变为黑色，A变成红色，这样红黑树再次满足以上特性。</p>
+<p><img src="https://yinyayun.github.io//post-images/1567667227097.png" alt="旋转变色"></p>
+<p>对于场景三，如果插入的节点是右节点的话，那么则需要先进行左旋，使其符合场景二，然后再按照场景二的步骤进行调整。</p>
+<p><img src="https://yinyayun.github.io//post-images/1567667264209.png" alt="两次旋转变色"></p>
+<p>下面给出TreeMap中插入节点后，红黑色调整的代码：</p>
+<pre><code class="language-java">private void fixAfterInsertion(Entry&lt;K,V&gt; x) {
+    x.color = RED;
+
+    while (x != null &amp;&amp; x != root &amp;&amp; x.parent.color == RED) {
+        if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
+            Entry&lt;K,V&gt; y = rightOf(parentOf(parentOf(x)));
+            if (colorOf(y) == RED) {
+                setColor(parentOf(x), BLACK);
+                setColor(y, BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                x = parentOf(parentOf(x));
+            } else {
+                if (x == rightOf(parentOf(x))) {
+                    x = parentOf(x);
+                    rotateLeft(x);
+                }
+                setColor(parentOf(x), BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                rotateRight(parentOf(parentOf(x)));
+            }
+        } else {
+            Entry&lt;K,V&gt; y = leftOf(parentOf(parentOf(x)));
+            if (colorOf(y) == RED) {
+                setColor(parentOf(x), BLACK);
+                setColor(y, BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                x = parentOf(parentOf(x));
+            } else {
+                if (x == leftOf(parentOf(x))) {
+                    x = parentOf(x);
+                    rotateRight(x);
+                }
+                setColor(parentOf(x), BLACK);
+                setColor(parentOf(parentOf(x)), RED);
+                rotateLeft(parentOf(parentOf(x)));
+            }
+        }
+    }
+    root.color = BLACK;
+}
+</code></pre>
+<h3 id="乘积最大子序列">乘积最大子序列</h3>
+<pre><code class="language-java">/**
+* 给定一个整型的数组，求解乘积最大的子序列。
+* 如{3,2,-1,4,1}，乘积最大子序列应该为{3,2}
+*/
+public int[] max_product_seq(int[] array) {
+    int from = -1, end = -1;
+    int max = Integer.MIN_VALUE;
+    for (int i = 0; i &lt; array.length; i++) {
+        int tmp = array[i];
+        for (int j = i + 1; j &lt; array.length; j++) {
+            tmp = tmp * array[j];
+            if (tmp &gt; max) {
+                max = tmp;
+                from = i;
+                end = j;
+            }
+        }
+    }
+    return new int[] { from, end };
+}
+</code></pre>
+<h3 id="动态规划">动态规划</h3>
+<p><strong>将一个问题拆成几个子问题，分别求解这些子问题，即可推断出大问题的解</strong>。</p>
+<h4 id="凑整问题">凑整问题</h4>
+<p>给定一个有限的不重复整数短序列如{1，5，11}，求出用这个序列凑出15，最小需要的次数。</p>
+<p>加入定义C(15)为凑足15需要的次数，那么会有如下几种方式：</p>
+<ul>
+<li>C(15)=C(14)+1，即选择用1开始凑，剩余的问题就是凑14</li>
+<li>C(15)=C(10）+1，即选择用5开始凑，剩余的问题就是凑10</li>
+<li>C(15)=C(4)+1，即选择用11开始凑，剩余的问题就是凑4</li>
+</ul>
+<p>所以我们发现如果要求C(15)最小，即求C(4)、C(10)或C(14)最小，一步步的将问题化小。</p>
+<p>下面给出两种解法：</p>
+<pre><code class="language-java">/**
+ * 给定一串数字如：1,5,11，使其凑成15，最少需要的次数。有如下凑法：&lt;br&gt;
+ * (1) 11,1,1,1,1 &lt;br&gt;
+ * (2) 5,5,5 &lt;br&gt;
+ * (3) 5,5,1,1,1,1,1 &lt;br&gt;
+ * (4) .... &lt;br&gt;
+ * 显然最优的是5、5、5这种方案
+ */
+public int min_combin_count(int[] elements, int target) {
+    int[] combins = new int[target + 1];
+    for (int target_value = 1; target_value &lt;= target; target_value++) {
+        int min_count = Integer.MAX_VALUE;
+        // 例如target_value=15，则查看凑齐target=12、target=10，target=4三种情况需要的最少次数
+        for (int element : elements) {
+            if (target_value &lt; element)
+                break;
+            if (combins[target_value - element] &lt; min_count) {
+                min_count = combins[target_value - element];
+            }
+        }
+        if (min_count == Integer.MAX_VALUE)
+            combins[target_value] = Integer.MAX_VALUE;
+        else
+            combins[target_value] = min_count + 1;
+    }
+    return combins[target];
+}
+//优化后的实现，避免无谓的计算和空间浪费
+public int min_combin_count_recursion(int[] elements, int target) {
+    if (target == 0)
+        return 0;
+    int min_count = Integer.MAX_VALUE;
+    // 例如target_value=15，则查看凑齐target=12、target=10，target=4三种情况需要的最少次数
+    for (int element : elements) {
+        if (target &lt; element)
+            break;
+        int count = min_combin_count_recursion(elements, target - element);
+        if (count &lt; min_count) {
+            min_count = count;
+        }
+    }
+    if (min_count == Integer.MAX_VALUE)
+        return Integer.MAX_VALUE;
+    else
+        return min_count + 1;
+}
+</code></pre>
+<p>第二种是一种最暴力的方案，现将凑足1，2、3、4...14，所有的求出来，最后再算凑足15。</p>
+<p>第一种采用递归的方法，我们的目标是求凑足15，那就把问题分解求凑足14、10、4，一步步递归下去</p>
+<h4 id="最长上升子序列">最长上升子序列</h4>
+<p>给定长度为n的序列S，从S中抽取出一个子序列，这个子序列需要单调递增，问最长的上升子序列（LIS）的长度。例如S= 1,5,3,4,6,9,7,8的LIS为1,3,4,6,7,8，长度为6。</p>
+<pre><code class="language-java">public int[] max_rise(int[] array) {
+    int[] upper = new int[array.length];
+    upper[0] = 1;
+    for (int i = 1; i &lt; array.length; i++) {
+        if (array[i] &gt; array[i - 1]) {
+            upper[i] = upper[i - 1] + 1;
+        } else {
+            upper[i] = 1;
+        }
+    }
+    return upper;
+}
+</code></pre>
+<h4 id="编辑距离">编辑距离</h4>
+<p>在实现编辑举例算法之后，我们首先要明白几件事。</p>
+<p>首先就是编辑距离的定义，给定字符串S1和目标字符串S2,允许插入字符、删除字符、替换字符三种编辑操作，S1最少需要做多少次编辑可以变成S2。那么这最少的编辑次数就是编辑距离。</p>
+<p>对于以下两个字符串：S1=&quot;make&quot;、S2=&quot;milke&quot;</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th>m</th>
+<th>a</th>
+<th>k</th>
+<th>e</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>m</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>i</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>l</td>
+<td>3</td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>k</td>
+<td>4</td>
+<td>3</td>
+<td>3</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>e</td>
+<td>5</td>
+<td>4</td>
+<td>4</td>
+<td>3</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>从上面的混淆矩阵中（可以用一个二维数组表示distance[][]，其中distance[1][3]表示<code>mi</code>和<code>mak</code>的编辑距离），我们发现：</p>
+<ul>
+<li>如果S1[i]==S2[j]，那么它的编辑距离一定等于S1[0，i-1]和S2[0，j-1]这两个字符的编辑距离，如<code>mak</code>和<code>milk</code>的编辑距离一定是等于<code>ma</code>和<code>mil</code>的编辑距离，即distance[i][j]=distance[i-1][j-1]</li>
+<li>如果S1[i]!=S2[j]，那么只需要对S1[0，i-1]或S2[0，j-1]做插入、删除、或者替换即可，所以distance[i][j]=Min（distance[i-1][j-1]，distance[i-1][j]，distance[i][j-1]）+1，如<code>ma</code>和<code>mi</code>，只要做一次替换即可，再如<code>ma</code>和<code>m</code>，要不做一次删除要不做一次插入</li>
+</ul>
+<p>代码实现：</p>
+<pre><code class="language-java">public int distance(String txt1, String txt2) {
+    int len1 = txt1.length();
+    int len2 = txt2.length();
+    int[][] distances = new int[len1 + 1][len2 + 1];
+    for (int i = 0; i &lt; len2 + 1; i++) {
+        distances[0][i] = i;
+    }
+    for (int i = 1; i &lt; len1 + 1; i++) {
+        distances[i][0] = i;
+        for (int j = 1; j &lt; len2 + 1; j++) {
+            //字符相等，等于前面子串的编辑距离
+            if (txt1.charAt(i - 1) == txt2.charAt(j - 1)) {
+                distances[i][j] = distances[i - 1][j - 1];
+            } else {
+                distances[i][j] = Math.min(distances[i - 1][j - 1],
+                                           Math.min(distances[i - 1][j], distances[i][j - 1])) + 1;
+            }
+        }
+    }
+    return distances[len1][len2];
+}
+</code></pre>
+<h3 id="链表反转">链表反转</h3>
+<h3 id="跳跃表">跳跃表</h3>
+<pre><code class="language-java">public class ListNode {
+	ListNode[] forwords;
+	int value;
+
+	public ListNode(int maxLevel, int value) {
+		this.forwords = new ListNode[maxLevel];
+		this.value = value;
+	}
+}
+
+public class SkipList {
+	private ListNode HEAD;
+	// 确保TAIL节点的值大于跳跃表中任何一个合法值
+	private ListNode TAIL;
+	private int maxLevel;
+	private int currentLevel = 1;
+
+	public SkipList(int maxLevel) {
+		this(maxLevel, new int[0]);
+	}
+
+	public SkipList(int maxLevel, int[] sortedKeys) {
+		this.maxLevel = maxLevel;
+		this.HEAD = new ListNode(maxLevel, Integer.MIN_VALUE);
+		this.TAIL = new ListNode(maxLevel, Integer.MAX_VALUE);
+		for (int i = 0; i &lt; maxLevel; i++) {
+			this.HEAD.forwords[i] = TAIL;
+		}
+		this.insert(sortedKeys);
+	}
+
+	public ListNode search(int key) {
+		ListNode x = HEAD;
+		// 层级从大到小找大于key值的前一个节点，理论上下一个节点应该是&gt;=key
+		for (int level = currentLevel - 1; level &gt;= 0; level--) {
+			while (x.forwords[level].value &lt; key) {
+				x = x.forwords[level];
+			}
+		}
+		return key == x.forwords[0].value ? x.forwords[0] : null;
+	}
+
+	public void insert(int[] sortedKeys) {
+		for (int key : sortedKeys) {
+			insert(key);
+		}
+	}
+
+	public ListNode insert(int key) {
+		// 记录指向插入位置右边节点的所有指针
+		ListNode[] preNodes = new ListNode[maxLevel];
+		ListNode x = HEAD;
+		// 层级从大到小找大于key值的前一个节点，理论上下一个节点应该是&gt;=key
+		for (int level = currentLevel - 1; level &gt;= 0; level--) {
+			while (x.forwords[level].value &lt; key) {
+				x = x.forwords[level];
+			}
+			preNodes[level] = x;
+		}
+		// 如果该key已经存在，则不需要插入,直接返回
+		if (x.forwords[0].value == key) {
+			return x.forwords[0];
+		}
+		int nodeLevel = randomLevel();
+		// 如果新插入节点的level高于当前list的level
+		if (nodeLevel &gt; currentLevel) {
+			for (int i = currentLevel; i &lt; nodeLevel; i++) {
+				preNodes[i] = HEAD;
+			}
+			currentLevel = nodeLevel;
+		}
+		ListNode newNode = new ListNode(nodeLevel, key);
+		for (int i = 0; i &lt; nodeLevel; i++) {
+			try {
+				newNode.forwords[i] = preNodes[i].forwords[i];
+				preNodes[i].forwords[i] = newNode;
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		return newNode;
+	}
+
+	/**
+	 * 需要更新level
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public ListNode delete(int key) {
+		// 记录指向插入位置右边节点的所有指针
+		ListNode[] preNodes = new ListNode[maxLevel];
+		ListNode x = HEAD;
+		// 层级从大到小找大于key值的前一个节点，理论上下一个节点应该是&gt;=key
+		for (int level = currentLevel - 1; level &gt;= 0; level--) {
+			while (x.forwords[level].value &lt; key) {
+				x = x.forwords[level];
+			}
+			preNodes[level] = x;
+		}
+		if (x.forwords[0].value != key) {
+			return null;
+		}
+		// 需要被删除的节点的level数
+		x = x.forwords[0];
+		int delLevel = x.forwords.length;
+		for (int i = 0; i &lt; delLevel; i++) {
+			preNodes[i].forwords[i] = x.forwords[i];
+		}
+		// 更新level
+		while (currentLevel &gt; 1 &amp;&amp; HEAD.forwords[currentLevel - 1] == TAIL)
+			currentLevel--;
+		return x;
+	}
+
+	private int randomLevel() {
+		// 尽可能让一半的节点有多个level
+		float p = 0.5f;
+		int level = 1;
+		Random random = new Random();
+		while (random.nextInt(10) / 10f &lt; p &amp;&amp; level &lt; maxLevel) {
+			level++;
+		}
+		return level;
+	}
+}
+
+</code></pre>
+<h3 id="一致性hash">一致性Hash</h3>
+<pre><code class="language-java">public class ConsistentHash {
+	private List&lt;Integer&gt; hashRing;
+	private Map&lt;Integer, String&gt; keyHashMap = new HashMap&lt;Integer, String&gt;();
+
+	/**
+	 * @param nodes
+	 *            节点列表
+	 * @param replicatNodeSize
+	 *            每个节点的副本数
+	 */
+	public ConsistentHash(List&lt;String&gt; nodes, int replicatNodeSize) {
+		hashRing = new ArrayList&lt;Integer&gt;(nodes.size() * replicatNodeSize + 1);
+		for (String node : nodes) {
+			for (int i = 0; i &lt; replicatNodeSize; i++) {
+				String key = node + &quot;_&quot; + i;
+				int hash = hash(key);
+				keyHashMap.put(hash, key);
+				hashRing.add(hash);
+			}
+		}
+		Collections.sort(hashRing);
+	}
+
+	public String get(String key) {
+		int hash = hash(key);
+		for (int h : hashRing) {
+			if (hash &lt; h) {
+				return keyHashMap.get(h);
+			}
+		}
+		return keyHashMap.get(hashRing.get(0));
+	}
+
+	private int hash(String key) {
+		return key.hashCode();
+	}
+}
+</code></pre>
+<h3 id="虚拟桶">虚拟桶</h3>
+<p>哈希取模法实现简单，不利于扩展，缺乏灵活性，比如增加一台机器，那么之前分配好的所有数据需要重新hash。</p>
+<p>一致性Hash，当增加或减少机器，数据的影响是局部的。</p>
+<p>物理机和hash函数严重耦合，虚拟桶是取模和一致性哈希二者的折中办法。</p>
+<ul>
+<li>采用固定节点数量，来避免取模的不灵活性。</li>
+<li>采用可配置映射节点，来避免一致性哈希的部分影响。<br>
+<img src="https://yinyayun.github.io//post-images/1567667335866.png" alt="hash slot"></li>
+</ul>
+<h3 id="ip访问次数限制">IP访问次数限制</h3>
+<p>假设你是一个网站的运维管理人员，现在发现有一堆人开了爬虫在以非常高的频率爬取网站的数据，导致网站负载太高，影响正常用户的使用。于是你决定设计一个防爬系统，实现：</p>
+<ul>
+<li>1分钟内，访问超过500次的，加入黑名单</li>
+<li>1小时内，访问超过5000次的，加入黑名单</li>
+<li>黑名单用户连续1小时不违反条件1、2的，解除黑名单。<br>
+（注：被黑名单相当于打上不良行为的标签，网站还是可以访问的。）</li>
+</ul>
+<p>思路：</p>
+<p>每个IP维护一个时间链，以及在时间链上的访问量，一个时间链上维护连续时间片，将每个IP的时间链维护在ConcurrentHashMap中，后台定时对每个IP的时间链进行扫描，清除掉一个小时外的时间片，同时对访问信息修正，最终修正黑名单信息。<br>
+<img src="https://yinyayun.github.io//post-images/1567667372371.png" alt="时间片"></p>
+<pre><code class="language-java">import java.util.concurrent.atomic.AtomicLong;
+
+/**
+ * 维护IP在一个时间链上的访问次数
+ * 
+ * @author yinyayun
+ *
+ */
+public class IPEntryList {
+	/**
+	 * 单位时间片，段时间片
+	 */
+	private final long unit_time, segment_time;
+	/**
+	 * 单位时间片/段时间片允许最大访问上线
+	 */
+	private final long unit_threshold, segment_threshold;
+	/**
+	 * 段时间内的访问次数
+	 */
+	private AtomicLong segment_total_count = new AtomicLong(0);
+	/**
+	 * 段时间内，超出单位时间片上限的次数
+	 */
+	private AtomicLong exceed_unit_threshold_count = new AtomicLong(0);
+	/**
+	 * 时间链上的头节点,不记录具体时间片访问信息
+	 */
+	public Node HEAD = new Node(-1);
+	/**
+	 * 访问时间链上的尾部节点
+	 */
+	public Node TAIL = new Node(-1);
+	/**
+	 * 是否标识为黑名单
+	 */
+	private boolean blacklist = false;
+
+	public IPEntryList(long unit_time, long unit_threshold, long segment_time, long segment_threshold,
+			long start_time) {
+		this.unit_time = unit_time;
+		this.segment_time = segment_time;
+		this.unit_threshold = unit_threshold;
+		this.segment_threshold = segment_threshold;
+		this.HEAD.next = this.TAIL;
+		this.TAIL.pre = this.HEAD;
+		this.HEAD.next = TAIL;
+	}
+
+	/**
+	 * ip计数
+	 */
+	public void incr() {
+		long time = System.currentTimeMillis();
+		// 距离最近时间间隔
+		long unit_gap = time - HEAD.next.last_time;
+		// 超出单位时间片添加新节点
+		Node node = unit_gap &gt; unit_time ? appendNode(time) : HEAD.next;
+		// 时间段内访问计数
+		long segment_count = segment_total_count.incrementAndGet();
+		long current_unit_count = node.unit_count.incrementAndGet();
+		// 单位时间内超出阈值，对段时间内操作单位阈值计数，同时加入黑名单
+		if (!node.exceed &amp;&amp; current_unit_count &gt; unit_threshold) {
+			exceed_unit_threshold_count.incrementAndGet();
+			blacklist = true;
+			node.exceed = true;
+		} // 段时间内超出阈值，加入黑名单
+		else if (segment_count &gt; segment_threshold &amp;&amp; time - TAIL.last_time &lt; segment_time) {
+			blacklist = true;
+		}
+	}
+
+	private synchronized Node appendNode(long time) {
+		Node node = new Node(time);
+		HEAD.next.pre = node;
+		node.next = HEAD.next;
+		HEAD.next = node;
+		node.pre = HEAD;
+		return node;
+	}
+
+	public void deletNode(Node node) {
+		node.pre.next = node.next;
+		node.next.pre = node.pre;
+		node = null;
+	}
+
+	public long decreaseSegmentCount(long c) {
+		return segment_total_count.updateAndGet(v -&gt; v - c);
+	}
+
+	public long decreaseExceedUnitThresholdCount() {
+		return exceed_unit_threshold_count.decrementAndGet();
+	}
+
+	public long segmentTotalCount() {
+		return segment_total_count.get();
+	}
+
+	public long exceedUnitThresholdCount() {
+		return exceed_unit_threshold_count.get();
+	}
+
+	public boolean isBlacklist() {
+		return blacklist;
+	}
+
+	public void setBlacklist(boolean blacklist) {
+		this.blacklist = blacklist;
+	}
+
+	public class Node {
+		// 下一个节点
+		public Node next;
+		// 前一个节点
+		public Node pre;
+		// 起始时间
+		public long last_time;
+		// 单位时间内的次数统计
+		public AtomicLong unit_count = new AtomicLong(0);
+		public boolean exceed = false;
+
+		public Node(long last_time) {
+			this.last_time = last_time;
+		}
+	}
+}
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * 将每个IP时间链维护在ConcurrentHashMap中，采用定时器，定时对每个IP的时间链进行扫描维护，清除掉超出时间段的时间片
+ * 
+ * @author yinyayun
+ *
+ */
+public class IPEntryMap {
+	private Map&lt;String, IPEntryList&gt; entryMap = new ConcurrentHashMap&lt;String, IPEntryList&gt;();
+	private final long unit_time, segment_time;
+	private final long unit_threshold, segment_threshold;
+
+	public static void main(String[] args) {
+		IPEntryMap map = new IPEntryMap(5, 10, 30, 100, 10000);
+		for (int i = 0; i &lt; 110; i++) {
+			map.add(&quot;192.168.1.1&quot;);
+		}
+	}
+
+	/**
+	 * 
+	 * @param unit_time
+	 *            单位时间片，如一分钟
+	 * @param unit_threshold
+	 *            单位时间内，访问的阈值上限
+	 * @param segment_time
+	 *            段时间，如一小时
+	 */
+	public IPEntryMap(long unit_time, long unit_threshold, long segment_time, long segment_threshold, long period) {
+		assert period &lt; 3600000;// 扫描周期不要超过一个小时
+		this.unit_time = unit_time;
+		this.segment_time = segment_time;
+		this.unit_threshold = unit_threshold;
+		this.segment_threshold = segment_threshold;
+		// 3S扫描一次IP信息，进行状态调整
+		Timer timer = new Timer();
+		timer.schedule(new ScanEntryTimeTask(), period / 2, period / 2);
+	}
+
+	/**
+	 * IP添加并计数
+	 * 
+	 * @param ip
+	 */
+	public void add(String ip) {
+		IPEntryList entryList = entryMap.get(ip);
+		if (entryList == null) {
+			synchronized (IPEntryMap.class) {
+				if (!entryMap.containsKey(ip)) {
+					entryList = new IPEntryList(unit_time, unit_threshold, segment_time, segment_threshold,
+							System.currentTimeMillis());
+					entryMap.put(ip, entryList);
+				}
+			}
+		}
+		entryList.incr();
+	}
+
+	public boolean isBlackList(String ip) {
+		IPEntryList entry = entryMap.get(ip);
+		if (entry == null) {
+			return false;
+		}
+		return entry.isBlacklist();
+	}
+
+	/**
+	 * 对时间链进行定时扫描,将超出时间段的时间片清除
+	 * 
+	 * @author yinyayun
+	 *
+	 */
+	private class ScanEntryTimeTask extends TimerTask {
+
+		@Override
+		public void run() {
+			for (Entry&lt;String, IPEntryList&gt; entry : entryMap.entrySet()) {
+				long time = System.currentTimeMillis();
+				IPEntryList entryList = entry.getValue();
+				IPEntryList.Node node = entryList.TAIL.pre;
+				while (node.last_time != -1) {
+					long gap = time - node.last_time;
+					// 该节点时间片已经在段时间片外，则删除，修正计数
+					if (gap &gt; segment_time) {
+						long node_unit_count = node.unit_count.get();
+						entryList.decreaseSegmentCount(node_unit_count);
+						if (node.exceed)
+							entryList.decreaseExceedUnitThresholdCount();
+						// 删除该节点
+						entryList.deletNode(node);
+						// 节点向前移动
+						node = node.pre;
+					} else {
+						break;
+					}
+				}
+				// 修正黑名单信息
+				long segmentTotalCount = entryList.segmentTotalCount();
+				long exceedUnitThresholdCount = entryList.exceedUnitThresholdCount();
+				if (segmentTotalCount &lt; segment_threshold &amp;&amp; exceedUnitThresholdCount == 0) {
+					entryList.setBlacklist(false);
+				}
+			}
+		}
+	}
+}
+</code></pre>
+<h2 id="分布式技术">分布式技术</h2>
+<h3 id="熔断">熔断</h3>
+<h3 id="降级">降级</h3>
+<h2 id="搜索">搜索</h2>
+<h3 id="简介">简介</h3>
+<p><a href="https://www.jianshu.com/p/0dfcee4637c5">Lucene学习图解</a></p>
+<p><a href="https://blog.csdn.net/njpjsoftdev/article/details/54015485">Lucene简介和索引原理</a></p>
+<h3 id="tfidf-vs-bm25">TFIDF vs BM25</h3>
+<h4 id="公式">公式</h4>
+<pre><code>score(q,d)=sum_{t in q}(tf(t in d)*idf(t)^2 )*t.getBoost() norm(t,d))*coord(q,d)*queryNorm(q)score(q,d)=sumtinq(tf(tind)∗idf(t)2)∗t.getBoost()norm(t,d))∗coord(q,d)∗queryNorm(q)
+</code></pre>
+<h4 id="说明">说明</h4>
+<ul>
+<li>字段规范因子（fieldNorm） 规范化因子包含：索引时文档权重、字段权重，以及对长文档的惩罚 <code>norm(t,d)=d.getBoost()*lengthNorm(f)*f.getBoost()norm(t,d)=d.getBoost()∗lengthNorm(f)∗f.getBoost()</code> 其中长度归一化因子为字段中此项数量的平方根</li>
+<li>查询规范（queryNorm）</li>
+<li>协调因子（coord） coord(q,d)=query中term有几个在文档中出现/query中的term数量 如查询：prodName:led and (&quot;red light&quot; OR &quot;red led&quot;) 那么Term个数为3，如果在prodName字段中全部出现则coord=3/3</li>
+</ul>
+<p><a href="https://my.oschina.net/stanleysun/blog/1617727">TF-IDF和BM25</a></p>
+<h3 id="lucene-文件格式">Lucene 文件格式</h3>
+<p><a href="https://www.shenyanchao.cn/blog/2018/12/04/lucene-index-files/">Lucene索引过程&amp;索引文件格式详解</a></p>
+<h3 id="索引结构">索引结构</h3>
+<h4 id="fst">FST</h4>
+<p><a href="https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/">FST深入剖析</a></p>
+<h4 id="skiplist">SkipList</h4>
+<p><a href="https://yinyayun.github.io/post/P-65A6NeN/">Skip List（跳跃表）</a></p>
+<h4 id="dat">DAT</h4>
+<p><a href="https://turbopeter.github.io/2013/09/02/prefix-match/">前缀树匹配(Double Array Trie)</a></p>
+<h3 id="indexwriter">IndexWriter</h3>
+<p><a href="https://zhuanlan.zhihu.com/p/35795070">Lucene解析 - IndexWriter</a></p>
+<h3 id="solr-cloud相关">Solr Cloud相关</h3>
+<p><a href="https://yinyayun.github.io/post/gx0I80dMe/">Solr Overseer</a></p>
+<p><a href="https://yinyayun.github.io/post/solrcloud/">SolrCloud中的那些东西</a></p>
+<p><a href="https://yinyayun.github.io/post/hQsO7mt3b/">Solr Hard/Soft commits和Transction logs</a></p>
+<p><a href="https://yinyayun.github.io/post/o8rU6E2yr/">Solr中的段合并和文档删除</a></p>
+<h3 id="config">Config</h3>
+<h3 id="range-查询">Range 查询</h3>
+<p><a href="https://www.shenyanchao.cn/blog/2018/12/04/lucene-numberic/">Lucene数字类型处理</a></p>
+<h3 id="其它">其它</h3>
+<p>BytesRefHash</p>
+<p><a href="https://www.jianshu.com/p/69d56f9c0576">Lucene中的部分算法浅析</a></p>
+<h3 id="优化">优化</h3>
+<ul>
+<li>分组收集</li>
+<li>忽略评分</li>
+<li>facet收集</li>
+<li>深度翻页</li>
+<li>DocValue的启用</li>
+<li>commit策略</li>
+<li>段大小</li>
+<li>超时任务的kill</li>
+<li>对象的重复利用</li>
+<li>脑裂</li>
+</ul>
+<h4 id="compoundfile">CompoundFile</h4>
+<h4 id="段合并">段合并</h4>
+<p><a href="https://daming.blog.csdn.net/article/details/51698562">Solr/SolrCloud 莫名出现了CompoundFile</a></p>
+<h3 id="应用">应用</h3>
+<p>位置查询</p>
+<p><a href="https://www.cnblogs.com/LBSer/p/3310455.html">GeoHash核心原理解析</a></p>
+<p><a href="https://tech.meituan.com/2014/09/05/lucene-distance.html">地理空间距离计算优化</a></p>
+<p>父子查询</p>
+<p><a href="https://www.bbsmax.com/A/gVdnRKGpdW/">lucene join解决父子关系索引</a></p>
+<h3 id="es">ES</h3>
+<p><a href="https://es.xiaoleilu.com/010_Intro/35_Tutorial_Aggregations.html">Elasticsearch权威指南（中文版)</a></p>
+<p><a href="https://mp.weixin.qq.com/s/Di1_-H1mKXF5MSVHcPpdYg">集群管理-shard</a></p>
+<p><a href="https://www.jianshu.com/p/79b71c6c352e">es一致性原理剖析</a></p>
+<h3 id="服务中坑">服务中坑</h3>
+<ul>
+<li>GC调优</li>
+<li>连接池
+<ul>
+<li>网络震荡引起的链接全断开</li>
+<li>common pool中的连接的清理策略，清理频率、每次清理的数量</li>
+</ul>
+</li>
+<li>负载均衡策略，当所有服务不可用时，尽量选择一个，而不是放弃</li>
+<li>超时时间设置</li>
+</ul>
+<h2 id="博客推荐">博客推荐</h2>
+<p><a href="http://ningg.top/category/">ningg.top</a></p>
+<p><a href="github.yinyayun.io">yinyayun的博客</a></p>
 
             </div>
             
