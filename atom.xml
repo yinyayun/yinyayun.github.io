@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yinyayun.github.io/</id>
     <title>殷亚云的博客</title>
-    <updated>2019-09-05T07:10:14.422Z</updated>
+    <updated>2019-10-18T09:21:52.265Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yinyayun.github.io/"/>
     <link rel="self" href="https://yinyayun.github.io//atom.xml"/>
@@ -10,6 +10,13 @@
     <logo>https://yinyayun.github.io//images/avatar.png</logo>
     <icon>https://yinyayun.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, 殷亚云的博客</rights>
+    <entry>
+        <title type="html"><![CDATA[厨房秘籍收藏]]></title>
+        <id>https://yinyayun.github.io//post/O7nsKApaR</id>
+        <link href="https://yinyayun.github.io//post/O7nsKApaR">
+        </link>
+        <updated>2019-09-11T01:00:44.000Z</updated>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Lucene60 - Index File Formats]]></title>
         <id>https://yinyayun.github.io//post/jyQBBzq3u</id>
@@ -75,17 +82,6 @@
         <summary type="html"><![CDATA[<p>随着机器学习算法和技术的进步，越来越多的机器学习应用需要多台机器并行性执行。但是，在集群上进行机器学习的基础设施仍然是不够成熟的。虽然确实存在针对特定用例（例如，参数服务器或超参数搜索）和AI之外的高质量分布式系统的良好解决方案（例如，Hadoop或Spark），但是开发算法的从业者通常从头开始构建他们自己的系统基础结构。</p>
 ]]></summary>
         <content type="html"><![CDATA[<p>随着机器学习算法和技术的进步，越来越多的机器学习应用需要多台机器并行性执行。但是，在集群上进行机器学习的基础设施仍然是不够成熟的。虽然确实存在针对特定用例（例如，参数服务器或超参数搜索）和AI之外的高质量分布式系统的良好解决方案（例如，Hadoop或Spark），但是开发算法的从业者通常从头开始构建他们自己的系统基础结构。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[初识ZeroMQ]]></title>
-        <id>https://yinyayun.github.io//post/start-zeromq</id>
-        <link href="https://yinyayun.github.io//post/start-zeromq">
-        </link>
-        <updated>2019-07-11T01:50:57.000Z</updated>
-        <summary type="html"><![CDATA[<p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>阅读<a href="https://github.com/anjuke/zguide-cn">anjuke/zguide-cn</a>后作的一些简单整理。</p>
 ]]></content>
     </entry>
 </feed>

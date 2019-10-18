@@ -3,16 +3,22 @@
   <head>
     <meta charset="utf-8" >
 
-<title>殷亚云的博客</title>
+<title>厨房秘籍收藏 | 殷亚云的博客</title>
 <meta name="description" content="化身石桥，受五百年风吹雨打">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
 
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -30,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -91,46 +97,42 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/solr-cache">
-                  <h2 class="post-title">Solr优化系列-缓存</h2>
+          <div class="post-detail">
+            <h2 class="post-title">厨房秘籍收藏</h2>
+            <div class="post-date">2019-09-11</div>
+            
+            <div class="post-content">
+              <h2 id="qxt辣蟹技术">QXT辣蟹技术</h2>
+<p><strong>炒制流程：</strong>（按三斤内螃蟹计算，如果加上小海鲜不要超过1.5斤，，超过太多要分锅炒制，不然不入味。）</p>
+<ul>
+<li>中火热锅，不要让锅里有水分， 110克清油，猪油35克，红油220克，油温上来，八角一个整的，大蒜子10个，姜片6-7个，再加豆豉10克，倒入杀好的螃蟹，鱼头剁椒50克，在油锅里炸</li>
+<li>此时，防止糊锅底，锅要像海盗船一样不停的晃动，同时用勺子要把没有津在油锅里或锅边的螃蟹翻炒一下，充分炸制。</li>
+<li>大概炸制2分钟，此时螃蟹已经炸制差不多了，加大葱50克（葱叶和葱白1:1比例），炒好的干辣椒适量，按个人口味来，翻炒几秒，加秘制酱45克，黄酒35克大火翻炒，再加香料粉5克调味料35克，和稀释过的米酒50克翻炒几下收汁起锅。</li>
+<li>如果加小海鲜，在加大葱和干辣椒之后加入小海鲜，小海鲜容易熟，炸个半分钟就可以了，先加神仙虾，炸制半分钟，再加上墨鱼仔青口贝，鲍鱼。</li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://yinyayun.github.io//post/jyQBBzq3u">
+                  <h3 class="post-title">
+                    Lucene60 - Index File Formats
+                  </h3>
                 </a>
-                <div class="post-date">
-                  2018-08-25
-                </div>
-                <div class="post-abstract">
-                  <p>如果你的索引量太小，不要折腾这些东西，个人觉得真心没必要，因为没有效果，不如把时间花在其他技术上。</p>
-
-                </div>
               </div>
-              
-            </article>
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/java-pb">
-                  <h2 class="post-title">Java加载Tensorflow PB模型</h2>
-                </a>
-                <div class="post-date">
-                  2018-06-28
-                </div>
-                <div class="post-abstract">
-                  <p>Tensorflow是一个用来解决数学计算的计算框架，其实不管是CNN、RNN或者是各种变种神经网络模型，本质上都是各种数学公式堆叠在一起的网络结构，Tensorflow的亮点就在于采用数据流图的方式将数学公式粘合在一起，数据流图中的node一般都是各种数学操作，而edge则表示操作结果的数据流向。</p>
+            
 
-                </div>
-              </div>
+            
               
-            </article>
-          
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
 
-          <div class="pagination-container">
-  
-    <a href="https://yinyayun.github.io//page/3/" class="prev"><i class="icon-arrow-ios-back-outline"></i> 上一页</a>
-  
-  
-</div>
+              
+            
+
+          </div>
 
         </div>
       </div>
@@ -152,6 +154,29 @@ var app = new Vue({
 })
 
 </script>
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: 'd0b5c5947b60dee0a443',
+        clientSecret: 'c7399011820f4677d9cd30eeec949e0f0df8aaaa',
+        repo: 'yinyayun.github.io',
+        owner: 'yinyayun',
+        admin: ['yinyayun'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
 
 
 

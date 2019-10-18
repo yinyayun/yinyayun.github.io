@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -30,7 +30,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -91,21 +91,6 @@
 
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
-          
-            <article class="post-item">
-              <div class="left">
-                <a href="https://yinyayun.github.io//post/6_fDKITDK">
-                  <h2 class="post-title">VirtualBox Centos磁盘扩容笔记</h2>
-                </a>
-                <div class="post-date">
-                  2019-01-30
-                </div>
-                <div class="post-abstract">
-                  
-                </div>
-              </div>
-              
-            </article>
           
             <article class="post-item">
               <div class="left">
@@ -247,6 +232,61 @@
                   <p>这段时间发现一个python的服务实例经常静默退出，从应用日志里未找到任何异常现场，一切都很正常。</p>
 <p>怎么办呢，首先想到的就是完善日志，应用启动入口try住，捕获BaseException异常进行输出，打包上线。</p>
 <p>什么，又退出了，看看解释器层面有没有日志，Oh no，这不是JVM，没找到Python解释器层面有任何日志记录，鄙视Python。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/j4lHefq7K">
+                  <h2 class="post-title">基于全文检索引擎的语义向量编码和相似度检索</h2>
+                </a>
+                <div class="post-date">
+                  2018-11-16
+                </div>
+                <div class="post-abstract">
+                  <p>我们都知道Lucene只能解决文本层面的检索与相似度计算（TFIDF，BM25），无法解决语义层面的检索。尤其在当前机器学习如此火热的情况下，我们已经有很多方式对一个文本转为向量进行语义表征，所以在很多场景下我们会遇到向量检索的问题。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/P-65A6NeN">
+                  <h2 class="post-title">Skip List（跳跃表）</h2>
+                </a>
+                <div class="post-date">
+                  2018-11-08
+                </div>
+                <div class="post-abstract">
+                  <p>Skip List是一个基于链表的概率数据结构，是平衡树的简单且有效的替代品。为什么说是概率数据结构，这体现在skip list的创建和search上。<br>
+传统的链表很难快速跳转至某一个节点，所以查找也是很耗时的（即使这是一个有序的链表），skip list则解决这些问题，并且查找的时间复杂度是O(log n)，所以skip list在lucene中也是一大利器。</p>
+
+                </div>
+              </div>
+              
+            </article>
+          
+            <article class="post-item">
+              <div class="left">
+                <a href="https://yinyayun.github.io//post/8FZ96sw5Q">
+                  <h2 class="post-title">Python多版本多module动态加载</h2>
+                </a>
+                <div class="post-date">
+                  2018-10-31
+                </div>
+                <div class="post-abstract">
+                  <p>这里有一个Python服务，它提供机器学习模型在线服务，用户只要将模型文件和加载、使用模型的的代码文件打包上传，该服务就可以将该模型上线。<br>
+无论是那种机器学习模型，要进行使用，肯定逃不了这两个套路：</p>
+<ul>
+<li>模型的加载（初始化）</li>
+<li>模型的调用（预测）<br>
+也就是说我们可以在平台层面进行一定的约束，基于我们的规范实现，然后我们提供对应的服务。</li>
+</ul>
 
                 </div>
               </div>

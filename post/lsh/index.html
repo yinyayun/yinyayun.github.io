@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -168,7 +168,7 @@ Jaccard指数为：2/6</li>
 <li>候选列对是那些至少有一个波段被映射至同一个桶中的签名列</li>
 <li>可以通过调整波段数量或者每个波段的行数来控制相似对数量</li>
 </ul>
-<p><img src="https://yinyayun.github.io//post-images/1565682467360.png" alt="Band partition"></p>
+<figure data-type="image" tabindex="1"><img src="https://yinyayun.github.io//post-images/1565682467360.png" alt="Band partition"></figure>
 <p>理想情况下，对于每个波段，我们希望k等于列在波段内可以采用的所有可能值组合，即理想情况我们不希望产生碰撞，但是这显然不可能，否则k将是一个庞大的数字，这在计算上是不可行的。例如一个波段有5行，签名中的元素是32位整数，那么在这种情况下k将是（2³²）⁵~1.4615016e+ 48，通常k约为100万。<br>
 <img src="https://yinyayun.github.io//post-images/1565682984793.png" alt=""></p>
 <p>如果波段数量（b）较多，就意味着需要较多的hash函数，随之，每个波段的行数（r）也会减小。直观地说，这意味着我们增加了找到候选对的概率。</p>

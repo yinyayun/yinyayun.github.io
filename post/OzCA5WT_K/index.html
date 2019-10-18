@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -116,7 +116,7 @@
 <li>数据从磁盘读入内核空间的缓冲区</li>
 <li></li>
 </ul>
-<p><img src="https://yinyayun.github.io//post-images/1564118252549.png" alt="user-kernel"></p>
+<figure data-type="image" tabindex="1"><img src="https://yinyayun.github.io//post-images/1564118252549.png" alt="user-kernel"></figure>
 <h3 id="阻塞-io">阻塞 I/O</h3>
 <p>阻塞IO会一直阻塞用户进程，这个期间，kernel会一直等待数据准备好，然后将数据拷贝到用户空间，最后kernel返回结果，用户接触阻塞。<br>
 <img src="https://yinyayun.github.io//post-images/1564118309936.png" alt="blocking IO"></p>
@@ -127,7 +127,7 @@
 <h3 id="io-多路复用">I/O 多路复用</h3>
 <p>IO多路复用即使用一个进程同时处理多个IO连接，它的原理是利用select、poll或epoll函数，即单个进程不断轮询所有的连接（套接字、文件描述符），当某个连接上有数据到达了，就通知用户进程。</p>
 <p>在该模式中，用户进程调用select()，进程会一直阻塞，直到某个连接进入读就绪状态，select（）函数返回。此时用户用户再调用read()方法，这一操作同样阻塞用户进程直到数据从内核拷贝纸用户空间并返回。</p>
-<p><img src="https://yinyayun.github.io//post-images/1564119394474.png" alt="IO multiplexing"></p>
+<figure data-type="image" tabindex="2"><img src="https://yinyayun.github.io//post-images/1564119394474.png" alt="IO multiplexing"></figure>
 <p>从上图不难发现，IO多路复用和阻塞 I/O模式很像：</p>
 <ul>
 <li>IO多路复用为两次阻塞</li>

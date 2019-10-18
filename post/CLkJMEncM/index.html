@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -1300,7 +1300,7 @@ private void doSignal(Node first) {
 <li>如果阻塞队列已满，则判断线程池中是否已满，如果没有，则创建一个新的线程来执行任务</li>
 <li>如果线程池已满，则按照饱和策略进行处理</li>
 </ul>
-<p><img src="https://yinyayun.github.io//post-images/1567666735545.png" alt="线程池"></p>
+<figure data-type="image" tabindex="1"><img src="https://yinyayun.github.io//post-images/1567666735545.png" alt="线程池"></figure>
 <p><strong>关闭线程池</strong></p>
 <ul>
 <li>shutdownNow，首先将线程池的状态设置为STOP，并中断所有线程</li>
@@ -1431,7 +1431,7 @@ pool-1-thread-1 run...
 <li>数据从磁盘读入内核空间的缓冲区</li>
 <li></li>
 </ul>
-<p><img src="https://yinyayun.github.io//post-images/1564118252549.png" alt="user-kernel"></p>
+<figure data-type="image" tabindex="2"><img src="https://yinyayun.github.io//post-images/1564118252549.png" alt="user-kernel"></figure>
 <h4 id="阻塞-io">阻塞 I/O</h4>
 <p>阻塞IO会一直阻塞用户进程，这个期间，kernel会一直等待数据准备好，然后将数据拷贝到用户空间，最后kernel返回结果，用户接触阻塞。<br>
 <img src="https://yinyayun.github.io//post-images/1564118309936.png" alt="blocking IO"></p>
@@ -1442,7 +1442,7 @@ pool-1-thread-1 run...
 <h4 id="io-多路复用">I/O 多路复用</h4>
 <p>IO多路复用即使用一个进程同时处理多个IO连接，它的原理是利用select、poll或epoll函数，即单个进程不断轮询所有的连接（套接字、文件描述符），当某个连接上有数据到达了，就通知用户进程。</p>
 <p>在该模式中，用户进程调用select()，进程会一直阻塞，直到某个连接进入读就绪状态，select（）函数返回。此时用户用户再调用read()方法，这一操作同样阻塞用户进程直到数据从内核拷贝纸用户空间并返回。</p>
-<p><img src="https://yinyayun.github.io//post-images/1564119394474.png" alt="IO multiplexing"></p>
+<figure data-type="image" tabindex="3"><img src="https://yinyayun.github.io//post-images/1564119394474.png" alt="IO multiplexing"></figure>
 <p>从上图不难发现，IO多路复用和阻塞 I/O模式很像：</p>
 <ul>
 <li>IO多路复用为两次阻塞</li>
@@ -1476,7 +1476,7 @@ pool-1-thread-1 run...
 <li>**Acceptor ：**处理客户端连接请求</li>
 <li>**Handlers ：**执行非阻塞读/写</li>
 </ul>
-<p><img src="https://yinyayun.github.io//post-images/1567666823979.png" alt="经典Reactor"></p>
+<figure data-type="image" tabindex="4"><img src="https://yinyayun.github.io//post-images/1567666823979.png" alt="经典Reactor"></figure>
 <pre><code class="language-java">public class BasicReactorServer {
 
  public static void start(int port) {
@@ -1575,10 +1575,10 @@ pool-1-thread-1 run...
 </code></pre>
 <p><strong>多线程Reactor模式</strong></p>
 <p>与单线程相比，多线程Reactor模式采用一个 Reactor 线程（一个Selector）和多个处理线程（多个Handler），将业务处理交给线程池。</p>
-<p><img src="https://yinyayun.github.io//post-images/1567666861833.png" alt="多线程Reactor模式"></p>
+<figure data-type="image" tabindex="5"><img src="https://yinyayun.github.io//post-images/1567666861833.png" alt="多线程Reactor模式"></figure>
 <p><strong>主从Reactor模式</strong></p>
 <p>虽然多线程的Reactor的模式将业务处理采用多个线程处理，但是实际的发送和读取还是由 Reactor 处理，那么在高并发下，有可能连接来不及接收，所以衍生出了主从 Reactor，主从 Reactor 特点是：使用一个 Selector 池，通常有一个 <strong>主Reactor</strong> 用于处理接收连接事件，多个 <strong>从Reactor</strong> 处理实际的 I/O。</p>
-<p><img src="https://yinyayun.github.io//post-images/1567666892063.png" alt="主从Reactor模式"></p>
+<figure data-type="image" tabindex="6"><img src="https://yinyayun.github.io//post-images/1567666892063.png" alt="主从Reactor模式"></figure>
 <h3 id="proactor">Proactor</h3>
 <p>Proactor利用异步I/O并行能力，给应用带来了更高的效率，但是同时也增加了编程的复杂度。windows对异步I/O支持非常好；而Linux对异步I/O操作(aio接口)的支持并不是特别理想，而且不能直接处理accept，因此Linux平台上还是以Reactor模型为主。</p>
 <p><strong>处理逻辑</strong></p>
@@ -1701,7 +1701,7 @@ pool-1-thread-1 run...
 </code></pre>
 <h2 id="jvm">JVM</h2>
 <p>首先看一下JVM的物理结构：</p>
-<p><img src="https://yinyayun.github.io//post-images/1567666917956.png" alt="JVM的物理结构"></p>
+<figure data-type="image" tabindex="7"><img src="https://yinyayun.github.io//post-images/1567666917956.png" alt="JVM的物理结构"></figure>
 <h3 id="内存结构">内存结构</h3>
 <ul>
 <li>线程共享：堆、方法区</li>
@@ -1709,7 +1709,7 @@ pool-1-thread-1 run...
 </ul>
 <p>JDK1.8方法区已经移入直接内存。</p>
 <h3 id="类加载">类加载</h3>
-<p><img src="https://yinyayun.github.io//post-images/1567666940192.png" alt="类加载"></p>
+<figure data-type="image" tabindex="8"><img src="https://yinyayun.github.io//post-images/1567666940192.png" alt="类加载"></figure>
 <h4 id="步骤">步骤</h4>
 <ul>
 <li>加载
@@ -2009,7 +2009,7 @@ pool-1-thread-1 run...
 </ul>
 </li>
 </ol>
-<p><img src="https://yinyayun.github.io//post-images/1567666988267.png" alt="Zk选举"></p>
+<figure data-type="image" tabindex="9"><img src="https://yinyayun.github.io//post-images/1567666988267.png" alt="Zk选举"></figure>
 <h3 id="数据模型">数据模型</h3>
 <ol>
 <li>数据节点(ZNode)</li>
@@ -2388,12 +2388,12 @@ public class BubblingSort&lt;T&gt; extends Sort&lt;T&gt; {
 <li>插入红色右节点，父亲是红色，叔叔是黑色</li>
 </ul>
 <p>对于第一种场景，意味着违背了红黑色不能有连续两个红色节点的特性，那么则需要将父节点、叔叔节点染色成黑色，祖父节点染成红色（因为父亲和叔叔原先是红色，所以祖父不可能是红色），那么可以满足特性4和特性5，但是如果祖父节点的父节点是红色，我们依然要循环向上检测重新染色，直到符合条件。</p>
-<p><img src="https://yinyayun.github.io//post-images/1567667211821.png" alt="变色"></p>
+<figure data-type="image" tabindex="10"><img src="https://yinyayun.github.io//post-images/1567667211821.png" alt="变色"></figure>
 <p>场景一种的调整，单纯都是染色，只要让红黑树满足特性4特性5即可，相对来说比较容易，如上图插入红色节点D。</p>
 <p>对于场景二，就不是那么简单了，因为父节点为红色、叔叔节点是黑色，那么插入红色节点，必然违背特性4，如果直接将父节点、或者将父节点和叔叔节点都改成红色节点都会导致违背特性5，所以这种情况下无法通过变色的方式进行调整。此时需要先需要进行右旋，之后进行染色，如下图，插入D，以B节点为中心选择，之后将B变为黑色，A变成红色，这样红黑树再次满足以上特性。</p>
-<p><img src="https://yinyayun.github.io//post-images/1567667227097.png" alt="旋转变色"></p>
+<figure data-type="image" tabindex="11"><img src="https://yinyayun.github.io//post-images/1567667227097.png" alt="旋转变色"></figure>
 <p>对于场景三，如果插入的节点是右节点的话，那么则需要先进行左旋，使其符合场景二，然后再按照场景二的步骤进行调整。</p>
-<p><img src="https://yinyayun.github.io//post-images/1567667264209.png" alt="两次旋转变色"></p>
+<figure data-type="image" tabindex="12"><img src="https://yinyayun.github.io//post-images/1567667264209.png" alt="两次旋转变色"></figure>
 <p>下面给出TreeMap中插入节点后，红黑色调整的代码：</p>
 <pre><code class="language-java">private void fixAfterInsertion(Entry&lt;K,V&gt; x) {
     x.color = RED;

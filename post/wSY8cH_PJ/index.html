@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -150,7 +150,7 @@
 }
 </code></pre>
 <p>其实上面的程序就是在构建两个字符串的转换矩阵，我们还是以apple和appe为例，函数返回的二维数组应该是这样的：</p>
-<p><img src="https://yinyayun.github.io//post-images/1562825153070.jpg" alt=""></p>
+<figure data-type="image" tabindex="1"><img src="https://yinyayun.github.io//post-images/1562825153070.jpg" alt=""></figure>
 <p>我们不难发现我们每次计算都要构建字符串的转换矩阵，这其实是一种浪费，因为D(i,j)最多只跟D(i-1,j-1)或者D(i-1,j)有关,所以我们没有必要S1的前i-2个串和S2的编辑距离，所以这个算法其实还是可以优化的，具体代码可以参考:<a href="https://github.com/yinyayun/toolbox/blob/master/toolbox-algorithm/src/main/java/org/yinyayun/other/EditDistance.java">EditDistance</a></p>
 <p>这篇文章中我只给出了编辑距离，它离拼写纠错还有一点距离，因为实际场景中我们不可能挨个计算和词典中每个词的编辑距离，从而给出最优的纠错词。在下一篇文章中我将给出拼写纠错的实现。</p>
 <p>That's all!</p>

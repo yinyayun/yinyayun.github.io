@@ -9,7 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1567667410547">
+<link rel="shortcut icon" href="https://yinyayun.github.io//favicon.ico?v=1571390510083">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link rel="stylesheet" href="https://yinyayun.github.io//styles/main.css">
 
@@ -36,7 +36,7 @@
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://yinyayun.github.io/">
-        <img src="https://yinyayun.github.io//images/avatar.png?v=1567667410547" class="site-logo">
+        <img src="https://yinyayun.github.io//images/avatar.png?v=1571390510083" class="site-logo">
         <h1 class="site-title">殷亚云的博客</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -133,7 +133,7 @@
 <li>合并任何包含已删除文档的段。 IO负载变得很高，索引性能直线下降。最坏的就是你在删除了0.01%的文档后，就重建整个索引。</li>
 <li>当有文档删除时，从segment中回收数据。 这个操作基本等价于重写索引，因为索引结构非常复杂，删除一个文档关联的信息代价非常高。</li>
 </ul>
-<p><img src="https://yinyayun.github.io//post-images/1562837171575.png" alt="段合并"></p>
+<figure data-type="image" tabindex="1"><img src="https://yinyayun.github.io//post-images/1562837171575.png" alt="段合并"></figure>
 <p>在这幅图中，阴影部分表示已经删除的文档，a、b、d、e、g、h有60%的已删除文档，c和f有20%。</p>
 <p>下面我们具体分析一下，已删除文档为什么超过50%，我们先来看看TMP的部分源码：</p>
 <pre><code class="language-java">public class TieredMergePolicy extends MergePolicy {
